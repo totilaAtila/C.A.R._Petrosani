@@ -2,6 +2,40 @@
 
 Aplicație desktop pentru gestionarea Casei de Ajutor Reciproc Petroșani, dezvoltată în Python cu PyQt5, cu suport complet pentru conversie RON→EUR și sistem dual currency cu protecție avansată a datelor.
 
+## 🆕 Actualizări Recente (Noiembrie-Decembrie 2025)
+
+### Rezolvări Buguri Critice
+- **BUG #1**: Precizie financiară 100% - Eliminare completă erori de rotunjire în `generare_luna.py:859-861` și `dividende.py:808`
+- **BUG #2**: Protecție transfer dividende - Validare critică existență Ianuarie obligatorie în `dividende.py:707-730`
+- **BUG #3, #4, #5, #6**: Critical bug fixes în multiple module (generare_luna, dividende, sume_lunare, stergere_membru)
+- **Fix validare**: Corectare validare număr fișă 0 în `stergere_membru.py`
+- **Eliminare BENEFICIU**: Înlocuire referințe la câmpul inexistent BENEFICIU cu DIVIDEND conform schemei oficiale
+
+### Securitate și Calitate Cod
+- **Migrare openpyxl → xlsxwriter**: Eliminare vulnerabilități CVE-2023-43810 (XXE) și CVE-2024-47204 (ReDoS)
+- **Exception handling**: Înlocuire bare except clauses cu specific exception handling
+- **GitHub Actions**: Implementare workflows CodeQL Analysis și Microsoft Defender
+- **Monkey patching**: Corectare 3 buguri critice în sistemul de patching dual currency
+
+### Testing și Documentație
+- **Suite teste complete**: Adăugare `test_conversie_widget.py`, `test_dividende.py`, `test_generare_luna.py`, `test_sume_lunare.py`
+- **pytest.ini**: Configurare cu suport coverage, markers și verbose output
+- **requirements-dev.txt**: Dependențe dezvoltare separate (pytest, pytest-cov, pytest-qt)
+- **BUGURI_IDENTIFICATE.md**: Raport exhaustiv cu 9 buguri categorizate (critice/majore/minore)
+- **Claude.md**: Documentație contribuții AI și proces dezvoltare
+- **README_TESTS.md**: Ghid complet pentru rulare și scriere teste
+
+### Îmbunătățiri Module
+- **generare_luna.py**: Eliminare auto-generare dividende în ianuarie, restaurare logging CAZ 1 și CAZ 2
+- **dividende.py**: Implementare paritate cu TypeScript, validare comprehensivă, înlocuire BENEFICIU → DIVIDEND
+- **despre.py**: Modernizare completă cu ghid utilizare profesional
+- **CARpetrosani.spec**: Actualizare eliminare dependențe învechite
+
+### Alte Îmbunătățiri
+- **Rezolvare conflicte Git**: Fix merge conflicts în `generare_luna.py`
+- **.gitignore**: Actualizare pentru excludere baze de date și fișiere temporare Python
+- **Logging optimizat**: Îmbunătățiri în logging împrumuturi active și moștenire rate
+
 ## 📋 Caracteristici Principale
 
 ### 🔄 Sistem Dual Currency RON/EUR
