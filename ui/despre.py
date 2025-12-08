@@ -99,6 +99,33 @@ CHANGELOG = {
         "Optimizare baze cu indexare automată",
         "20 teme profesionale moderne",
         "Interfață slick fără elemente decorative excesive"
+    ],
+    "ACTUALIZĂRI NOV-DEC 2025": [
+        "Rezolvare BUG #1: Precizie financiară 100% - Eliminare erori rotunjire în generare_luna.py și dividende.py",
+        "Rezolvare BUG #2: Protecție transfer dividende - Validare critică Ianuarie obligatorie",
+        "Rezolvare BUG #3, #4, #5, #6: Critical bug fixes în multiple module",
+        "Rezolvare BUG #5: Eroare SQL și optimizare logging împrumuturi active",
+        "Fix validare număr fișă 0 în modul stergere_membru.py",
+        "Eliminare referințe la câmpul inexistent BENEFICIU din tabelul ACTIVI",
+        "Înlocuire bare except clauses cu exception handling specific",
+        "Migrare openpyxl → xlsxwriter pentru securitate îmbunătățită (CVE-2023-43810, CVE-2024-47204)",
+        "Adăugare suite completă de teste automată: test_conversie_widget, test_dividende, test_generare_luna, test_sume_lunare",
+        "Configurare pytest.ini cu suport coverage și markers",
+        "Adăugare requirements-dev.txt pentru dependențe dezvoltare",
+        "Creare documentație BUGURI_IDENTIFICATE.md cu raport exhaustiv",
+        "Adăugare Claude.md - Documentație contribuții AI și proces dezvoltare",
+        "Adăugare README_TESTS.md - Ghid complet pentru rulare teste",
+        "Implementare GitHub Actions workflows: CodeQL Analysis și Microsoft Defender",
+        "Actualizare .gitignore pentru excludere baze de date și fișiere temporare",
+        "Rezolvare conflicte Git merge în generare_luna.py",
+        "Restaurare logging CAZ 1 și CAZ 2 pentru moștenire rată împrumut",
+        "Corectare 3 buguri critice în sistemul de monkey patching",
+        "Modernizare completă modul Despre - Ghid utilizare profesional",
+        "Actualizare CARpetrosani.spec - Eliminare dependențe învechite",
+        "Îmbunătățiri ISSUE #7, #8, #9: Calitate cod și best practices",
+        "Fix dividende: Implementare paritate cu TypeScript și validare comprehensivă",
+        "Eliminare auto-generare dividende în ianuarie din generare_luna.py",
+        "Înlocuire BENEFICIU cu DIVIDEND conform schemei oficiale SQLite"
     ]
 }
 
