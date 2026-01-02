@@ -1,0 +1,74 @@
+================================================================================
+                    INSTRUCȚIUNI CREARE PULL REQUEST
+================================================================================
+
+✅ Branch-ul cu modificările a fost push-at pe GitHub!
+✅ Toate fișierele sunt pregătite pentru PR
+
+================================================================================
+                          METODA 1: Link Direct
+================================================================================
+
+Accesează acest link în browser:
+
+https://github.com/totilaAtila/C.A.R._Petrosani/compare/main...claude/fix-dbf-conversion-VWJxs?expand=1
+
+Acesta va deschide automat formularul de creare PR cu:
+- Base branch: main
+- Compare branch: claude/fix-dbf-conversion-VWJxs
+
+================================================================================
+                          METODA 2: GitHub Web UI
+================================================================================
+
+1. Deschide: https://github.com/totilaAtila/C.A.R._Petrosani
+
+2. Vei vedea banner-ul galben:
+   "claude/fix-dbf-conversion-VWJxs had recent pushes"
+   
+3. Click pe butonul "Compare & pull request"
+
+4. Completează:
+   - Title: Fix: Rezolvare conversie DBF - backup complet și bibliotecă în build
+   - Description: Copiază conținutul din PR_DESCRIPTION.md
+
+5. Click "Create pull request"
+
+================================================================================
+                          INFORMAȚII PR
+================================================================================
+
+📝 Titlu sugerat:
+   Fix: Rezolvare conversie DBF - backup complet și bibliotecă în build
+
+📄 Descriere completă:
+   Vezi fișierul: PR_DESCRIPTION.md
+
+🔀 Branch-uri:
+   - Base: main
+   - Compare: claude/fix-dbf-conversion-VWJxs
+
+📦 Commit-uri incluse:
+   - fa78ad3: fix(build): Adăugare bibliotecă dbf în configurația de build
+   - a6f1934: fix(dbf-converter): Rezolvare probleme conversie DBF - backup și validare mediu
+
+📁 Fișiere modificate (4):
+   - car_dbf_converter_widget.py (backup + validare)
+   - requirements.txt (dbf==0.99.11)
+   - CARpetrosani.spec (hiddenimports)
+   - .github/workflows/build.yml (instalare + verificare)
+
+================================================================================
+                          DUPĂ MERGE
+================================================================================
+
+1. Rulează workflow-ul de build pentru a crea noul executabil:
+   - Actions → Build macOS App → Run workflow
+
+2. Descarcă executabilul generat din Artifacts
+
+3. Testează conversiunea DBF în executabil
+
+4. Verifică că backup-ul funcționează corect
+
+================================================================================
