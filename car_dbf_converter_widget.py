@@ -271,6 +271,25 @@ class WorkerThread(QThread):
                 shutil.rmtree(backup_dir)
             backup_dir.mkdir()
 
+            # Copiem fișierele DBF și IDX în backup ÎNAINTE de conversie
+            files_to_backup = ['MEMBRII.dbf', 'DEPCRED.dbf', 'FISA.idx', 'NUME.idx', 'LINII.idx',
+                             'FISA.cdx', 'NUME.cdx', 'LINII.cdx']  # Și fișiere .cdx dacă există
+            backup_count = 0
+            for file_name in files_to_backup:
+                source_file = self.work_dir / file_name
+                if source_file.exists():
+                    try:
+                        shutil.copy2(source_file, backup_dir / file_name)
+                        self.progress.emit(f"  ✓ Backup: {file_name}")
+                        backup_count += 1
+                    except Exception as e:
+                        self.progress.emit(f"  ⚠️ Backup {file_name}: {e}")
+
+            if backup_count > 0:
+                self.progress.emit(f"✅ {backup_count} fișiere salvate în backup")
+            else:
+                self.progress.emit("⚠️ Nu s-au găsit fișiere de salvat în backup")
+
             # Conversie
             conversions = [('MEMBRII.db', 'MEMBRII'), ('DEPCRED.db', 'DEPCRED')]
             total_records = 0
@@ -770,6 +789,7 @@ class CARDBFConverterWidget(QWidget):
         super().__init__()
         self.work_dir = Path.cwd()
         self.worker = None
+        self.environment_ok = False  # Flag pentru validarea mediului
 
         # Watchdog anti-înghețare
         self.last_activity = QTime.currentTime()
@@ -1118,13 +1138,22 @@ class CARDBFConverterWidget(QWidget):
 
         if not PYQT_AVAILABLE:
             self.log_message("❌ PyQt nu este disponibil!")
+            self.environment_ok = False
+            QMessageBox.critical(self, "Eroare Critică",
+                               "PyQt nu este instalat!\n\nInstalați PyQt5 sau PyQt6 pentru a continua.")
             return
 
         if not DBF_AVAILABLE:
             self.log_message("❌ Biblioteca dbf nu este disponibilă!")
+            self.environment_ok = False
+            QMessageBox.critical(self, "Eroare Critică",
+                               "Biblioteca 'dbf' nu este instalată!\n\n"
+                               "Instalați folosind:\n  pip install dbf\n\n"
+                               "Modulul nu poate funcționa fără această bibliotecă.")
             return
 
         self.log_message("✅ Mediu OK")
+        self.environment_ok = True
         self.check_files()
         self.step1_btn.setEnabled(True)
 
@@ -1159,6 +1188,12 @@ class CARDBFConverterWidget(QWidget):
 
     def change_directory(self):
         """Schimbă directorul."""
+        if not self.environment_ok:
+            QMessageBox.warning(self, "Mediu Invalid",
+                              "Nu puteți schimba directorul până când mediul nu este valid!\n\n"
+                              "Instalați biblioteca 'dbf' mai întâi.")
+            return
+
         new_dir = QFileDialog.getExistingDirectory(self, "Director CAR", str(self.work_dir))
         if new_dir:
             self.work_dir = Path(new_dir)
@@ -1168,6 +1203,10 @@ class CARDBFConverterWidget(QWidget):
 
     def step1_verify(self):
         """Pasul 1: Verificare."""
+        if not self.environment_ok:
+            QMessageBox.warning(self, "Mediu Invalid", "Mediul nu este valid! Instalați biblioteca 'dbf' mai întâi.")
+            return
+
         self.log_message("🔍 PASUL 1: Verificare fișiere...")
         self.step1_status.setText("⏳ Verific")
 
@@ -1182,6 +1221,10 @@ class CARDBFConverterWidget(QWidget):
 
     def step2_fingerprint(self):
         """Pasul 2: Amprentă."""
+        if not self.environment_ok:
+            QMessageBox.warning(self, "Mediu Invalid", "Mediul nu este valid! Instalați biblioteca 'dbf' mai întâi.")
+            return
+
         self.log_message("🔬 PASUL 2: Creez amprenta digitală...")
         self.step2_status.setText("⏳ Creez")
         self.step2_btn.setEnabled(False)
@@ -1209,8 +1252,14 @@ class CARDBFConverterWidget(QWidget):
 
     def step3_convert(self):
         """Pasul 3: Conversie."""
+        if not self.environment_ok:
+            QMessageBox.warning(self, "Mediu Invalid", "Mediul nu este valid! Instalați biblioteca 'dbf' mai întâi.")
+            return
+
         reply = QMessageBox.question(self, "Confirmare",
-                                     "Convertesc bazele SQLite în DBF?\n\nAceasta va suprascrie fișierele DBF existente.",
+                                     "Convertesc bazele SQLite în DBF?\n\n"
+                                     "Aceasta va suprascrie fișierele DBF existente.\n"
+                                     "Fișierele originale vor fi salvate în 'backup_old_files/'.",
                                      QMessageBox.Yes | QMessageBox.No)
 
         if reply == QMessageBox.Yes:
