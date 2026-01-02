@@ -1136,20 +1136,38 @@ class CARDBFConverterWidget(QWidget):
         """Verifică mediul de lucru."""
         self.log_message("🔍 Verificare mediu...")
 
+        # Detectează dacă rulează ca executabil (PyInstaller)
+        is_frozen = getattr(sys, 'frozen', False)
+
         if not PYQT_AVAILABLE:
             self.log_message("❌ PyQt nu este disponibil!")
             self.environment_ok = False
-            QMessageBox.critical(self, "Eroare Critică",
-                               "PyQt nu este instalat!\n\nInstalați PyQt5 sau PyQt6 pentru a continua.")
+            if is_frozen:
+                QMessageBox.critical(self, "Eroare Aplicație",
+                                   "Aplicația este incompletă!\n\n"
+                                   "PyQt lipsește din executabil.\n\n"
+                                   "Vă rugăm contactați dezvoltatorul pentru o versiune corectată.")
+            else:
+                QMessageBox.critical(self, "Eroare Critică",
+                                   "PyQt nu este instalat!\n\nInstalați PyQt5 sau PyQt6 pentru a continua.")
             return
 
         if not DBF_AVAILABLE:
             self.log_message("❌ Biblioteca dbf nu este disponibilă!")
             self.environment_ok = False
-            QMessageBox.critical(self, "Eroare Critică",
-                               "Biblioteca 'dbf' nu este instalată!\n\n"
-                               "Instalați folosind:\n  pip install dbf\n\n"
-                               "Modulul nu poate funcționa fără această bibliotecă.")
+            if is_frozen:
+                # Mesaj pentru utilizatori finali care rulează executabilul
+                QMessageBox.critical(self, "Eroare Aplicație",
+                                   "Aplicația este incompletă!\n\n"
+                                   "Modulul de conversie DBF lipsește din această versiune.\n\n"
+                                   "Această funcționalitate nu va funcționa.\n"
+                                   "Vă rugăm contactați dezvoltatorul pentru o versiune actualizată.")
+            else:
+                # Mesaj pentru dezvoltatori
+                QMessageBox.critical(self, "Eroare Dezvoltare",
+                                   "Biblioteca 'dbf' nu este instalată!\n\n"
+                                   "Instalați folosind:\n  pip install dbf\n\n"
+                                   "Modulul nu poate funcționa fără această bibliotecă.")
             return
 
         self.log_message("✅ Mediu OK")
@@ -1189,9 +1207,16 @@ class CARDBFConverterWidget(QWidget):
     def change_directory(self):
         """Schimbă directorul."""
         if not self.environment_ok:
-            QMessageBox.warning(self, "Mediu Invalid",
-                              "Nu puteți schimba directorul până când mediul nu este valid!\n\n"
-                              "Instalați biblioteca 'dbf' mai întâi.")
+            is_frozen = getattr(sys, 'frozen', False)
+            if is_frozen:
+                QMessageBox.warning(self, "Funcție Indisponibilă",
+                                  "Aplicația nu poate funcționa corect!\n\n"
+                                  "Modulul de conversie DBF lipsește.\n"
+                                  "Contactați dezvoltatorul pentru o versiune actualizată.")
+            else:
+                QMessageBox.warning(self, "Mediu Invalid",
+                                  "Mediul nu este valid!\n\n"
+                                  "Instalați biblioteca 'dbf' mai întâi.")
             return
 
         new_dir = QFileDialog.getExistingDirectory(self, "Director CAR", str(self.work_dir))
@@ -1204,7 +1229,15 @@ class CARDBFConverterWidget(QWidget):
     def step1_verify(self):
         """Pasul 1: Verificare."""
         if not self.environment_ok:
-            QMessageBox.warning(self, "Mediu Invalid", "Mediul nu este valid! Instalați biblioteca 'dbf' mai întâi.")
+            is_frozen = getattr(sys, 'frozen', False)
+            if is_frozen:
+                QMessageBox.warning(self, "Funcție Indisponibilă",
+                                  "Aplicația nu este configurată corect!\n\n"
+                                  "Contactați dezvoltatorul.")
+            else:
+                QMessageBox.warning(self, "Mediu Invalid",
+                                  "Mediul nu este valid!\n\n"
+                                  "Instalați biblioteca 'dbf' mai întâi.")
             return
 
         self.log_message("🔍 PASUL 1: Verificare fișiere...")
@@ -1222,7 +1255,15 @@ class CARDBFConverterWidget(QWidget):
     def step2_fingerprint(self):
         """Pasul 2: Amprentă."""
         if not self.environment_ok:
-            QMessageBox.warning(self, "Mediu Invalid", "Mediul nu este valid! Instalați biblioteca 'dbf' mai întâi.")
+            is_frozen = getattr(sys, 'frozen', False)
+            if is_frozen:
+                QMessageBox.warning(self, "Funcție Indisponibilă",
+                                  "Aplicația nu este configurată corect!\n\n"
+                                  "Contactați dezvoltatorul.")
+            else:
+                QMessageBox.warning(self, "Mediu Invalid",
+                                  "Mediul nu este valid!\n\n"
+                                  "Instalați biblioteca 'dbf' mai întâi.")
             return
 
         self.log_message("🔬 PASUL 2: Creez amprenta digitală...")
@@ -1253,7 +1294,15 @@ class CARDBFConverterWidget(QWidget):
     def step3_convert(self):
         """Pasul 3: Conversie."""
         if not self.environment_ok:
-            QMessageBox.warning(self, "Mediu Invalid", "Mediul nu este valid! Instalați biblioteca 'dbf' mai întâi.")
+            is_frozen = getattr(sys, 'frozen', False)
+            if is_frozen:
+                QMessageBox.warning(self, "Funcție Indisponibilă",
+                                  "Aplicația nu este configurată corect!\n\n"
+                                  "Contactați dezvoltatorul.")
+            else:
+                QMessageBox.warning(self, "Mediu Invalid",
+                                  "Mediul nu este valid!\n\n"
+                                  "Instalați biblioteca 'dbf' mai întâi.")
             return
 
         reply = QMessageBox.question(self, "Confirmare",
