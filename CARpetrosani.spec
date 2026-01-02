@@ -25,7 +25,8 @@ a = Analysis(
         'ssl',
         'cryptography',
         'AppKit',
-        'Foundation'
+        'Foundation',
+        'dbf'
     ],
     hookspath=[],
     hooksconfig={},
