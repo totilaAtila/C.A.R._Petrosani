@@ -26,7 +26,10 @@ a = Analysis(
         'cryptography',
         'AppKit',
         'Foundation',
-        'dbf'
+        'dbf',
+        'security_manager',
+        'dialog_styles',
+        'zipfile'
     ],
     hookspath=[],
     hooksconfig={},

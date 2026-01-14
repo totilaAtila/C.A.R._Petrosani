@@ -1,6 +1,25 @@
+# ============================================================================
+# Dependinte CARpetrosani
+# ============================================================================
+
+# Export Excel (migrare de la openpyxl pentru securitate)
+# Eliminare CVE-2023-43810 (XXE) si CVE-2024-47204 (ReDoS)
 xlsxwriter==3.2.9
+
+# Generare PDF si rapoarte
 reportlab==4.4.3
+
+# Framework GUI
 PyQt5==5.15.9
+
+# Procesare imagini
 Pillow==11.3.0
+
+# XML handling
 et-xmlfile==2.0.0
+
+# DBF file support
 dbf==0.99.11
+
+# Nota: Modulul de securitate (security_manager.py) foloseste
+# biblioteca standard 'zipfile' - nu necesita dependinte externe

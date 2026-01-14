@@ -10,6 +10,12 @@ if sys.platform == "darwin":
 # === Sfârșit cod adăugat ===
 from PyQt5.QtWidgets import QApplication
 
+# ===== INTEGRARE SECURITATE: Import modul de securitate =====
+from security_manager import (
+    cleanup_exposed_database,
+    extract_database_with_password
+)
+# ===== Sfârșit integrare securitate =====
 
 
 def setup_early_database_patching():
@@ -84,6 +90,18 @@ def main():
     app.setAttribute(Qt.AA_EnableHighDpiScaling, True)
     app.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
 
+    # ===== INTEGRARE SECURITATE: Verificări la pornire =====
+    # 1. Curățare baze de date expuse din crash-uri anterioare
+    if not cleanup_exposed_database():
+        # Cleanup a eșuat → Oprește aplicația
+        sys.exit(1)
+    
+    # 2. Dezarhivare cu parolă (autentificare)
+    if not extract_database_with_password():
+        # Autentificare eșuată → Oprește aplicația
+        sys.exit(1)
+    # ===== Sfârșit integrare securitate =====
+
     # CRITICAL: Setup early patching ÎNAINTE de import main_ui
     patched_import, original_import = setup_early_database_patching()
 
@@ -94,9 +112,9 @@ def main():
         window = CARApp()
         window.show()
 
-        print("🎯" + "=" * 60)
-        print("🎨 C.A.R. Petroșani - Aplicația principală lansată cu early patching")
-        print("🎯" + "=" * 60)
+        print("=" * 60)
+        print("C.A.R. Petrosani - Aplicatia principala lansata cu early patching")
+        print("=" * 60)
 
         sys.exit(app.exec_())
 

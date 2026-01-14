@@ -71,6 +71,14 @@ import inspect
 # --- Importuri logica de business separată ---
 from currency_logic import CurrencyLogic
 
+# ===== INTEGRARE SECURITATE: Import modul de securitate =====
+from security_manager import (
+    archive_database_with_password,
+    cleanup_exposed_database,
+    extract_database_with_password
+)
+# ===== Sfârșit integrare securitate =====
+
 
 class ConversieStatusChecker:
     """Verifică statusul conversiei RON->EUR"""
@@ -1882,7 +1890,14 @@ class CARApp(QMainWindow):
                                      "Sunteți sigur că doriți să închideți aplicația?",
                                      QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
         if reply == QMessageBox.Yes:
-            event.accept()
+            # ===== INTEGRARE SECURITATE: Arhivare cu parolă la închidere =====
+            if archive_database_with_password(self):
+                # Arhivare reușită → Permite închiderea
+                event.accept()
+            else:
+                # Arhivare eșuată sau anulată → NU permite închiderea
+                event.ignore()
+            # ===== Sfârșit integrare securitate =====
         else:
             event.ignore()
 
@@ -1895,6 +1910,18 @@ if __name__ == "__main__":
     # Setări pentru efecte mai bune
     app.setAttribute(Qt.AA_EnableHighDpiScaling, True)
     app.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
+
+    # ===== INTEGRARE SECURITATE: Verificări la pornire =====
+    # 1. Curățare baze de date expuse din crash-uri anterioare
+    if not cleanup_exposed_database():
+        # Cleanup a eșuat → Oprește aplicația
+        sys.exit(1)
+
+    # 2. Dezarhivare cu parolă (autentificare)
+    if not extract_database_with_password():
+        # Autentificare eșuată → Oprește aplicația
+        sys.exit(1)
+    # ===== Sfârșit integrare securitate =====
 
     try:
         window = CARApp()

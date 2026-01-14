@@ -241,11 +241,11 @@ def apply_global_dialog_styles(app):
         else:
             app.setStyleSheet(GLOBAL_DIALOG_STYLESHEET)
 
-        print("✅ Stiluri globale aplicate: consistență completă fundal-text")
+        print("[OK] Stiluri globale aplicate: consistenta completa fundal-text")
         return True
 
     except Exception as e:
-        print(f"❌ Eroare aplicare stiluri: {e}")
+        print(f"[ERROR] Eroare aplicare stiluri: {e}")
         return False
 
 

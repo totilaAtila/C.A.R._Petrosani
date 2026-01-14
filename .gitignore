@@ -29,9 +29,11 @@ env/
 # IDEs
 .vscode/
 .idea/
+.claude/
 *.swp
 *.swo
 *~
+github.run.xml
 
 # OS files
 .DS_Store

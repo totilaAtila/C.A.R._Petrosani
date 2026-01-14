@@ -13,6 +13,12 @@ Aplicație desktop pentru gestionarea Casei de Ajutor Reciproc Petroșani, dezvo
 
 ### Securitate și Calitate Cod
 - **Migrare openpyxl → xlsxwriter**: Eliminare vulnerabilități CVE-2023-43810 (XXE) și CVE-2024-47204 (ReDoS)
+- **🔐 Sistem Securitate Baze de Date** (Ianuarie 2025): Protecție completă cu criptare AES-256
+  - Arhivare automată cu parolă la închidere aplicație
+  - Dezarhivare cu autentificare la pornire (3 încercări)
+  - Cleanup automat baze de date expuse din crash-uri
+  - Protecție race condition - previne corupere date
+  - Module: `security_manager.py`, `dialog_styles.py`
 - **Exception handling**: Înlocuire bare except clauses cu specific exception handling
 - **GitHub Actions**: Implementare workflows CodeQL Analysis și Microsoft Defender
 - **Monkey patching**: Corectare 3 buguri critice în sistemul de patching dual currency
@@ -60,6 +66,81 @@ Aplicație desktop pentru gestionarea Casei de Ajutor Reciproc Petroșani, dezvo
 - **Persistență**: Tema selectată este salvată automat în `car_settings.json`
 - **Preview Real-Time**: Vizualizare instantanee a temelor înainte de aplicare
 - **Efecte Moderne**: Gradient glass, shadow effects, animații fluide
+
+### 🔐 Sistem Securitate Baze de Date (Ianuarie 2025)
+
+Protecție completă a datelor sensibile prin criptare automată AES-256 cu parolă.
+
+#### Caracteristici Principale
+
+**Protecție Automată la Pornire/Închidere:**
+- ✅ **Arhivare cu parolă** la închiderea aplicației - toate bazele de date sunt criptate automat în `MEMBRII.zip`
+- ✅ **Dezarhivare cu autentificare** la pornire - solicită parolă pentru acces la date (3 încercări)
+- ✅ **Ștergere automată** - bazele de date sunt eliminate de pe disc după arhivare pentru securitate maximă
+- ✅ **Cleanup inteligent** - detectează și curăță baze de date expuse din crash-uri anterioare
+
+**Dialog Personalizat de Autentificare:**
+- 🔑 Câmp parolă cu opțiune "Arată parola" pentru verificare
+- 🔄 Sistem de retry cu 3 încercări pentru parolă incorectă
+- ⏱️ Progress dialog pentru operații de arhivare/dezarhivare
+- 📊 Mesaje clare și detaliate pentru utilizator
+
+**Protecție Avansată:**
+- 🛡️ **Protecție race condition** - previne închiderea aplicației în timpul operațiilor de arhivare
+- 🔍 **Validare integritate** - verificare automată integritate arhivă ZIP la pornire
+- ⚠️ **Gestionare erori** - mesaje user-friendly pentru toate scenariile excepționale
+- 💾 **Suport dual currency** - protejează atât MEMBRII.db cât și MEMBRIIEUR.db
+
+**Scenarii Suportate:**
+1. **Prima configurare**: Creează arhiva cu parolă automată dacă DB-uri există dar arhiva lipsește
+2. **Operare normală**: Dezarhivare → Lucru cu date → Arhivare automată la închidere
+3. **Recuperare crash**: Detectează date expuse și oferă opțiune de arhivare înainte de ștergere
+4. **Schimbare parolă**: Permite setarea unei parole noi la fiecare arhivare
+
+#### Module Implementate
+
+- **`security_manager.py`** (809 linii) - Modul principal de securitate:
+  - `cleanup_exposed_database()` - Curățare baze de date expuse
+  - `extract_database_with_password()` - Dezarhivare cu autentificare (3 încercări)
+  - `archive_database_with_password()` - Arhivare cu criptare AES-256
+  - `CustomPasswordDialog` - Dialog personalizat PyQt5 pentru parolă
+  - `get_security_status()` - Debugging și monitoring securitate
+
+- **`dialog_styles.py`** - Stiluri moderne pentru dialogurile de securitate
+- **Integrare în `main.py`** (linii 95-102) - Verificări obligatorii la pornire
+- **Integrare în `main_ui.py`** (linia 1894) - Arhivare obligatorie la închidere
+
+#### Flux de Lucru
+
+**La pornirea aplicației:**
+```
+1. cleanup_exposed_database()        → Curățare DB expuse din crash-uri
+2. extract_database_with_password()  → Dialog parolă → Dezarhivare MEMBRII.zip
+3. Aplicație pornește cu DB active pe disc
+```
+
+**La închiderea aplicației:**
+```
+1. Dialog confirmare "Sigur închideți?"
+2. archive_database_with_password()  → Dialog parolă → Arhivare în MEMBRII.zip
+3. Ștergere automată DB de pe disc
+4. Aplicație se închide cu date protejate
+```
+
+#### Securitate și Compatibilitate
+
+- ✅ **Zero dependințe externe** - folosește biblioteca standard `zipfile` din Python
+- ✅ **Compatibil Windows/macOS** - testare completă pe ambele platforme
+- ✅ **Build PyInstaller** - include module în `CARpetrosani.spec:30-32`
+- ✅ **Backward compatible** - nu afectează funcționalitatea existentă
+
+#### Documentație Detaliată
+
+Vezi `DISTRIBUTIE_README.md` pentru:
+- Ghid complet creare executabil
+- Instrucțiuni distribuție către utilizatori finali
+- Troubleshooting și scenarii excepționale
+- Best practices securitate
 
 ### 💎 Precizie Financiară & Integritate Date
 
