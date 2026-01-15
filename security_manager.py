@@ -14,7 +14,11 @@ Data: 2025
 
 import os
 import sys
-import zipfile
+import zipfile  # Păstrat pentru compatibilitate verificare integritate
+import pyzipper  # Criptare AES-256 reală
+import sqlite3
+import gc
+import time
 from PyQt5.QtWidgets import (
     QDialog,
     QVBoxLayout,
@@ -23,7 +27,7 @@ from PyQt5.QtWidgets import (
     QLineEdit,
     QCheckBox,
     QPushButton,
-    QMessageBox, 
+    QMessageBox,
     QProgressDialog,
     QApplication
 )
@@ -219,68 +223,166 @@ def _get_existing_databases():
 
 def _verify_zip_integrity(zip_path):
     """
-    Verifică integritatea arhivei ZIP
-    
+    Verifică integritatea de bază a arhivei ZIP (criptată sau nu).
+
+    NOTĂ: Pentru arhive criptate AES-256, verificarea completă de integritate
+    nu este posibilă fără parolă. Funcția verifică doar:
+    - Că fișierul este o arhivă ZIP validă
+    - Că există cel puțin o bază de date în listă
+
+    Verificarea reală de integritate și parolă se face la extragere.
+
     Args:
         zip_path: Calea către fișierul ZIP
-        
+
     Returns:
         tuple: (success: bool, error_message: str or None)
     """
     try:
-        with zipfile.ZipFile(zip_path, 'r') as zf:
-            # Testează integritatea fișierelor din arhivă
-            bad_file = zf.testzip()
-            if bad_file:
-                return False, f"Fișierul '{bad_file}' din arhivă este corupt"
-            
+        # Folosim pyzipper care poate lucra cu arhive criptate
+        with pyzipper.AESZipFile(zip_path, 'r') as zf:
             # Verifică dacă există măcar o bază de date în arhivă
+            # namelist() funcționează fără parolă - returnează numele fișierelor
             files_in_archive = zf.namelist()
+
+            if not files_in_archive:
+                return False, "Arhiva este goală"
+
             db_found = any(db in files_in_archive for db in DB_NAMES)
-            
+
             if not db_found:
                 return False, f"Nicio bază de date validă găsită în arhivă (așteptat: {', '.join(DB_NAMES)})"
-            
+
+            # Pentru arhive criptate, testzip() nu funcționează fără parolă
+            # Verificarea completă de integritate se va face la extragere
+            # când utilizatorul introduce parola corectă
+
             return True, None
-            
+
     except zipfile.BadZipFile:
-        return False, "Arhiva este coruptă sau invalidă"
+        return False, "Arhiva este coruptă sau invalidă (format ZIP incorect)"
     except Exception as e:
+        # Dacă primim eroare de tip "password required", arhiva e validă dar criptată
+        if "password" in str(e).lower() or "encrypted" in str(e).lower():
+            # Arhiva este criptată - OK, nu putem verifica fără parolă
+            # Verificarea se va face la extragere
+            return True, None
         return False, f"Eroare la verificare: {str(e)}"
 
 
 def _test_password(zip_path, password):
     """
-    Testează dacă parola este corectă pentru arhiva dată
-    
+    Testează dacă parola este corectă pentru arhiva dată (criptată cu AES-256)
+
     Args:
         zip_path: Calea către fișierul ZIP
         password: Parola de testat
-        
+
     Returns:
         bool: True dacă parola este corectă, False altfel
     """
     try:
-        with zipfile.ZipFile(zip_path, 'r') as zf:
+        with pyzipper.AESZipFile(zip_path, 'r') as zf:
             zf.setpassword(password.encode('utf-8'))
-            
-            # Încearcă să citească info despre primul fișier din arhivă
-            # Dacă parola e greșită, va arunca RuntimeError
+
+            # Încearcă să citească info și să extragă primul byte din primul fișier
+            # Dacă parola e greșită, va arunca RuntimeError sau BadZipFile
             files_in_archive = zf.namelist()
             if files_in_archive:
-                info = zf.getinfo(files_in_archive[0])
-            
+                # Încearcă să citească efectiv date (nu doar info)
+                # Aceasta este singura metodă sigură de testare parolă cu AES
+                first_file = files_in_archive[0]
+                zf.read(first_file, pwd=password.encode('utf-8'))
+
             return True
-            
+
     except RuntimeError as e:
         # Parolă incorectă
         if "Bad password" in str(e) or "password" in str(e).lower():
             return False
         # Altă eroare Runtime
         raise
-    except Exception:
-        # Alte erori (nu legate de parolă)
+    except (zipfile.BadZipFile, Exception) as e:
+        # Parolă incorectă poate manifesta și ca BadZipFile cu pyzipper
+        if "password" in str(e).lower() or "bad" in str(e).lower():
+            return False
+        # Altă eroare
         raise
+
+
+def _force_close_database_connections():
+    """
+    Forțează închiderea TUTUROR conexiunilor active la bazele de date SQLite.
+
+    Această funcție este CRITICĂ pentru a preveni WinError 32 (file locked)
+    la arhivarea bazelor de date pe Windows.
+
+    Procedură:
+    1. Găsește toate conexiunile sqlite3.Connection active în memorie
+    2. Execută PRAGMA wal_checkpoint(TRUNCATE) pentru fiecare DB
+    3. Închide explicit toate conexiunile
+    4. Forțează garbage collection pentru cleanup
+    5. Așteaptă scurt pentru eliberare file locks de către Windows
+
+    Returns:
+        int: Numărul de conexiuni închise
+    """
+    closed_count = 0
+
+    # Database names to checkpoint
+    db_files = _get_existing_databases()
+
+    # Step 1: WAL checkpoint pe toate DB-urile existente
+    # Aceasta forțează scrierea tuturor tranzacțiilor pending în fișierul principal
+    for db_file in db_files:
+        try:
+            # Conexiune temporară DOAR pentru checkpoint
+            temp_conn = sqlite3.connect(db_file, timeout=5.0)
+            temp_conn.execute("PRAGMA wal_checkpoint(TRUNCATE)")
+            temp_conn.commit()
+            temp_conn.close()
+            print(f"[OK] WAL checkpoint executat pentru {db_file}")
+        except Exception as e:
+            print(f"[WARNING] WAL checkpoint esuat pentru {db_file}: {e}")
+
+    # Step 2: Găsește și închide TOATE conexiunile sqlite3 active din memorie
+    # Folosim garbage collector pentru a găsi toate obiectele Connection
+    for obj in gc.get_objects():
+        try:
+            if isinstance(obj, sqlite3.Connection):
+                # Încearcă să aflăm la ce DB este conectat (pentru logging)
+                db_path = "unknown"
+                try:
+                    # Execută un query dummy pentru a verifica dacă conexiunea e activă
+                    obj.execute("SELECT 1")
+                    # Dacă reușește, conexiunea e activă și trebuie închisă
+                except sqlite3.ProgrammingError:
+                    # Conexiunea e deja închisă, skip
+                    continue
+                except Exception:
+                    pass
+
+                # Închide conexiunea
+                try:
+                    obj.close()
+                    closed_count += 1
+                    print(f"[OK] Conexiune sqlite3 inchisa: {db_path}")
+                except Exception as e:
+                    print(f"[WARNING] Nu s-a putut inchide conexiune: {e}")
+        except Exception:
+            # Ignoră orice erori la iterare prin gc.get_objects()
+            pass
+
+    # Step 3: Forțează garbage collection pentru cleanup final
+    gc.collect()
+
+    # Step 4: Așteaptă scurt pentru ca Windows să elibereze file locks
+    # Windows poate avea delay în eliberarea handle-urilor de fișiere
+    if closed_count > 0:
+        time.sleep(0.5)  # 500ms - suficient pentru Windows file system
+        print(f"[OK] Total {closed_count} conexiuni sqlite3 inchise")
+
+    return closed_count
 
 
 # ==============================================================================
@@ -319,40 +421,53 @@ def cleanup_exposed_database():
             # Cel puțin o bază de date pare mai recentă → Posibil date noi
             db_list = "\n".join([f"• {db}" for db in exposed_dbs])
             newer_list = "\n".join([f"• {db}" for db in newer_dbs])
-            
-            result = QMessageBox.question(
-                None,
-                "Baze de date neprotejate detectate",
+
+            # Dialog cu butoane clare
+            msg_box = QMessageBox()
+            msg_box.setWindowTitle("Baze de date neprotejate detectate")
+            msg_box.setIcon(QMessageBox.Warning)
+            msg_box.setText(
                 f"Următoarele baze de date au fost găsite neprotejate pe disc:\n{db_list}\n\n"
                 f"Următoarele par mai recente decât arhiva:\n{newer_list}\n\n"
                 f"Aceasta sugerează că aplicația s-a închis anormal și\n"
-                f"ar putea conține date nesalvate.\n\n"
-                f"Doriți să arhivați aceste fișiere înainte de ștergere?\n"
-                f"(Veți fi întrebat parola pentru arhivare)",
-                QMessageBox.Yes | QMessageBox.No,
-                QMessageBox.Yes
+                f"ar putea conține date nesalvate."
             )
-            
-            if result == QMessageBox.Yes:
+            msg_box.setInformativeText("Doriți să arhivați aceste fișiere înainte de ștergere?")
+
+            btn_arhiveaza = msg_box.addButton("Arhivează (recomandat)", QMessageBox.AcceptRole)
+            btn_sterge = msg_box.addButton("Șterge fără arhivare", QMessageBox.RejectRole)
+            msg_box.setDefaultButton(btn_arhiveaza)
+
+            msg_box.exec_()
+
+            clicked = msg_box.clickedButton()
+            # Edge case: utilizatorul a închis dialogul prin X → tratăm ca "arhivează" (opțiunea sigură)
+            if clicked == btn_arhiveaza or clicked is None:
                 # Solicită parolă pentru arhivare
                 if not archive_database_with_password(None):
                     # User a anulat sau a eșuat arhivarea
-                    result = QMessageBox.critical(
-                        None,
-                        "Eroare critică",
+                    err_box = QMessageBox()
+                    err_box.setWindowTitle("Eroare critică")
+                    err_box.setIcon(QMessageBox.Critical)
+                    err_box.setText(
                         f"Nu s-au putut arhiva bazele de date.\n\n"
-                        f"Aplicația nu poate porni în siguranță.\n\n"
+                        f"Aplicația nu poate porni în siguranță."
+                    )
+                    err_box.setInformativeText(
                         f"Opțiuni:\n"
                         f"• Arhivați manual fișierele\n"
-                        f"• Contactați suportul tehnic\n"
-                        f"• Ignorați și ștergeți fișierele (RISC PIERDERE DATE)",
-                        QMessageBox.Abort | QMessageBox.Ignore,
-                        QMessageBox.Abort
+                        f"• Contactați suportul tehnic"
                     )
-                    
-                    if result == QMessageBox.Abort:
+
+                    btn_oprire = err_box.addButton("Oprire aplicație", QMessageBox.AcceptRole)
+                    btn_ignora = err_box.addButton("Ignoră (RISC DATE)", QMessageBox.RejectRole)
+                    err_box.setDefaultButton(btn_oprire)
+
+                    err_box.exec_()
+
+                    if err_box.clickedButton() == btn_oprire or err_box.clickedButton() is None:
                         return False  # Oprește aplicația
-                    # Dacă Ignore, continuă cu ștergerea
+                    # Dacă Ignoră, continuă cu ștergerea
         
         else:
             # Toate DB-urile sunt mai vechi sau la fel → Probabil nu conțin date noi
@@ -383,19 +498,25 @@ def cleanup_exposed_database():
     # Verificare: există DB-uri dar lipsește arhiva?
     elif exposed_dbs and not os.path.exists(ZIP_NAME):
         db_list = "\n".join([f"• {db}" for db in exposed_dbs])
-        
-        result = QMessageBox.warning(
-            None,
-            "Configurare incompletă",
+
+        # Dialog cu butoane clare
+        msg_box = QMessageBox()
+        msg_box.setWindowTitle("Configurare incompletă")
+        msg_box.setIcon(QMessageBox.Warning)
+        msg_box.setText(
             f"Următoarele baze de date există dar arhiva '{ZIP_NAME}' lipsește:\n{db_list}\n\n"
-            f"Aceasta este o configurare invalidă.\n\n"
-            f"Doriți să creați arhiva acum?\n"
-            f"(Veți fi întrebat parola pentru arhivare)",
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.Yes
+            f"Aceasta este o configurare invalidă."
         )
-        
-        if result == QMessageBox.Yes:
+        msg_box.setInformativeText("Doriți să creați arhiva acum? (Veți fi întrebat parola)")
+
+        btn_creaza = msg_box.addButton("Creează arhiva", QMessageBox.AcceptRole)
+        btn_anuleaza = msg_box.addButton("Anulează", QMessageBox.RejectRole)
+        msg_box.setDefaultButton(btn_creaza)
+
+        msg_box.exec_()
+
+        clicked = msg_box.clickedButton()
+        if clicked == btn_creaza:
             if not archive_database_with_password(None):
                 QMessageBox.critical(
                     None,
@@ -404,6 +525,7 @@ def cleanup_exposed_database():
                 )
                 return False
         else:
+            # User a anulat sau a închis dialogul prin X
             QMessageBox.critical(
                 None,
                 "Configurare invalidă",
@@ -438,10 +560,12 @@ def extract_database_with_password():
             "Arhivă lipsă",
             f"Fișierul '{ZIP_NAME}' nu a fost găsit!\n\n"
             f"Pentru prima utilizare:\n"
-            f"1. Creați arhiva cu parolă din bazele de date\n"
-            f"2. Denumiți arhiva '{ZIP_NAME}'\n"
-            f"3. Plasați-o în același director cu aplicația\n"
-            f"4. Reporniți aplicația\n\n"
+            f"1. Asigurațivă că MEMBRII.db și/sau MEMBRIIEUR.db sunt în același director cu aplicația\n"
+            f"2. Reporniți aplicația\n"
+            f"3. Introduceți o parolă\n"
+            f"4. Confirmați parola pentru arhivare\n"
+            f"5. Aplicația va funcționa normal\n\n"
+            
             f"Pentru utilizare normală:\n"
             f"• Verificați că fișierul '{ZIP_NAME}' există\n"
             f"• Verificați că nu a fost mutat sau șters"
@@ -503,10 +627,10 @@ def extract_database_with_password():
                 )
                 
                 try:
-                    with zipfile.ZipFile(ZIP_NAME, 'r') as zf:
+                    with pyzipper.AESZipFile(ZIP_NAME, 'r') as zf:
                         zf.setpassword(password.encode('utf-8'))
-                        zf.extractall()
-                    
+                        zf.extractall(pwd=password.encode('utf-8'))
+
                     progress.close()
                     
                     # Verifică ce s-a extras
@@ -612,23 +736,33 @@ def archive_database_with_password(parent_widget):
     )
     
     if not ok:
-        # User a anulat → Întreabă ce dorește să facă
-        result = QMessageBox.question(
-            parent_widget,
-            "Arhivare anulată",
+        # User a anulat → Întreabă ce dorește să facă cu butoane clare
+        msg_box = QMessageBox(parent_widget)
+        msg_box.setWindowTitle("Arhivare anulată")
+        msg_box.setIcon(QMessageBox.Warning)
+        msg_box.setText(
             f"Arhivarea a fost anulată.\n\n"
             f"Fără arhivare, următoarele fișiere vor rămâne\n"
-            f"NEPROTEJATE pe disc:\n{db_list}\n\n"
-            f"Ce doriți să faceți?",
-            QMessageBox.Yes | QMessageBox.No,
-            QMessageBox.Yes
+            f"NEPROTEJATE pe disc:\n{db_list}"
         )
-        
-        if result == QMessageBox.Yes:
-            # User dorește să rămână în aplicație
+        msg_box.setInformativeText("Ce doriți să faceți?")
+
+        # Butoane personalizate clare pentru utilizator
+        btn_ramai = msg_box.addButton("Rămân în aplicație", QMessageBox.AcceptRole)
+        btn_iesire = msg_box.addButton("Ieșire fără arhivare", QMessageBox.RejectRole)
+
+        # Setează butonul implicit (recomandat)
+        msg_box.setDefaultButton(btn_ramai)
+
+        msg_box.exec_()
+
+        clicked = msg_box.clickedButton()
+        # Edge case: utilizatorul a închis dialogul prin X → tratăm ca "Rămân în aplicație" (opțiunea sigură)
+        if clicked == btn_ramai or clicked is None:
+            # User dorește să rămână în aplicație pentru a încerca din nou
             return False
         else:
-            # User acceptă riscul și dorește să închidă oricum
+            # User a apăsat explicit "Ieșire fără arhivare" - acceptă riscul
             QMessageBox.warning(
                 parent_widget,
                 "Avertisment securitate",
@@ -649,24 +783,33 @@ def archive_database_with_password(parent_widget):
         )
         return False
     
+    # CRITICAL: Închide TOATE conexiunile active la DB ÎNAINTE de arhivare
+    # Previne WinError 32 (file locked) pe Windows
+    print("[INFO] Inchidere conexiuni active la baze de date...")
+    closed_count = _force_close_database_connections()
+    print(f"[OK] {closed_count} conexiuni inchise, gata pentru arhivare")
+
     # Arhivează cu parola introdusă
     progress = _show_progress_dialog(
         parent_widget,
         "Securizare",
         f"Se arhivează bazele de date..."
     )
-    
+
     try:
-        # Creează arhiva nouă (suprascrie cea veche)
-        with zipfile.ZipFile(ZIP_NAME, 'w', compression=zipfile.ZIP_DEFLATED) as zf:
+        # Creează arhiva nouă cu criptare AES-256 (suprascrie cea veche)
+        with pyzipper.AESZipFile(ZIP_NAME, 'w',
+                                  compression=pyzipper.ZIP_DEFLATED,
+                                  encryption=pyzipper.WZ_AES) as zf:
+            # Setează parola pentru criptare AES-256
             zf.setpassword(password.encode('utf-8'))
-            
-            # Arhivează toate bazele de date existente
+
+            # Arhivează toate bazele de date existente cu criptare
             for db in existing_dbs:
-                zf.write(db)
-                print(f"✓ {db} adăugat în arhivă")
-        
-        print(f"✓ Arhivare completă: {', '.join(existing_dbs)}")
+                zf.write(db, compress_type=pyzipper.ZIP_DEFLATED)
+                print(f"[OK] {db} adaugat in arhiva cu criptare AES-256")
+
+        print(f"[OK] Arhivare completa cu criptare AES-256: {', '.join(existing_dbs)}")
         
         # Șterge toate DB-urile de pe disc
         for db in existing_dbs:
@@ -722,9 +865,9 @@ def get_security_status():
         integrity_ok, error_msg = _verify_zip_integrity(ZIP_NAME)
         status['zip_integrity'] = 'OK' if integrity_ok else f'ERROR: {error_msg}'
         
-        # Verifică ce conține arhiva
+        # Verifică ce conține arhiva (funcționează cu arhive criptate AES)
         try:
-            with zipfile.ZipFile(ZIP_NAME, 'r') as zf:
+            with pyzipper.AESZipFile(ZIP_NAME, 'r') as zf:
                 status['zip_contents'] = zf.namelist()
         except:
             status['zip_contents'] = []

@@ -2,7 +2,14 @@
 
 Aplicație desktop pentru gestionarea Casei de Ajutor Reciproc Petroșani, dezvoltată în Python cu PyQt5, cu suport complet pentru conversie RON→EUR și sistem dual currency cu protecție avansată a datelor.
 
-## 🆕 Actualizări Recente (Noiembrie-Decembrie 2025)
+## 🆕 Actualizări Recente (Noiembrie 2025 - Ianuarie 2026)
+
+### Îmbunătățiri Ianuarie 2026
+- **🔐 Criptare AES-256 REALĂ**: Migrare de la `zipfile` standard la `pyzipper` pentru criptare profesională
+- **Prevenire WinError 32**: Funcție nouă `_force_close_database_connections()` pentru cleanup conexiuni SQLite
+- **UX îmbunătățit**: Dialoguri cu butoane clare în română ("Da, închide", "Nu, rămân", "Arhivează (recomandat)")
+- **Cleanup complet la închidere**: Metodă nouă `_cleanup_before_close()` în `main_ui.py`
+- **Build actualizat**: `CARpetrosani.spec` include acum `pyzipper` și `Cryptodome` pentru criptare
 
 ### Rezolvări Buguri Critice
 - **BUG #1**: Precizie financiară 100% - Eliminare completă erori de rotunjire în `generare_luna.py:859-861` și `dividende.py:808`
@@ -13,11 +20,12 @@ Aplicație desktop pentru gestionarea Casei de Ajutor Reciproc Petroșani, dezvo
 
 ### Securitate și Calitate Cod
 - **Migrare openpyxl → xlsxwriter**: Eliminare vulnerabilități CVE-2023-43810 (XXE) și CVE-2024-47204 (ReDoS)
-- **🔐 Sistem Securitate Baze de Date** (Ianuarie 2025): Protecție completă cu criptare AES-256
+- **🔐 Sistem Securitate Baze de Date** (Ianuarie 2025-2026): Protecție completă cu criptare AES-256 REALĂ
   - Arhivare automată cu parolă la închidere aplicație
   - Dezarhivare cu autentificare la pornire (3 încercări)
   - Cleanup automat baze de date expuse din crash-uri
   - Protecție race condition - previne corupere date
+  - **NOU**: Prevenire WinError 32 (file locked) pe Windows
   - Module: `security_manager.py`, `dialog_styles.py`
 - **Exception handling**: Înlocuire bare except clauses cu specific exception handling
 - **GitHub Actions**: Implementare workflows CodeQL Analysis și Microsoft Defender
@@ -69,11 +77,12 @@ Aplicație desktop pentru gestionarea Casei de Ajutor Reciproc Petroșani, dezvo
 
 ### 🔐 Sistem Securitate Baze de Date (Ianuarie 2025)
 
-Protecție completă a datelor sensibile prin criptare automată AES-256 cu parolă.
+Protecție completă a datelor sensibile prin **criptare AES-256 REALĂ** cu parolă folosind biblioteca `pyzipper`.
 
 #### Caracteristici Principale
 
 **Protecție Automată la Pornire/Închidere:**
+- ✅ **Criptare AES-256 reală** - folosește `pyzipper` pentru criptare profesională (nu doar ZIP cu parolă)
 - ✅ **Arhivare cu parolă** la închiderea aplicației - toate bazele de date sunt criptate automat în `MEMBRII.zip`
 - ✅ **Dezarhivare cu autentificare** la pornire - solicită parolă pentru acces la date (3 încercări)
 - ✅ **Ștergere automată** - bazele de date sunt eliminate de pe disc după arhivare pentru securitate maximă
@@ -84,9 +93,11 @@ Protecție completă a datelor sensibile prin criptare automată AES-256 cu paro
 - 🔄 Sistem de retry cu 3 încercări pentru parolă incorectă
 - ⏱️ Progress dialog pentru operații de arhivare/dezarhivare
 - 📊 Mesaje clare și detaliate pentru utilizator
+- 🇷🇴 **Butoane în română** - "Da, închide", "Nu, rămân", "Arhivează (recomandat)", etc.
 
 **Protecție Avansată:**
 - 🛡️ **Protecție race condition** - previne închiderea aplicației în timpul operațiilor de arhivare
+- 🔒 **Prevenire WinError 32** - cleanup complet conexiuni SQLite înainte de arhivare
 - 🔍 **Validare integritate** - verificare automată integritate arhivă ZIP la pornire
 - ⚠️ **Gestionare erori** - mesaje user-friendly pentru toate scenariile excepționale
 - 💾 **Suport dual currency** - protejează atât MEMBRII.db cât și MEMBRIIEUR.db
@@ -99,16 +110,19 @@ Protecție completă a datelor sensibile prin criptare automată AES-256 cu paro
 
 #### Module Implementate
 
-- **`security_manager.py`** (809 linii) - Modul principal de securitate:
+- **`security_manager.py`** (~950 linii) - Modul principal de securitate:
   - `cleanup_exposed_database()` - Curățare baze de date expuse
   - `extract_database_with_password()` - Dezarhivare cu autentificare (3 încercări)
   - `archive_database_with_password()` - Arhivare cu criptare AES-256
+  - `_force_close_database_connections()` - **NOU**: Închidere forțată conexiuni SQLite pentru prevenire WinError 32
   - `CustomPasswordDialog` - Dialog personalizat PyQt5 pentru parolă
   - `get_security_status()` - Debugging și monitoring securitate
 
 - **`dialog_styles.py`** - Stiluri moderne pentru dialogurile de securitate
 - **Integrare în `main.py`** (linii 95-102) - Verificări obligatorii la pornire
-- **Integrare în `main_ui.py`** (linia 1894) - Arhivare obligatorie la închidere
+- **Integrare în `main_ui.py`** - Arhivare obligatorie la închidere cu cleanup complet:
+  - `_cleanup_before_close()` - **NOU**: Cleanup conexiuni și ferestre înainte de arhivare
+  - Dialog de confirmare cu butoane clare în română
 
 #### Flux de Lucru
 
@@ -129,18 +143,11 @@ Protecție completă a datelor sensibile prin criptare automată AES-256 cu paro
 
 #### Securitate și Compatibilitate
 
-- ✅ **Zero dependințe externe** - folosește biblioteca standard `zipfile` din Python
+- ✅ **Criptare profesională** - folosește `pyzipper` pentru criptare AES-256 reală
 - ✅ **Compatibil Windows/macOS** - testare completă pe ambele platforme
-- ✅ **Build PyInstaller** - include module în `CARpetrosani.spec:30-32`
+- ✅ **Build PyInstaller** - include module în `CARpetrosani.spec` (pyzipper, Cryptodome)
 - ✅ **Backward compatible** - nu afectează funcționalitatea existentă
-
-#### Documentație Detaliată
-
-Vezi `DISTRIBUTIE_README.md` pentru:
-- Ghid complet creare executabil
-- Instrucțiuni distribuție către utilizatori finali
-- Troubleshooting și scenarii excepționale
-- Best practices securitate
+- ✅ **Prevenire WinError 32** - cleanup automat conexiuni SQLite înainte de arhivare
 
 ### 💎 Precizie Financiară & Integritate Date
 
@@ -528,12 +535,15 @@ După aplicarea conversiei RON→EUR, sistemul implementează protecție automat
 PyQt5>=5.15.0
 reportlab>=3.6.0   # Pentru generarea PDF chitanțe
 xlsxwriter>=3.2.9  # Pentru export Excel securizat (fără vulnerabilități)
+pyzipper>=0.3.6    # Pentru criptare AES-256 baze de date
 sqlite3   # Inclus în Python standard library
 pathlib   # Inclus în Python standard library
 json      # Inclus în Python standard library
 ```
 
-**Notă Securitate:** Aplicația folosește `xlsxwriter` pentru export Excel, eliminând vulnerabilitățile cunoscute din `openpyxl` (CVE-2023-43810, CVE-2024-47204).
+**Note Securitate:**
+- `xlsxwriter` pentru export Excel - elimină vulnerabilitățile CVE-2023-43810 (XXE) și CVE-2024-47204 (ReDoS)
+- `pyzipper` pentru criptare AES-256 REALĂ a bazelor de date (nu doar ZIP cu parolă standard)
 
 ### Sistem de Operare
 - **Windows**: 10 sau 11 (64-bit recomandat)

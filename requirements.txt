@@ -21,5 +21,6 @@ et-xmlfile==2.0.0
 # DBF file support
 dbf==0.99.11
 
-# Nota: Modulul de securitate (security_manager.py) foloseste
-# biblioteca standard 'zipfile' - nu necesita dependinte externe
+# Criptare AES-256 pentru arhivare baze de date
+# Folosit de security_manager.py pentru protectie cu parola
+pyzipper==0.3.6

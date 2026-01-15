@@ -29,7 +29,11 @@ a = Analysis(
         'dbf',
         'security_manager',
         'dialog_styles',
-        'zipfile'
+        'zipfile',
+        'pyzipper',
+        'Cryptodome',
+        'Cryptodome.Cipher',
+        'Cryptodome.Cipher.AES'
     ],
     hookspath=[],
     hooksconfig={},

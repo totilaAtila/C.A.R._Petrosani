@@ -1877,19 +1877,67 @@ class CARApp(QMainWindow):
         else:
             return ListariWidget
 
+    def _cleanup_before_close(self):
+        """
+        Cleanup complet înainte de închidere pentru a preveni WinError 32.
+
+        Această metodă închide TOATE ferestrele și widget-urile active,
+        procesează evenimentele Qt pentru cleanup, și forțează garbage collection.
+        Acest lucru asigură că toate conexiunile sqlite3 sunt închise corect
+        înainte de arhivarea bazelor de date.
+        """
+        import gc
+        from PyQt5.QtCore import QCoreApplication
+
+        print("[INFO] Cleanup aplicatie inainte de inchidere...")
+
+        # Închide toate ferestrele copil Qt (nu doar cele cunoscute)
+        for widget in QCoreApplication.instance().allWidgets():
+            if widget != self and hasattr(widget, 'close'):
+                try:
+                    widget.close()
+                except:
+                    pass
+
+        # Închide explicit ferestrele cunoscute
+        if self.calculator_window:
+            self.calculator_window.close()
+            self.calculator_window = None
+
+        if self.imprumuturi_noi_window:
+            self.imprumuturi_noi_window.close()
+            self.imprumuturi_noi_window = None
+
+        # Procesează toate evenimentele Qt pending pentru a permite cleanup
+        QCoreApplication.processEvents()
+
+        # Forțează garbage collection pentru a închide conexiuni orfane
+        gc.collect()
+
+        print("[OK] Cleanup aplicatie finalizat")
+
     def closeEvent(self, event):
         """Cleanup la închiderea aplicației"""
 
-        # Închide ferestrele deschise la ieșire
-        if self.calculator_window:
-            self.calculator_window.close()
-        if self.imprumuturi_noi_window:
-            self.imprumuturi_noi_window.close()
+        # Dialog cu butoane clare în limba română
+        msg_box = QMessageBox(self)
+        msg_box.setWindowTitle("Confirmare Ieșire")
+        msg_box.setIcon(QMessageBox.Question)
+        msg_box.setText("Sunteți sigur că doriți să închideți aplicația?")
 
-        reply = QMessageBox.question(self, 'Confirmare Ieșire',
-                                     "Sunteți sigur că doriți să închideți aplicația?",
-                                     QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
-        if reply == QMessageBox.Yes:
+        btn_da = msg_box.addButton("Da, închide", QMessageBox.AcceptRole)
+        btn_nu = msg_box.addButton("Nu, rămân", QMessageBox.RejectRole)
+        msg_box.setDefaultButton(btn_nu)
+
+        msg_box.exec_()
+
+        clicked = msg_box.clickedButton()
+        # Edge case: utilizatorul a închis dialogul prin X → tratăm ca "Nu, rămân"
+        if clicked == btn_da:
+            # CRITICAL: Cleanup complet ÎNAINTE de arhivare
+            # Închide toate ferestrele și conexiunile pentru a preveni WinError 32
+            self._cleanup_before_close()
+
             # ===== INTEGRARE SECURITATE: Arhivare cu parolă la închidere =====
             if archive_database_with_password(self):
                 # Arhivare reușită → Permite închiderea
@@ -1899,6 +1947,7 @@ class CARApp(QMainWindow):
                 event.ignore()
             # ===== Sfârșit integrare securitate =====
         else:
+            # User a apăsat "Nu, rămân" sau a închis dialogul prin X → rămâne în aplicație
             event.ignore()
 
 
