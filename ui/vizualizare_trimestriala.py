@@ -9,6 +9,7 @@ import os
 import sqlite3
 import sys
 from datetime import datetime
+from decimal import Decimal, ROUND_HALF_UP
 
 from PyQt5 import QtWidgets
 from PyQt5.QtWidgets import (
@@ -91,7 +92,7 @@ class VizualizareTrimestrialaWidget(QWidget):
     def __init__(self):
         super().__init__()
         self.widgets_cu_cursor_mana: list[QtWidgets.QWidget] = []
-        self.date_trimestru: list[dict[str, float]] = []
+        self.date_trimestru: list[dict[str, Decimal]] = []
         # MODIFICARE - Adăugare atribute pentru sortare
         self.sort_order = Qt.AscendingOrder  # Ordinea sortării: implicit ascendentă
         self.sort_column = 2  # Coloana implicită de sortare (nume prenume)
@@ -275,7 +276,7 @@ class VizualizareTrimestrialaWidget(QWidget):
             self.date_trimestru.sort(key=lambda x: x[key], reverse=reverse)
         else:
             # Sortare numerică pentru celelalte coloane
-            self.date_trimestru.sort(key=lambda x: float(x.get(key, 0)), reverse=reverse)
+            self.date_trimestru.sort(key=lambda x: x.get(key, Decimal('0.00')), reverse=reverse)
 
         # Actualizează tabelul cu datele sortate
         self.actualizeaza_tabel()
@@ -301,7 +302,7 @@ class VizualizareTrimestrialaWidget(QWidget):
 
             # Rata împrumut
             item_impr = QTableWidgetItem(
-                "NEACHITAT" if data['impr_sold'] > 0 and data['impr_cred'] == 0
+                "NEACHITAT" if data['impr_sold'] > Decimal('0') and data['impr_cred'] == Decimal('0')
                 else f"{data['impr_cred']:.2f}"
             )
             if item_impr.text() == "NEACHITAT":
@@ -313,7 +314,7 @@ class VizualizareTrimestrialaWidget(QWidget):
 
             # Depunere lunară
             item_dep = QTableWidgetItem(
-                "NEACHITAT" if data['dep_sold'] > 0 and data['dep_deb'] == 0
+                "NEACHITAT" if data['dep_sold'] > Decimal('0') and data['dep_deb'] == Decimal('0')
                 else f"{data['dep_deb']:.2f}"
             )
             if item_dep.text() == "NEACHITAT":
@@ -400,22 +401,22 @@ class VizualizareTrimestrialaWidget(QWidget):
             progress.seteaza_text("Se agregă datele pe fișă și lună...")
             progress.seteaza_valoare(50)
 
-            date_agregate: dict[tuple[int, int], dict[str, float]] = {}
+            date_agregate: dict[tuple[int, int], dict[str, Decimal]] = {}
             for nr_fisa, luna, dob, impr_cred, impr_sold, dep_deb, dep_cred, dep_sold in randuri:
                 key = (nr_fisa, luna)
                 if key not in date_agregate:
                     date_agregate[key] = {
-                        'dobanda': 0.0,
-                        'impr_cred': 0.0,
-                        'dep_deb': 0.0,
-                        'dep_cred': 0.0,
-                        'impr_sold': impr_sold,
-                        'dep_sold': dep_sold
+                        'dobanda': Decimal('0.00'),
+                        'impr_cred': Decimal('0.00'),
+                        'dep_deb': Decimal('0.00'),
+                        'dep_cred': Decimal('0.00'),
+                        'impr_sold': Decimal(str(impr_sold)).quantize(Decimal('0.01'), ROUND_HALF_UP) if impr_sold else Decimal('0.00'),
+                        'dep_sold': Decimal(str(dep_sold)).quantize(Decimal('0.01'), ROUND_HALF_UP) if dep_sold else Decimal('0.00')
                     }
-                date_agregate[key]['dobanda'] += dob or 0.0
-                date_agregate[key]['impr_cred'] += impr_cred or 0.0
-                date_agregate[key]['dep_deb'] += dep_deb or 0.0
-                date_agregate[key]['dep_cred'] += dep_cred or 0.0
+                date_agregate[key]['dobanda'] += (Decimal(str(dob)).quantize(Decimal('0.01'), ROUND_HALF_UP) if dob else Decimal('0.00'))
+                date_agregate[key]['impr_cred'] += (Decimal(str(impr_cred)).quantize(Decimal('0.01'), ROUND_HALF_UP) if impr_cred else Decimal('0.00'))
+                date_agregate[key]['dep_deb'] += (Decimal(str(dep_deb)).quantize(Decimal('0.01'), ROUND_HALF_UP) if dep_deb else Decimal('0.00'))
+                date_agregate[key]['dep_cred'] += (Decimal(str(dep_cred)).quantize(Decimal('0.01'), ROUND_HALF_UP) if dep_cred else Decimal('0.00'))
 
             # 5. Colectează intrările și sortează-le după nume
             progress.seteaza_text("Se obțin numele membrilor...")
@@ -434,7 +435,7 @@ class VizualizareTrimestrialaWidget(QWidget):
                 nume = row[0] if row else "Necunoscut"
 
                 # Calculează total_plata și adaugă în dicționar
-                total_plata = data['dobanda'] + data['impr_cred'] + data['dep_deb']
+                total_plata = (data['dobanda'] + data['impr_cred'] + data['dep_deb']).quantize(Decimal('0.01'), ROUND_HALF_UP)
                 entries.append((nume, nr_fisa, luna, data, total_plata))
             conn_m.close()
 
@@ -481,14 +482,14 @@ class VizualizareTrimestrialaWidget(QWidget):
     def afiseaza_totaluri(self) -> None:
         if not self.date_trimestru:
             return
-        tot_dep = sum(d["dep_deb"] for d in self.date_trimestru)
-        tot_impr = sum(d["impr_cred"] for d in self.date_trimestru)
-        tot_dob = sum(d["dobanda"] for d in self.date_trimestru)
-        tot_dep_sold = sum(d["dep_sold"] for d in self.date_trimestru)
-        tot_impr_sold = sum(d["impr_sold"] for d in self.date_trimestru)
+        tot_dep = sum((d["dep_deb"] for d in self.date_trimestru), Decimal('0.00')).quantize(Decimal('0.01'), ROUND_HALF_UP)
+        tot_impr = sum((d["impr_cred"] for d in self.date_trimestru), Decimal('0.00')).quantize(Decimal('0.01'), ROUND_HALF_UP)
+        tot_dob = sum((d["dobanda"] for d in self.date_trimestru), Decimal('0.00')).quantize(Decimal('0.01'), ROUND_HALF_UP)
+        tot_dep_sold = sum((d["dep_sold"] for d in self.date_trimestru), Decimal('0.00')).quantize(Decimal('0.01'), ROUND_HALF_UP)
+        tot_impr_sold = sum((d["impr_sold"] for d in self.date_trimestru), Decimal('0.00')).quantize(Decimal('0.01'), ROUND_HALF_UP)
         # Adăugați calcul pentru totaluri noi:
-        tot_retragere_fs = sum(d["dep_cred"] for d in self.date_trimestru)
-        tot_total_plata = sum(d["dobanda"] + d["impr_cred"] + d["dep_deb"] for d in self.date_trimestru)
+        tot_retragere_fs = sum((d["dep_cred"] for d in self.date_trimestru), Decimal('0.00')).quantize(Decimal('0.01'), ROUND_HALF_UP)
+        tot_total_plata = sum((d["dobanda"] + d["impr_cred"] + d["dep_deb"] for d in self.date_trimestru), Decimal('0.00')).quantize(Decimal('0.01'), ROUND_HALF_UP)
 
         # Actualizați mesajul:
         msg = (
@@ -667,9 +668,9 @@ class VizualizareTrimestrialaWidget(QWidget):
                     str(data['nr_fisa']),
                     data['nume'],
                     f"{data['dobanda']:.2f}",
-                    "NEACHITAT" if data['impr_sold'] > 0 and data['impr_cred'] == 0 else f"{data['impr_cred']:.2f}",
+                    "NEACHITAT" if data['impr_sold'] > Decimal('0') and data['impr_cred'] == Decimal('0') else f"{data['impr_cred']:.2f}",
                     f"{data['impr_sold']:.2f}",
-                    "NEACHITAT" if data['dep_sold'] > 0 and data['dep_deb'] == 0 else f"{data['dep_deb']:.2f}",
+                    "NEACHITAT" if data['dep_sold'] > Decimal('0') and data['dep_deb'] == Decimal('0') else f"{data['dep_deb']:.2f}",
                     f"{data['dep_cred']:.2f}",
                     f"{data['dep_sold']:.2f}",
                     f"{data['total_plata']:.2f}"
@@ -899,31 +900,31 @@ class VizualizareTrimestrialaWidget(QWidget):
                 worksheet.write(row_idx, 2, data.get('nume', 'Necunoscut'), fmt_left)
 
                 # Dobândă
-                worksheet.write_number(row_idx, 3, data.get('dobanda', 0.0), fmt_num)
+                worksheet.write_number(row_idx, 3, float(data.get('dobanda', Decimal('0.00'))), fmt_num)
 
                 # Rată Împrumut (cu tratare NEACHITAT)
-                if data.get('impr_sold', 0.0) > 0 and data.get('impr_cred', 0.0) == 0:
+                if data.get('impr_sold', Decimal('0.00')) > 0 and data.get('impr_cred', Decimal('0.00')) == 0:
                     worksheet.write(row_idx, 4, "NEACHITAT", fmt_neach)
                 else:
-                    worksheet.write_number(row_idx, 4, data.get('impr_cred', 0.0), fmt_num)
+                    worksheet.write_number(row_idx, 4, float(data.get('impr_cred', Decimal('0.00'))), fmt_num)
 
                 # Sold Împrumut
-                worksheet.write_number(row_idx, 5, data.get('impr_sold', 0.0), fmt_num)
+                worksheet.write_number(row_idx, 5, float(data.get('impr_sold', Decimal('0.00'))), fmt_num)
 
                 # Cotizație (cu tratare NEACHITAT)
-                if data.get('dep_sold', 0.0) > 0 and data.get('dep_deb', 0.0) == 0:
+                if data.get('dep_sold', Decimal('0.00')) > 0 and data.get('dep_deb', Decimal('0.00')) == 0:
                     worksheet.write(row_idx, 6, "NEACHITAT", fmt_neach)
                 else:
-                    worksheet.write_number(row_idx, 6, data.get('dep_deb', 0.0), fmt_num)
+                    worksheet.write_number(row_idx, 6, float(data.get('dep_deb', Decimal('0.00'))), fmt_num)
 
                 # Retragere FS
-                worksheet.write_number(row_idx, 7, data.get('dep_cred', 0.0), fmt_num)
+                worksheet.write_number(row_idx, 7, float(data.get('dep_cred', Decimal('0.00'))), fmt_num)
 
                 # Sold Depunere
-                worksheet.write_number(row_idx, 8, data.get('dep_sold', 0.0), fmt_num)
+                worksheet.write_number(row_idx, 8, float(data.get('dep_sold', Decimal('0.00'))), fmt_num)
 
                 # Total de Plată
-                worksheet.write_number(row_idx, 9, data.get('total_plata', 0.0), fmt_num)
+                worksheet.write_number(row_idx, 9, float(data.get('total_plata', Decimal('0.00'))), fmt_num)
 
             # Adaugă rând de totaluri
             progress.seteaza_valoare(90)
@@ -932,13 +933,13 @@ class VizualizareTrimestrialaWidget(QWidget):
             total_row = len(sorted_data) + 1  # Rândul pentru totaluri
 
             # Calculează totalurile
-            tot_dep = sum(d["dep_deb"] for d in self.date_trimestru)
-            tot_impr = sum(d["impr_cred"] for d in self.date_trimestru)
-            tot_dob = sum(d["dobanda"] for d in self.date_trimestru)
-            tot_dep_sold = sum(d["dep_sold"] for d in self.date_trimestru)
-            tot_impr_sold = sum(d["impr_sold"] for d in self.date_trimestru)
-            tot_retragere_fs = sum(d["dep_cred"] for d in self.date_trimestru)
-            tot_total_plata = sum(d["total_plata"] for d in self.date_trimestru)
+            tot_dep = sum((d["dep_deb"] for d in self.date_trimestru), Decimal('0.00')).quantize(Decimal('0.01'), ROUND_HALF_UP)
+            tot_impr = sum((d["impr_cred"] for d in self.date_trimestru), Decimal('0.00')).quantize(Decimal('0.01'), ROUND_HALF_UP)
+            tot_dob = sum((d["dobanda"] for d in self.date_trimestru), Decimal('0.00')).quantize(Decimal('0.01'), ROUND_HALF_UP)
+            tot_dep_sold = sum((d["dep_sold"] for d in self.date_trimestru), Decimal('0.00')).quantize(Decimal('0.01'), ROUND_HALF_UP)
+            tot_impr_sold = sum((d["impr_sold"] for d in self.date_trimestru), Decimal('0.00')).quantize(Decimal('0.01'), ROUND_HALF_UP)
+            tot_retragere_fs = sum((d["dep_cred"] for d in self.date_trimestru), Decimal('0.00')).quantize(Decimal('0.01'), ROUND_HALF_UP)
+            tot_total_plata = sum((d["total_plata"] for d in self.date_trimestru), Decimal('0.00')).quantize(Decimal('0.01'), ROUND_HALF_UP)
 
             # Scrie label pentru totaluri (merge 3 coloane)
             worksheet.merge_range(total_row, 0, total_row, 2, "TOTAL:", total_format_label)
@@ -950,7 +951,7 @@ class VizualizareTrimestrialaWidget(QWidget):
             ]
 
             for col_idx, total_value in enumerate(totals_values, 3):
-                worksheet.write_number(total_row, col_idx, total_value, total_format)
+                worksheet.write_number(total_row, col_idx, float(total_value), total_format)
 
             # Fixează antetul pentru scroll
             worksheet.freeze_panes(1, 0)

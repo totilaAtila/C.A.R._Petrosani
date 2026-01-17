@@ -1,4 +1,5 @@
 import sys
+from decimal import Decimal, ROUND_HALF_UP
 from PyQt5 import QtWidgets  # Import QtWidgets
 from PyQt5.QtWidgets import (
     QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout,
@@ -268,12 +269,12 @@ class VizualizareLunaraWidget(QWidget):
                 fetched_data.append({
                     "nr_fisa": nr_fisa,
                     "nume": nume or "Nume negăsit",
-                    "dobanda": dobanda or 0.0,
-                    "impr_cred": impr_cred or 0.0,
-                    "impr_sold": impr_sold or 0.0,
-                    "dep_deb": dep_deb or 0.0,
-                    "dep_cred": dep_cred_fetched or 0.0,
-                    "dep_sold": dep_sold or 0.0,
+                    "dobanda": Decimal(str(dobanda)).quantize(Decimal('0.01'), ROUND_HALF_UP) if dobanda else Decimal('0.00'),
+                    "impr_cred": Decimal(str(impr_cred)).quantize(Decimal('0.01'), ROUND_HALF_UP) if impr_cred else Decimal('0.00'),
+                    "impr_sold": Decimal(str(impr_sold)).quantize(Decimal('0.01'), ROUND_HALF_UP) if impr_sold else Decimal('0.00'),
+                    "dep_deb": Decimal(str(dep_deb)).quantize(Decimal('0.01'), ROUND_HALF_UP) if dep_deb else Decimal('0.00'),
+                    "dep_cred": Decimal(str(dep_cred_fetched)).quantize(Decimal('0.01'), ROUND_HALF_UP) if dep_cred_fetched else Decimal('0.00'),
+                    "dep_sold": Decimal(str(dep_sold)).quantize(Decimal('0.01'), ROUND_HALF_UP) if dep_sold else Decimal('0.00'),
                 })
 
             # Sort the data alphabetically by name (case-insensitive)
@@ -284,7 +285,9 @@ class VizualizareLunaraWidget(QWidget):
 
             # Calculează total_plata pentru fiecare rând înaintea sortării
             for r, data in enumerate(self.date_sortate_afisate):
-                total_plata = data.get('dobanda', 0.0) + data.get('impr_cred', 0.0) + data.get('dep_deb', 0.0)
+                total_plata = (data.get('dobanda', Decimal('0.00')) +
+                              data.get('impr_cred', Decimal('0.00')) +
+                              data.get('dep_deb', Decimal('0.00'))).quantize(Decimal('0.01'), ROUND_HALF_UP)
                 self.date_sortate_afisate[r]["total_plata"] = total_plata
 
             # Sortare inițială după nume (coloana 2)
@@ -318,14 +321,14 @@ class VizualizareLunaraWidget(QWidget):
             return
 
         # Calculate totals from the sorted data stored in self.date_sortate_afisate
-        total_dobanda = sum(d.get("dobanda", 0.0) for d in self.date_sortate_afisate)
-        total_impr_cred = sum(d.get("impr_cred", 0.0) for d in self.date_sortate_afisate)
-        total_impr_sold = sum(d.get("impr_sold", 0.0) for d in self.date_sortate_afisate)
-        total_dep_deb = sum(d.get("dep_deb", 0.0) for d in self.date_sortate_afisate)
-        total_dep_cred = sum(d.get("dep_cred", 0.0) for d in self.date_sortate_afisate)  # Corrected to dep_cred
-        total_dep_sold = sum(d.get("dep_sold", 0.0) for d in self.date_sortate_afisate)
+        total_dobanda = sum(d.get("dobanda", Decimal('0.00')) for d in self.date_sortate_afisate)
+        total_impr_cred = sum(d.get("impr_cred", Decimal('0.00')) for d in self.date_sortate_afisate)
+        total_impr_sold = sum(d.get("impr_sold", Decimal('0.00')) for d in self.date_sortate_afisate)
+        total_dep_deb = sum(d.get("dep_deb", Decimal('0.00')) for d in self.date_sortate_afisate)
+        total_dep_cred = sum(d.get("dep_cred", Decimal('0.00')) for d in self.date_sortate_afisate)  # Corrected to dep_cred
+        total_dep_sold = sum(d.get("dep_sold", Decimal('0.00')) for d in self.date_sortate_afisate)
         total_general_plata = sum(
-            d.get("total_plata", 0.0) for d in self.date_sortate_afisate)  # Use the calculated total_plata
+            d.get("total_plata", Decimal('0.00')) for d in self.date_sortate_afisate)  # Use the calculated total_plata
 
         luna_text = self.combo_luna.currentText()
         anul = self.combo_an.currentText()
@@ -540,15 +543,15 @@ class VizualizareLunaraWidget(QWidget):
                     f"{luna:02d}-{anul}",
                     str(row_data.get('nr_fisa', '')),
                     row_data.get('nume', 'Nume negăsit'),
-                    f"{row_data.get('dobanda', 0.0):.2f}",
-                    "NEACHITAT" if row_data.get('impr_sold', 0.0) > 0 and row_data.get('impr_cred',
-                                                                                       0.0) == 0 else f"{row_data.get('impr_cred', 0.0):.2f}",
-                    f"{row_data.get('impr_sold', 0.0):.2f}",
-                    "NEACHITAT" if row_data.get('dep_sold', 0.0) > 0 and row_data.get('dep_deb',
-                                                                                      0.0) == 0 else f"{row_data.get('dep_deb', 0.0):.2f}",
-                    f"{row_data.get('dep_cred', 0.0):.2f}",
-                    f"{row_data.get('dep_sold', 0.0):.2f}",
-                    f"{row_data.get('total_plata', 0.0):.2f}"
+                    f"{row_data.get('dobanda', Decimal('0.00')):.2f}",
+                    "NEACHITAT" if row_data.get('impr_sold', Decimal('0.00')) > 0 and row_data.get('impr_cred',
+                                                                                       Decimal('0.00')) == 0 else f"{row_data.get('impr_cred', Decimal('0.00')):.2f}",
+                    f"{row_data.get('impr_sold', Decimal('0.00')):.2f}",
+                    "NEACHITAT" if row_data.get('dep_sold', Decimal('0.00')) > 0 and row_data.get('dep_deb',
+                                                                                      Decimal('0.00')) == 0 else f"{row_data.get('dep_deb', Decimal('0.00')):.2f}",
+                    f"{row_data.get('dep_cred', Decimal('0.00')):.2f}",
+                    f"{row_data.get('dep_sold', Decimal('0.00')):.2f}",
+                    f"{row_data.get('total_plata', Decimal('0.00')):.2f}"
                 ]
 
                 # Desenează rândul cu formatare
@@ -811,31 +814,31 @@ class VizualizareLunaraWidget(QWidget):
                 worksheet.write(row_idx, 2, data.get('nume', 'Necunoscut'), fmt_left)
 
                 # Dobândă
-                worksheet.write_number(row_idx, 3, data.get('dobanda', 0.0), fmt_num)
+                worksheet.write_number(row_idx, 3, float(data.get('dobanda', Decimal('0.00'))), fmt_num)
 
                 # Rată împrumut (cu tratare NEACHITAT)
-                if data.get('impr_sold', 0.0) > 0 and data.get('impr_cred', 0.0) == 0:
+                if data.get('impr_sold', Decimal('0.00')) > 0 and data.get('impr_cred', Decimal('0.00')) == 0:
                     worksheet.write(row_idx, 4, "NEACHITAT", fmt_neach)
                 else:
-                    worksheet.write_number(row_idx, 4, data.get('impr_cred', 0.0), fmt_num)
+                    worksheet.write_number(row_idx, 4, float(data.get('impr_cred', Decimal('0.00'))), fmt_num)
 
                 # Sold împrumut
-                worksheet.write_number(row_idx, 5, data.get('impr_sold', 0.0), fmt_num)
+                worksheet.write_number(row_idx, 5, float(data.get('impr_sold', Decimal('0.00'))), fmt_num)
 
                 # Cotizație (cu tratare NEACHITAT)
-                if data.get('dep_sold', 0.0) > 0 and data.get('dep_deb', 0.0) == 0:
+                if data.get('dep_sold', Decimal('0.00')) > 0 and data.get('dep_deb', Decimal('0.00')) == 0:
                     worksheet.write(row_idx, 6, "NEACHITAT", fmt_neach)
                 else:
-                    worksheet.write_number(row_idx, 6, data.get('dep_deb', 0.0), fmt_num)
+                    worksheet.write_number(row_idx, 6, float(data.get('dep_deb', Decimal('0.00'))), fmt_num)
 
                 # Retragere FS
-                worksheet.write_number(row_idx, 7, data.get('dep_cred', 0.0), fmt_num)
+                worksheet.write_number(row_idx, 7, float(data.get('dep_cred', Decimal('0.00'))), fmt_num)
 
                 # Sold depunere
-                worksheet.write_number(row_idx, 8, data.get('dep_sold', 0.0), fmt_num)
+                worksheet.write_number(row_idx, 8, float(data.get('dep_sold', Decimal('0.00'))), fmt_num)
 
                 # Total de plată
-                worksheet.write_number(row_idx, 9, data.get('total_plata', 0.0), fmt_num)
+                worksheet.write_number(row_idx, 9, float(data.get('total_plata', Decimal('0.00'))), fmt_num)
 
             # Adaugă rând de totaluri
             progress.seteaza_valoare(90)
@@ -844,13 +847,13 @@ class VizualizareLunaraWidget(QWidget):
             total_row = len(self.date_sortate_afisate) + 1
 
             # Calculează totalurile
-            total_dobanda = sum(d.get("dobanda", 0.0) for d in self.date_sortate_afisate)
-            total_impr_cred = sum(d.get("impr_cred", 0.0) for d in self.date_sortate_afisate)
-            total_impr_sold = sum(d.get("impr_sold", 0.0) for d in self.date_sortate_afisate)
-            total_dep_deb = sum(d.get("dep_deb", 0.0) for d in self.date_sortate_afisate)
-            total_dep_cred = sum(d.get("dep_cred", 0.0) for d in self.date_sortate_afisate)
-            total_dep_sold = sum(d.get("dep_sold", 0.0) for d in self.date_sortate_afisate)
-            total_general_plata = sum(d.get("total_plata", 0.0) for d in self.date_sortate_afisate)
+            total_dobanda = sum(d.get("dobanda", Decimal('0.00')) for d in self.date_sortate_afisate)
+            total_impr_cred = sum(d.get("impr_cred", Decimal('0.00')) for d in self.date_sortate_afisate)
+            total_impr_sold = sum(d.get("impr_sold", Decimal('0.00')) for d in self.date_sortate_afisate)
+            total_dep_deb = sum(d.get("dep_deb", Decimal('0.00')) for d in self.date_sortate_afisate)
+            total_dep_cred = sum(d.get("dep_cred", Decimal('0.00')) for d in self.date_sortate_afisate)
+            total_dep_sold = sum(d.get("dep_sold", Decimal('0.00')) for d in self.date_sortate_afisate)
+            total_general_plata = sum(d.get("total_plata", Decimal('0.00')) for d in self.date_sortate_afisate)
 
             # Scrie label pentru totaluri (merge 3 coloane)
             worksheet.merge_range(total_row, 0, total_row, 2, "TOTAL:", total_format_label)
@@ -862,7 +865,7 @@ class VizualizareLunaraWidget(QWidget):
             ]
 
             for col_idx, total_value in enumerate(totals_values, 3):
-                worksheet.write_number(total_row, col_idx, total_value, total_format)
+                worksheet.write_number(total_row, col_idx, float(total_value), total_format)
 
             # Fixează antetul pentru scroll
             worksheet.freeze_panes(1, 0)
@@ -988,7 +991,7 @@ class VizualizareLunaraWidget(QWidget):
             self.date_sortate_afisate.sort(key=lambda x: int(x[key]) if str(x[key]).isdigit() else 0, reverse=reverse)
         else:
             # Sortare numerică pentru celelalte coloane
-            self.date_sortate_afisate.sort(key=lambda x: float(x.get(key, 0)), reverse=reverse)
+            self.date_sortate_afisate.sort(key=lambda x: x.get(key, Decimal('0.00')), reverse=reverse)
 
         # Actualizează tabelul cu datele sortate
         self.actualizeaza_tabel()
@@ -1011,7 +1014,7 @@ class VizualizareLunaraWidget(QWidget):
 
         for r, data in enumerate(self.date_sortate_afisate):
             # Folosește total_plata deja calculat
-            total_plata = data.get('total_plata', 0.0)
+            total_plata = data.get('total_plata', Decimal('0.00'))
 
             # Apply row background color based on member group
             nr_curent = data.get('nr_fisa')
@@ -1031,30 +1034,30 @@ class VizualizareLunaraWidget(QWidget):
             self.tabel.setItem(r, 2, QTableWidgetItem(data.get("nume", 'Nume negăsit')))
             self.tabel.item(r, 2).setBackground(brush)
 
-            self.tabel.setItem(r, 3, QTableWidgetItem(f"{data.get('dobanda', 0.0):.2f}"))
+            self.tabel.setItem(r, 3, QTableWidgetItem(f"{data.get('dobanda', Decimal('0.00')):.2f}"))
             self.tabel.item(r, 3).setBackground(brush)
 
-            item_impr = QTableWidgetItem("NEACHITAT" if data.get('impr_sold', 0.0) > 0 and data.get('impr_cred',
-                                                                                                    0.0) == 0 else f"{data.get('impr_cred', 0.0):.2f}")
+            item_impr = QTableWidgetItem("NEACHITAT" if data.get('impr_sold', Decimal('0.00')) > 0 and data.get('impr_cred',
+                                                                                                    Decimal('0.00')) == 0 else f"{data.get('impr_cred', Decimal('0.00')):.2f}")
             if item_impr.text() == "NEACHITAT":
                 item_impr.setForeground(QBrush(QColor("red")))
             self.tabel.setItem(r, 4, item_impr)
             self.tabel.item(r, 4).setBackground(brush)
 
-            self.tabel.setItem(r, 5, QTableWidgetItem(f"{data.get('impr_sold', 0.0):.2f}"))
+            self.tabel.setItem(r, 5, QTableWidgetItem(f"{data.get('impr_sold', Decimal('0.00')):.2f}"))
             self.tabel.item(r, 5).setBackground(brush)
 
-            item_dep = QTableWidgetItem("NEACHITAT" if data.get('dep_sold', 0.0) > 0 and data.get('dep_deb',
-                                                                                                  0.0) == 0 else f"{data.get('dep_deb', 0.0):.2f}")
+            item_dep = QTableWidgetItem("NEACHITAT" if data.get('dep_sold', Decimal('0.00')) > 0 and data.get('dep_deb',
+                                                                                                  Decimal('0.00')) == 0 else f"{data.get('dep_deb', Decimal('0.00')):.2f}")
             if item_dep.text() == "NEACHITAT":
                 item_dep.setForeground(QBrush(QColor("red")))
             self.tabel.setItem(r, 6, item_dep)
             self.tabel.item(r, 6).setBackground(brush)
 
-            self.tabel.setItem(r, 7, QTableWidgetItem(f"{data.get('dep_cred', 0.0):.2f}"))
+            self.tabel.setItem(r, 7, QTableWidgetItem(f"{data.get('dep_cred', Decimal('0.00')):.2f}"))
             self.tabel.item(r, 7).setBackground(brush)
 
-            self.tabel.setItem(r, 8, QTableWidgetItem(f"{data.get('dep_sold', 0.0):.2f}"))
+            self.tabel.setItem(r, 8, QTableWidgetItem(f"{data.get('dep_sold', Decimal('0.00')):.2f}"))
             self.tabel.item(r, 8).setBackground(brush)
 
             self.tabel.setItem(r, 9, QTableWidgetItem(f"{total_plata:.2f}"))

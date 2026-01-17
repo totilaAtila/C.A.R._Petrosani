@@ -998,7 +998,8 @@ class AdaugareMembruWidget(QWidget):
                     else:
                         # Pentru toate câmpurile financiare numerice, folosim format număr standard
                         # și marcam vizual valorile neobișnuite
-                        val_str = f"{value or 0.0:.2f}"
+                        val_decimal = Decimal(str(value or '0.00')).quantize(Decimal('0.01'), ROUND_HALF_UP)
+                        val_str = f"{val_decimal:.2f}"
 
                         # Verificăm dacă trebuie să marcam vizual valoarea
                         if col_name == 'impr_deb' and value > 0:
@@ -1126,7 +1127,7 @@ class AdaugareMembruWidget(QWidget):
                     widget = col_dict.get("text_edit")
                     if widget:
                         text_val = widget.toPlainText().strip().replace(',', '.')
-                        financial_data[name] = float(text_val) if text_val else 0.0
+                        financial_data[name] = Decimal(str(text_val)).quantize(Decimal('0.01'), ROUND_HALF_UP) if text_val else Decimal('0.00')
 
                 # Extragere luna și anul
                 luna_an_widget = financial_widgets.get('luna_an', {}).get("text_edit")
@@ -1142,7 +1143,7 @@ class AdaugareMembruWidget(QWidget):
                 luna, anul = map(int, luna_an_str.split('-'))
 
                 # Extragem valoarea cotizației pentru a o salva în MEMBRII.db
-                cotizatie_standard = financial_data.get('dep_deb', 0.0)
+                cotizatie_standard = financial_data.get('dep_deb', Decimal('0.00'))
 
                 # Salvare în ambele baze de date pentru membru nou
                 conn_m = None
@@ -1173,15 +1174,15 @@ class AdaugareMembruWidget(QWidget):
                     conn_d = sqlite3.connect(DB_DEPCRED)
                     cursor_d = conn_d.cursor()
 
-                    dobanda = financial_data.get('dobanda', 0.0)
-                    impr_deb = financial_data.get('impr_deb', 0.0)
-                    impr_cred = financial_data.get('impr_cred', 0.0)
-                    dep_deb = financial_data.get('dep_deb', 0.0)
-                    dep_cred = financial_data.get('dep_cred', 0.0)
+                    dobanda = financial_data.get('dobanda', Decimal('0.00'))
+                    impr_deb = financial_data.get('impr_deb', Decimal('0.00'))
+                    impr_cred = financial_data.get('impr_cred', Decimal('0.00'))
+                    dep_deb = financial_data.get('dep_deb', Decimal('0.00'))
+                    dep_cred = financial_data.get('dep_cred', Decimal('0.00'))
 
-                    # Calculăm soldurile noi
-                    impr_sold_nou = impr_deb - impr_cred  # Pentru membru nou, sold anterior e 0
-                    dep_sold_nou = dep_deb - dep_cred  # Pentru membru nou, sold anterior e 0
+                    # Calculăm soldurile noi cu Decimal și rotunjire
+                    impr_sold_nou = (impr_deb - impr_cred).quantize(Decimal('0.01'), ROUND_HALF_UP)
+                    dep_sold_nou = (dep_deb - dep_cred).quantize(Decimal('0.01'), ROUND_HALF_UP)
                     prima_flag = 1  # Marcam ca fiind prima înregistrare
 
                     depcred_data = (
