@@ -6,6 +6,7 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt
 import sqlite3
 from datetime import datetime
+from decimal import Decimal, ROUND_HALF_UP
 
 
 class MembriLichidatiWidget(QWidget):
@@ -242,14 +243,14 @@ class MembriLichidatiWidget(QWidget):
                         an_ultima, luna_ultima, impr_sold, dep_sold = ultima_data
                         ultima_luna_formatata = f"{luna_ultima:02d}-{an_ultima}"
 
-                        # Preluăm soldurile
-                        impr_sold = float(impr_sold) if impr_sold is not None else 0.0
-                        dep_sold = float(dep_sold) if dep_sold is not None else 0.0
+                        # Preluăm soldurile cu Decimal pentru precizie financiară
+                        impr_sold = Decimal(str(impr_sold)).quantize(Decimal('0.01'), ROUND_HALF_UP) if impr_sold is not None else Decimal('0.00')
+                        dep_sold = Decimal(str(dep_sold)).quantize(Decimal('0.01'), ROUND_HALF_UP) if dep_sold is not None else Decimal('0.00')
                     else:
                         # Membrul nu are date deloc în DEPCRED.db
                         ultima_luna_formatata = "Niciodată"
-                        impr_sold = 0.0
-                        dep_sold = 0.0
+                        impr_sold = Decimal('0.00')
+                        dep_sold = Decimal('0.00')
 
                     # Adăugăm membrul la lista celor care lipsesc
                     membri_lipsa.append({
