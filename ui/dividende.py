@@ -1070,13 +1070,13 @@ class DividendeWidget(QWidget):
                 worksheet.write(row_idx, 1, membru_data.get("num_pren", ""), fmt_left)
 
                 # Sold Decembrie
-                worksheet.write_number(row_idx, 2, float(membru_data.get("dep_sold_dec", Decimal(0.0))), fmt_num)
+                worksheet.write_number(row_idx, 2, float(membru_data.get("dep_sold_dec", Decimal("0.00"))), fmt_num)
 
                 # Suma Soldurilor Lunare
-                worksheet.write_number(row_idx, 3, float(membru_data.get("suma_solduri_lunare", Decimal(0.0))), fmt_num)
+                worksheet.write_number(row_idx, 3, float(membru_data.get("suma_solduri_lunare", Decimal("0.00"))), fmt_num)
 
                 # Dividend Calculat
-                worksheet.write_number(row_idx, 4, float(membru_data.get("dividend", Decimal(0.0))), fmt_num)
+                worksheet.write_number(row_idx, 4, float(membru_data.get("dividend", Decimal("0.00"))), fmt_num)
 
             # Actualizăm bara de progres
             progress_dialog.seteaza_text("Se calculează totalurile...")
