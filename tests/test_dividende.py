@@ -354,7 +354,9 @@ class TestPrecizieDividende:
         """
         # Simulăm 800 membri cu solduri diverse
         P = Decimal("10000.00")
-        S_total = Decimal("100000.00")
+        # Solduri: 100, 101, 102, ..., 899
+        # Suma = 100*800 + (0+1+2+...+799) = 80000 + 319600 = 399600
+        S_total = Decimal("399600.00")
 
         dividende = []
         for i in range(800):
