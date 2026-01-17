@@ -197,7 +197,7 @@ def get_dobanda():
 
     if config_path is None:
         print("Avertisment: config_dobanda.json nu a fost găsit. Se folosește valoarea default.")
-        return 0.004  # valoare default în format decimal (4‰)
+        return Decimal('0.004')  # valoare default în format decimal (4‰)
 
     try:
         with open(config_path, 'r', encoding='utf-8') as f:
@@ -207,7 +207,7 @@ def get_dobanda():
             return dobanda
     except (json.JSONDecodeError, ValueError, KeyError) as e:
         print(f"Eroare la citirea config_dobanda.json: {e}. Se folosește valoarea default.")
-        return 0.004
+        return Decimal('0.004')
 
 
 class TranzactieDialog(QDialog):
