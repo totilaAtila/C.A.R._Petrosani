@@ -5,6 +5,7 @@ import logging
 import sqlite3 # Added import for sqlite3
 import glob    # Added import for glob to find db files
 from datetime import datetime
+from decimal import Decimal, InvalidOperation
 from PyQt5.QtWidgets import QMessageBox, QApplication, QPushButton
 from PyQt5.QtGui import QPixmap, QIcon
 from PyQt5.QtCore import Qt
@@ -236,13 +237,13 @@ def verifica_format_luna_an(widget, camp_luna_an, silent=False):
 
 
 def valideaza_numar_real(valoare_str: str) -> bool:
-    """ Verifică dacă un șir poate fi convertit într-un float valid. """
+    """ Verifică dacă un șir poate fi convertit într-un Decimal valid. """
     if not isinstance(valoare_str, str):
         return False
     try:
-        float(valoare_str.replace(',', '.'))
+        Decimal(valoare_str.replace(',', '.'))
         return True
-    except ValueError:
+    except (ValueError, InvalidOperation):
         return False
 
 

@@ -1,6 +1,7 @@
 import sqlite3
 import logging
 from datetime import datetime
+from decimal import Decimal, ROUND_HALF_UP
 
 from PyQt5.QtWidgets import QMessageBox, QPushButton
 from PyQt5.QtCore import Qt
@@ -206,14 +207,14 @@ def finalize_insert(nr_fisa, parent_widget):
                 )
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """, (nr_fisa,
-                  float(val_dobanda or 0),
-                  float(val_impr_deb or 0),
-                  float(val_impr_cred or 0),
-                  float(val_impr_sold or 0),
+                  Decimal(str(val_dobanda or '0')).quantize(Decimal('0.01'), ROUND_HALF_UP),
+                  Decimal(str(val_impr_deb or '0')).quantize(Decimal('0.01'), ROUND_HALF_UP),
+                  Decimal(str(val_impr_cred or '0')).quantize(Decimal('0.01'), ROUND_HALF_UP),
+                  Decimal(str(val_impr_sold or '0')).quantize(Decimal('0.01'), ROUND_HALF_UP),
                   luna, anul,
-                  float(val_dep_deb or 0),
-                  float(val_dep_cred or 0),
-                  float(val_dep_sold or 0)))
+                  Decimal(str(val_dep_deb or '0')).quantize(Decimal('0.01'), ROUND_HALF_UP),
+                  Decimal(str(val_dep_cred or '0')).quantize(Decimal('0.01'), ROUND_HALF_UP),
+                  Decimal(str(val_dep_sold or '0')).quantize(Decimal('0.01'), ROUND_HALF_UP)))
         conn_dep.commit()
         conn_dep.close()
 

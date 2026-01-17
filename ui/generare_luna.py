@@ -201,7 +201,7 @@ class GenerareLunaNouaWidget(QWidget):
         """Salvează rata dobânzii în fișierul de configurare."""
         config_path = os.path.join(BASE_PATH, "config_dobanda.json")
         try:
-            config = {'loan_interest_rate_on_extinction': float(self.loan_interest_rate_on_extinction)}
+            config = {'loan_interest_rate_on_extinction': str(self.loan_interest_rate_on_extinction)}
             with open(config_path, 'w') as f:
                 json.dump(config, f, indent=4)
             logging.info(f"Rată dobândă salvată în config: {self.loan_interest_rate_on_extinction}")

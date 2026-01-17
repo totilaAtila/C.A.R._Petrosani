@@ -562,7 +562,7 @@ class ConversieWorker(QThread):
                         # CONVERSIE DIRECTĂ - CONFORM REGULAMENTULUI CE 1103/97
                         val_eur = (val_ron / curs).quantize(Decimal('0.01'), rounding=ROUND_HALF_UP)
 
-                        converted_values.append(float(val_eur))
+                        converted_values.append(val_eur)
 
                         # Acumulează pentru statistici
                         rezultat["suma_originala_ron"] += val_ron
@@ -631,7 +631,7 @@ class ConversieWorker(QThread):
 
                     # Actualizează în baza de date
                     cursor.execute("UPDATE MEMBRII SET COTIZATIE_STANDARD = ? WHERE NR_FISA = ?",
-                                 (float(eur), nr_fisa))
+                                 (eur, nr_fisa))
 
                     # Acumulează pentru statistici
                     rezultat["suma_originala_ron"] += ron
@@ -696,7 +696,7 @@ class ConversieWorker(QThread):
                         UPDATE ACTIVI SET
                             DEP_SOLD = ?, DIVIDEND = ?
                         WHERE NR_FISA = ?
-                    """, (float(dep_sold_eur), float(dividend_eur), nr_fisa))
+                    """, (dep_sold_eur, dividend_eur, nr_fisa))
 
                     # Acumulează pentru statistici
                     suma_ron_membru = dep_sold_ron + dividend_ron
@@ -874,15 +874,15 @@ class ConversieWorker(QThread):
                 "rezultat_inactivi": rezultat_inactivi,
                 "rezultat_lichidati": rezultat_lichidati,
                 "rezumat_final": {
-                    "suma_originala_ron": float(suma_totala_ron),
-                    "suma_rezultat_eur": float(suma_totala_eur),
-                    "suma_teoretica_eur": float(suma_teoretica_totala),
-                    "diferenta_rotunjire_totala": float(diferenta_rotunjire_totala),
-                    "diferenta_depcred": float(rezultat_depcred['diferenta_rotunjire']),
-                    "diferenta_membrii": float(rezultat_membrii['diferenta_rotunjire']),
-                    "diferenta_activi": float(rezultat_activi['diferenta_rotunjire'])
+                    "suma_originala_ron": str(suma_totala_ron),
+                    "suma_rezultat_eur": str(suma_totala_eur),
+                    "suma_teoretica_eur": str(suma_teoretica_totala),
+                    "diferenta_rotunjire_totala": str(diferenta_rotunjire_totala),
+                    "diferenta_depcred": str(rezultat_depcred['diferenta_rotunjire']),
+                    "diferenta_membrii": str(rezultat_membrii['diferenta_rotunjire']),
+                    "diferenta_activi": str(rezultat_activi['diferenta_rotunjire'])
                 },
-                "curs_folosit": float(self.curs_ron_eur),
+                "curs_folosit": str(self.curs_ron_eur),
                 "utilizator": self.utilizator,
                 "timestamp_finalizare": datetime.now().isoformat(),
                 "metoda_conversie": "Directă individuală conform Regulamentului CE 1103/97",
@@ -912,7 +912,7 @@ class ConversieWorker(QThread):
         status = {
             "conversie_aplicata": True,
             "data_conversie": datetime.now().isoformat(),
-            "curs_folosit": float(self.curs_ron_eur),
+            "curs_folosit": str(self.curs_ron_eur),
             "utilizator": self.utilizator,
             "metoda_conversie": "Directă individuală conform Regulamentului CE 1103/97",
             "baze_convertite": ["DEPCRED", "MEMBRII", "ACTIVI", "INACTIVI", "LICHIDATI"]
@@ -1255,12 +1255,12 @@ class ConversieWidget(QWidget):
             diferenta_estimata_rotunjire = suma_componente_eur - suma_estimata_eur
 
             self.preview_data = {
-                'curs_folosit': float(curs_decimal),
+                'curs_folosit': str(curs_decimal),
                 'db_stats': db_stats,
-                'suma_totala_ron': float(suma_totala_monetara),
-                'suma_estimata_eur': float(suma_estimata_eur),
-                'suma_componente_eur': float(suma_componente_eur),
-                'diferenta_estimata_rotunjire': float(diferenta_estimata_rotunjire),
+                'suma_totala_ron': str(suma_totala_monetara),
+                'suma_estimata_eur': str(suma_estimata_eur),
+                'suma_componente_eur': str(suma_componente_eur),
+                'diferenta_estimata_rotunjire': str(diferenta_estimata_rotunjire),
                 'member_integrity': self.member_integrity_data
             }
 
