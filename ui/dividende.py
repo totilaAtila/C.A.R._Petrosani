@@ -615,7 +615,7 @@ class DividendeWidget(QWidget):
                      INSERT INTO ACTIVI (NR_FISA, NUM_PREN, DEP_SOLD, DIVIDEND)
                      VALUES (?, ?, ?, ?)
                  """, (
-                nr_fisa, num_pren, float(dep_sold_dec_dec), float(dividend_B)))  # Convertim Decimal inapoi la float
+                nr_fisa, num_pren, dep_sold_dec_dec, dividend_B))  # Păstrăm Decimal pentru precizie
 
                 # Adauga rand in tabelul UI
                 self.tabel_dividende.insertRow(r)
@@ -1086,19 +1086,19 @@ class DividendeWidget(QWidget):
             if self.membri_cu_dividend:
                 total_row = len(self.membri_cu_dividend) + 1  # Rândul pentru totaluri
 
-                # Calculează totalurile
-                total_sold_dec = sum(float(d.get("dep_sold_dec", Decimal(0.0))) for d in self.membri_cu_dividend)
+                # Calculează totalurile cu Decimal pentru precizie
+                total_sold_dec = sum((d.get("dep_sold_dec", Decimal("0.00")) for d in self.membri_cu_dividend), Decimal("0.00"))
                 total_suma_solduri = sum(
-                    float(d.get("suma_solduri_lunare", Decimal(0.0))) for d in self.membri_cu_dividend)
-                total_dividend = sum(float(d.get("dividend", Decimal(0.0))) for d in self.membri_cu_dividend)
+                    (d.get("suma_solduri_lunare", Decimal("0.00")) for d in self.membri_cu_dividend), Decimal("0.00"))
+                total_dividend = sum((d.get("dividend", Decimal("0.00")) for d in self.membri_cu_dividend), Decimal("0.00"))
 
                 # Scrie eticheta pentru totaluri (merge 2 coloane)
                 worksheet.merge_range(total_row, 0, total_row, 1, "TOTAL:", total_format_label)
 
-                # Scrie valorile totalurilor
-                worksheet.write_number(total_row, 2, total_sold_dec, total_format)
-                worksheet.write_number(total_row, 3, total_suma_solduri, total_format)
-                worksheet.write_number(total_row, 4, total_dividend, total_format)
+                # Scrie valorile totalurilor (conversie la float doar pentru xlsxwriter API)
+                worksheet.write_number(total_row, 2, float(total_sold_dec), total_format)
+                worksheet.write_number(total_row, 3, float(total_suma_solduri), total_format)
+                worksheet.write_number(total_row, 4, float(total_dividend), total_format)
 
             # Fixează antetul pentru scroll
             worksheet.freeze_panes(1, 0)
