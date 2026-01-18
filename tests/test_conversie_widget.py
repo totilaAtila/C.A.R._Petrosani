@@ -74,11 +74,12 @@ class TestConversieRONtoEUR:
 
         # 2.01 + 4.02 + 6.03 = 12.06
         # vs
-        # (10 + 20 + 30) / 4.9755 = 12.05
+        # (10 + 20 + 30) / 4.9755 = 12.05908... → 12.06 (ROUND_HALF_UP)
 
         assert suma_eur_individual == Decimal("12.06")
-        assert suma_eur_direct == Decimal("12.05")
-        assert suma_eur_individual != suma_eur_direct  # Diferență din rotunjiri individuale
+        assert suma_eur_direct == Decimal("12.06")
+        # În acest exemplu, ambele dau 12.06, deci sunt egale
+        assert suma_eur_individual == suma_eur_direct
 
     @pytest.mark.unit
     @pytest.mark.critical
@@ -107,8 +108,8 @@ class TestConversieRONtoEUR:
 
         sold_total_eur = (sold_total_ron / curs).quantize(Decimal("0.01"), ROUND_HALF_UP)
 
-        # 800,000 / 4.9755 = 160,770.24
-        assert sold_total_eur == Decimal("160770.24")
+        # 800,000 / 4.9755 = 160,787.86 (ROUND_HALF_UP)
+        assert sold_total_eur == Decimal("160787.86")
 
     @pytest.mark.unit
     @pytest.mark.critical
