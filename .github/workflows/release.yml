@@ -1,4 +1,4 @@
-name: Build & Release macOS App
+name: Build & Release Windows
 
 permissions:
   contents: write
@@ -10,24 +10,26 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'Versiune release (ex: v1.0.0)'
+        description: 'Versiune release (ex: v1.2.0)'
         required: true
         default: 'v1.0.0'
       prerelease:
-        description: 'Este un pre-release?'
+        description: 'Pre-release?'
         required: false
         default: 'false'
         type: boolean
 
 jobs:
-  build-and-release:
-    runs-on: macos-latest
+  build-windows:
+    runs-on: windows-latest
+
     steps:
-    - name: Checkout code
+    - name: Checkout cod
       uses: actions/checkout@v4
 
     - name: Determinare versiune
       id: version
+      shell: bash
       run: |
         if [ "${{ github.event_name }}" = "push" ]; then
           VERSION="${GITHUB_REF#refs/tags/}"
@@ -37,198 +39,161 @@ jobs:
         echo "version=$VERSION" >> "$GITHUB_OUTPUT"
         echo "Versiune: $VERSION"
 
-    - name: Setup Python
+    - name: Setup Python 3.11
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
 
-    - name: Instalare dependențe sistem
-      run: |
-        brew update
-        brew install libjpeg zlib libpng
-        echo "✅ Dependențe sistem instalate"
-
     - name: Instalare dependențe Python
       run: |
         python -m pip install --upgrade pip
-        pip install pillow openpyxl xlsxwriter reportlab PyQt5 pyinstaller dbf
+        pip install -r requirements.txt
+        pip install pyinstaller
 
+    - name: Verificare module instalate
+      run: |
         python -c "
         import sys
-        modules = ['openpyxl', 'xlsxwriter', 'reportlab', 'PyQt5', 'PIL', 'dbf']
+        modules = ['xlsxwriter', 'reportlab', 'PyQt5', 'PIL', 'dbf', 'pyzipper']
         errors = []
-        for module in modules:
+        for m in modules:
             try:
-                __import__(module)
-                print(f'✅ {module}')
+                __import__(m)
+                print(f'OK  {m}')
             except ImportError as e:
-                print(f'❌ {module}: {e}')
-                errors.append(module)
+                print(f'ERR {m}: {e}')
+                errors.append(m)
         if errors:
-            print(f'❌ Module lipsă: {errors}')
             sys.exit(1)
-        print('✅ Toate modulele verificate')
+        print('Toate modulele OK')
         "
 
-    - name: Creare ICNS din ICO
+    - name: Build executabil Windows (onefile)
       run: |
-        if [ ! -f "pol.ico" ]; then
-          echo "⚠️  pol.ico nu există, creare placeholder..."
-          python -c "
-        from PIL import Image
-        img = Image.new('RGB', (256, 256), color='blue')
-        img.save('pol.ico')
-        "
-        fi
-
-        mkdir -p icon.iconset
-        python -c "
-        from PIL import Image
-        img = Image.open('pol.ico')
-        sizes = [(16,16), (32,32), (64,64), (128,128), (256,256), (512,512)]
-        for size in sizes:
-            resized = img.resize(size, Image.Resampling.LANCZOS)
-            resized.save(f'icon.iconset/icon_{size[0]}x{size[1]}.png')
-        "
-        iconutil -c icns icon.iconset
-        cp icon.icns pol.icns
-        echo "✅ ICNS creat"
-
-    - name: Build Apple Silicon
-      run: |
-        rm -rf build dist
-
-        echo "Build pentru Apple Silicon (arm64)..."
-
-        pyinstaller --noconfirm --onedir --windowed \
-          --icon "pol.icns" \
-          --name "CARpetrosani" \
-          --add-data "fonts:fonts" \
-          --add-data "Icons:Icons" \
-          --add-data "ui:ui" \
-          --add-data "Arial.ttf:." \
-          --add-data "DejaVuBoldSans.ttf:." \
-          --add-data "DejaVuSans.ttf:." \
-          --add-data "DejaVuSans-Bold.ttf:." \
-          --hidden-import openpyxl \
-          --hidden-import openpyxl.cell \
-          --hidden-import openpyxl.cell.cell \
-          --hidden-import openpyxl.styles \
-          --hidden-import openpyxl.styles.numbers \
-          --hidden-import openpyxl.utils \
-          --hidden-import xlsxwriter \
-          --hidden-import xlsxwriter.workbook \
-          --hidden-import xlsxwriter.worksheet \
-          --hidden-import et_xmlfile \
-          --hidden-import reportlab \
-          --hidden-import reportlab.lib \
-          --hidden-import reportlab.lib.colors \
-          --hidden-import reportlab.lib.pagesizes \
-          --hidden-import reportlab.lib.units \
-          --hidden-import reportlab.pdfgen \
-          --hidden-import reportlab.pdfgen.canvas \
-          --hidden-import reportlab.pdfbase \
-          --hidden-import reportlab.pdfbase.pdfmetrics \
-          --hidden-import reportlab.pdfbase.ttfonts \
-          --hidden-import ssl \
-          --hidden-import decimal \
-          --hidden-import dbf \
-          --osx-bundle-identifier "com.petrosani.carapp" \
+        pyinstaller --noconfirm --onefile --windowed `
+          --icon "pol.ico" `
+          --name "CARpetrosani" `
+          --add-data "fonts;fonts" `
+          --add-data "Icons;Icons" `
+          --add-data "ui;ui" `
+          --add-data "Arial.ttf;." `
+          --add-data "DejaVuBoldSans.ttf;." `
+          --add-data "DejaVuSans.ttf;." `
+          --add-data "DejaVuSans-Bold.ttf;." `
+          --hidden-import xlsxwriter `
+          --hidden-import xlsxwriter.workbook `
+          --hidden-import xlsxwriter.worksheet `
+          --hidden-import reportlab `
+          --hidden-import reportlab.lib `
+          --hidden-import reportlab.lib.colors `
+          --hidden-import reportlab.lib.pagesizes `
+          --hidden-import reportlab.lib.units `
+          --hidden-import reportlab.pdfgen `
+          --hidden-import reportlab.pdfgen.canvas `
+          --hidden-import reportlab.pdfbase `
+          --hidden-import reportlab.pdfbase.pdfmetrics `
+          --hidden-import reportlab.pdfbase.ttfonts `
+          --hidden-import et_xmlfile `
+          --hidden-import ssl `
+          --hidden-import decimal `
+          --hidden-import dbf `
+          --hidden-import pyzipper `
+          --hidden-import zipfile `
+          --hidden-import security_manager `
+          --hidden-import dialog_styles `
+          --hidden-import currency_logic `
+          --hidden-import Cryptodome `
+          --hidden-import Cryptodome.Cipher `
+          --hidden-import Cryptodome.Cipher.AES `
           main.py
 
-        echo "✅ Build finalizat"
-
-    - name: Verificare build
+    - name: Verificare executabil generat
+      shell: bash
       run: |
-        echo "=== Verificare Build ==="
-
-        if [ ! -d "dist/CARpetrosani.app" ]; then
-          echo "❌ App bundle NU a fost găsit!"
+        if [ ! -f "dist/CARpetrosani.exe" ]; then
+          echo "EROARE: CARpetrosani.exe nu a fost generat!"
           ls -la dist/ || echo "dist/ nu există"
           exit 1
         fi
+        echo "OK - CARpetrosani.exe generat"
+        ls -lh dist/CARpetrosani.exe
 
-        echo "✅ App bundle există"
-
-        if [ ! -f "dist/CARpetrosani.app/Contents/MacOS/CARpetrosani" ]; then
-          echo "❌ Executabil NU a fost găsit!"
-          exit 1
-        fi
-
-        echo "✅ Executabil există"
-        echo ""
-        echo "=== Arhitectură ==="
-        file "dist/CARpetrosani.app/Contents/MacOS/CARpetrosani"
-        lipo -info "dist/CARpetrosani.app/Contents/MacOS/CARpetrosani" || echo "Arhitectură unică"
-        echo ""
-        echo "=== Dimensiune bundle ==="
-        du -sh "dist/CARpetrosani.app"
-        echo ""
-        echo "=== Verificare module critice ==="
-        for module in openpyxl xlsxwriter reportlab PyQt5 dbf; do
-          if find "dist/CARpetrosani.app" -name "*${module}*" -type f | head -1 | grep -q .; then
-            echo "✅ $module găsit în bundle"
-          else
-            echo "⚠️  $module nu a fost găsit în bundle"
-          fi
-        done
-
-    - name: Securitate macOS
+    - name: Creare pachet de distribuție
+      shell: bash
       run: |
-        echo "Eliminare atribute quarantine..."
-        xattr -cr dist/CARpetrosani.app
+        VERSION="${{ steps.version.outputs.version }}"
+        FOLDER="CARpetrosani-$VERSION"
 
-        echo "Semnătură ad-hoc..."
-        codesign --force --deep --sign - dist/CARpetrosani.app
+        mkdir -p "$FOLDER"
 
-        echo ""
-        echo "=== Verificare semnătură ==="
-        codesign -dv dist/CARpetrosani.app 2>&1 | head -5
+        # Executabilul principal
+        cp dist/CARpetrosani.exe "$FOLDER/"
 
-        echo "✅ Atribute securitate aplicate"
+        # Fișiere de configurare externe (citite la runtime lângă .exe)
+        cp config_dobanda.json           "$FOLDER/"
+        cp conversie_config.json         "$FOLDER/"
+        cp imprumuturi_noi_config.json   "$FOLDER/"
+        cp imprumuturi_noi_prima_rata.json "$FOLDER/"
+        cp theme_settings.json           "$FOLDER/"
 
-    - name: Creare ZIP pentru distribuție
+        # Icoane (pentru bara de taskbar și shortcut-uri)
+        cp pol.ico   "$FOLDER/"
+        cp money.ico "$FOLDER/"
+
+        echo "Conținut pachet:"
+        ls -lh "$FOLDER/"
+
+    - name: Creare arhivă ZIP
+      shell: bash
       run: |
-        cd dist
-        zip -r ../CARpetrosani-macOS-arm64.zip CARpetrosani.app
-        cd ..
-        echo "✅ ZIP creat: CARpetrosani-macOS-arm64.zip"
-        ls -lh CARpetrosani-macOS-arm64.zip
+        VERSION="${{ steps.version.outputs.version }}"
+        FOLDER="CARpetrosani-$VERSION"
+        ZIP="CARpetrosani-$VERSION-Windows.zip"
+
+        powershell -Command "Compress-Archive -Path '$FOLDER' -DestinationPath '$ZIP' -Force"
+
+        echo "Arhivă creată: $ZIP"
+        ls -lh "$ZIP"
 
     - name: Creare GitHub Release
+      shell: bash
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         VERSION="${{ steps.version.outputs.version }}"
+        ZIP="CARpetrosani-$VERSION-Windows.zip"
         PRERELEASE="${{ github.event.inputs.prerelease }}"
-        ZIP_FILE="CARpetrosani-macOS-arm64.zip"
 
         PRERELEASE_FLAG=""
         if [ "$PRERELEASE" = "true" ]; then
           PRERELEASE_FLAG="--prerelease"
         fi
 
-        echo "Creare release $VERSION..."
-
         gh release create "$VERSION" \
-          "$ZIP_FILE" \
+          "$ZIP" \
           --title "CARpetrosani $VERSION" \
-          --notes "## CARpetrosani $VERSION
-
-### Descărcare
-Descărcați \`CARpetrosani-macOS-arm64.zip\`, dezarhivați și copiați \`CARpetrosani.app\` în folderul Aplicații.
-
-### Cerințe sistem
-- macOS cu procesor Apple Silicon (M1/M2/M3)
-- macOS 12 Monterey sau mai nou
+          --notes "## CARpetrosani $VERSION — Windows
 
 ### Instalare
-1. Descărcați ZIP-ul
-2. Dezarhivați fișierul
-3. Copiați CARpetrosani.app în /Applications
-4. La prima rulare: click dreapta → Deschide (pentru a ocoli Gatekeeper)
+1. Descărcați \`CARpetrosani-$VERSION-Windows.zip\`
+2. Dezarhivați dosarul în locația dorită (ex: \`C:\\CARpetrosani\\\`)
+3. Rulați \`CARpetrosani.exe\`
+
+### Conținut arhivă
+\`\`\`
+CARpetrosani-$VERSION/
+├── CARpetrosani.exe              ← aplicația
+├── config_dobanda.json           ← configurare rată dobândă
+├── conversie_config.json         ← configurare conversie EUR
+├── imprumuturi_noi_config.json   ← configurare împrumuturi
+├── imprumuturi_noi_prima_rata.json
+├── theme_settings.json           ← configurare temă vizuală
+├── pol.ico
+└── money.ico
+\`\`\`
+
+> **Notă:** Bazele de date (\`.db\`) nu sunt incluse — acestea rămân pe calculatorul utilizatorului.
 " \
           $PRERELEASE_FLAG
 
-        echo "✅ Release $VERSION creat cu succes!"
-        echo "URL: https://github.com/${{ github.repository }}/releases/tag/$VERSION"
+        echo "Release $VERSION creat: https://github.com/${{ github.repository }}/releases/tag/$VERSION"
