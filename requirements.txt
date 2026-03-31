@@ -13,7 +13,7 @@ reportlab==4.4.3
 PyQt5==5.15.9
 
 # Procesare imagini
-Pillow==11.3.0
+Pillow==12.1.1
 
 # XML handling
 et-xmlfile==2.0.0
