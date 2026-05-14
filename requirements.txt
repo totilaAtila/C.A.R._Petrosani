@@ -23,4 +23,4 @@ dbf==0.99.11
 
 # Criptare AES-256 pentru arhivare baze de date
 # Folosit de security_manager.py pentru protectie cu parola
-pyzipper==0.3.6
+pyzipper==0.4.0
