@@ -70,6 +70,7 @@ import inspect
 
 # --- Importuri logica de business separată ---
 from currency_logic import CurrencyLogic
+import permisiuni
 
 # ===== INTEGRARE SECURITATE: Import modul de securitate =====
 from security_manager import (
@@ -1005,6 +1006,7 @@ class CARApp(QMainWindow):
         # Componente principale
         self.theme_manager = ThemeManager()
         self.currency_logic = CurrencyLogic()
+        permisiuni.set_currency_logic(self.currency_logic)  # gardian scriere post-conversie RON
         self.conversie_checker = ConversieStatusChecker()
         self.currency_logic.currency_changed.connect(self._on_currency_changed)
 
@@ -1123,7 +1125,9 @@ class CARApp(QMainWindow):
         for menu_name in self.WRITE_PROTECTED_MENUS:
             if menu_name in self.menu_buttons:
                 button = self.menu_buttons[menu_name]
-                button.setEnabled(can_write)
+                # Acces PERMIS in orice stare (vizualizare istoric); scrierea efectiva
+                # o blocheaza gardianul poate_scrie() din fiecare ecran.
+                button.setEnabled(True)
                 
                 # Actualizează tooltip-ul cu informații despre restricție
                 if is_write_protected:
@@ -1134,26 +1138,9 @@ class CARApp(QMainWindow):
                         f"Comută la EUR pentru operațiuni de scriere"
                     )
                     
-                    # Aplicare stil vizual pentru buton dezactivat
-                    theme = self.theme_manager.get_current_theme()
-                    button.setStyleSheet(f"""
-                        QPushButton {{
-                            background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                stop:0 rgba(189, 195, 199, 150), stop:1 rgba(149, 165, 166, 170));
-                            border: 1px solid rgba(127, 140, 141, 150);
-                            border-radius: 8px;
-                            padding: 4px 12px;
-                            font-size: 10pt;
-                            color: rgba(52, 73, 94, 150);
-                            text-align: left;
-                            font-weight: normal;
-                        }}
-                        QPushButton:disabled {{
-                            background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                stop:0 rgba(189, 195, 199, 120), stop:1 rgba(149, 165, 166, 140));
-                            color: rgba(127, 140, 141, 180);
-                        }}
-                    """)
+                    # Buton accesibil (nu gri): stil normal. Feedback-ul e in tooltip,
+                    # iar blocarea reala a scrierii o face gardianul poate_scrie().
+                    button.update_style()
                 else:
                     # Restaurează tooltip-ul original
                     shortcuts_map = {
