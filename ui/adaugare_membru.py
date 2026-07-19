@@ -408,6 +408,7 @@ class AdaugareMembruWidget(QWidget):
 
         self.actions_frame = QFrame()
         self.actions_layout = QHBoxLayout(self.actions_frame)
+        self.actions_layout.setContentsMargins(0, 5, 0, 0)  # consistent cu stergere/lichidare
         self.actions_layout.addStretch(1)
         self.actions_layout.addStretch(1)
         main_layout.addWidget(self.actions_frame)
