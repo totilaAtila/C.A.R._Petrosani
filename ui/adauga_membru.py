@@ -6,6 +6,9 @@ from decimal import Decimal, ROUND_HALF_UP
 from PyQt5.QtWidgets import QMessageBox, QPushButton
 from PyQt5.QtCore import Qt
 
+# REDESIGN: sursa unică de stil. Doar aspect — nicio logică atinsă.
+from ui.palette import btn_primary
+
 # Importăm validările
 from ui.validari import (
     verifica_campuri_completate,
@@ -52,17 +55,8 @@ def executa(nr_fisa, parent_widget):
     parent_widget.btn_salveaza_nou = QPushButton("Salvează membru nou", parent_widget)
     parent_widget.btn_salveaza_nou.setObjectName("btn_salveaza_nou")
     parent_widget.btn_salveaza_nou.setToolTip("Va adăuga un nou membru în baza de date + date financiare")
-    parent_widget.btn_salveaza_nou.setStyleSheet("""
-        QPushButton#btn_salveaza_nou {
-            background-color: #cce5ff;
-            border: 1px solid #3399ff;
-            padding: 4px 8px;
-            border-radius: 6px;
-        }
-        QPushButton#btn_salveaza_nou:hover {
-            background-color: #b3daff;
-        }
-    """)
+    # Salvarea e actiunea principala a acestui ecran -> buton primar (verde).
+    parent_widget.btn_salveaza_nou.setStyleSheet(btn_primary())
 
     try:
         header_layout = parent_widget.header_frame.layout()
@@ -249,26 +243,10 @@ def show_stylized_message(parent, title, text, icon="info"):
     msg = QMessageBox(parent)
     msg.setWindowTitle(title)
     msg.setText(text)
-    msg.setStyleSheet("""
-        QMessageBox {
-            background-color: #e8f1ff;
-            font-family: Arial;
-            font-size: 10pt;
-        }
-        QMessageBox QLabel {
-            font-weight: bold;
-            color: #333;
-        }
-        QMessageBox QPushButton {
-            background-color: #cce5ff;
-            border: 1px solid #3399ff;
-            padding: 8px 16px;
-            border-radius: 6px;
-        }
-        QMessageBox QPushButton:hover {
-            background-color: #b3daff;
-        }
-    """)
+    # Stylesheet-ul local a fost eliminat: dialog_styles.py stilizeaza deja global
+    # toate QMessageBox-urile. Cel de aici il suprascria cu paleta albastra veche,
+    # deci acest dialog arata altfel decat restul aplicatiei. Fara el, mosteneste
+    # stilul comun — exact consistenta ceruta de DESIGN_SYSTEM.md, sectiunea 8.
 
     if icon == "info":
         msg.setIcon(QMessageBox.Information)

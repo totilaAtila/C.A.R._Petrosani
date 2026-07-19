@@ -15,6 +15,20 @@ else:
 
 DB_MEMBRII = os.path.join(BASE_RESOURCE_PATH, "MEMBRII.db")
 
+# REDESIGN: sursa unică de stil. Doar aspect — nicio logică atinsă.
+from ui.palette import P, RADIUS
+
+# Cele trei cadre (date generale, împrumuturi, depuneri) foloseau toate
+# "border: 1px solid black" — un contur dur, singurul negru din aplicație.
+SECTIUNE_QSS = f"""
+    QFrame {{
+        border: 1px solid {P.LINE};
+        border-radius: {RADIUS.MD};
+        background: {P.PANEL};
+        padding: 10px;
+    }}
+"""
+
 
 class ActualizareMembruWidget(QWidget):
     def __init__(self):
@@ -26,7 +40,7 @@ class ActualizareMembruWidget(QWidget):
 
         # Cadru pentru datele generale
         self.general_frame = QFrame()
-        self.general_frame.setStyleSheet("border: 1px solid black; padding: 10px;")
+        self.general_frame.setStyleSheet(SECTIUNE_QSS)
         general_layout = QFormLayout(self.general_frame)
 
         self.nr_fisa = QLineEdit()
@@ -56,7 +70,7 @@ class ActualizareMembruWidget(QWidget):
 
         # Cadru pentru situația împrumuturilor
         self.imprumuturi_frame = QFrame()
-        self.imprumuturi_frame.setStyleSheet("border: 1px solid black; padding: 10px;")
+        self.imprumuturi_frame.setStyleSheet(SECTIUNE_QSS)
         imprumuturi_layout = QFormLayout(self.imprumuturi_frame)
 
         self.impr_dobanda = QLineEdit()
@@ -80,7 +94,7 @@ class ActualizareMembruWidget(QWidget):
 
         # Cadru pentru situația depunerilor
         self.depuneri_frame = QFrame()
-        self.depuneri_frame.setStyleSheet("border: 1px solid black; padding: 10px;")
+        self.depuneri_frame.setStyleSheet(SECTIUNE_QSS)
         depuneri_layout = QFormLayout(self.depuneri_frame)
 
         self.data_luna_an = QLineEdit()

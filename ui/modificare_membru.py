@@ -3,6 +3,9 @@ import logging
 
 from PyQt5.QtWidgets import QMessageBox, QPushButton
 from PyQt5.QtCore import Qt
+
+# REDESIGN: sursa unică de stil. Doar aspect — nicio logică atinsă.
+from ui.palette import btn_primary
 import sys
 import os
 
@@ -55,17 +58,8 @@ def executa(nr_fisa, parent_widget):
     parent_widget.btn_actualizeaza.setToolTip("Salvează modificările în bază de date")
 
     # Un mic stil, asemănător butoanelor albastre:
-    parent_widget.btn_actualizeaza.setStyleSheet("""
-        QPushButton#actualizare_button {
-            background-color: #cce5ff;
-            border: 1px solid #3399ff;
-            padding: 4px 8px;
-            border-radius: 6px;
-        }
-        QPushButton#actualizare_button:hover {
-            background-color: #b3daff;
-        }
-    """)
+    # Actualizarea e actiunea principala a acestui ecran -> buton primar (verde).
+    parent_widget.btn_actualizeaza.setStyleSheet(btn_primary())
 
     # Așezăm butonul în același rând cu butonul 'X'.
     # Observăm în adaugare_membru.py că butonul X era adăugat cu
@@ -145,27 +139,9 @@ def show_stylized_message(parent, title, text, icon="info"):
     msg.setWindowTitle(title)
     msg.setText(text)
 
-    # Stil minimal, copiat din listari.py / validari.py
-    msg.setStyleSheet("""
-        QMessageBox {
-            background-color: #e8f1ff;
-            font-family: Arial;
-            font-size: 10pt;
-        }
-        QMessageBox QLabel {
-            font-weight: bold;
-            color: #333;
-        }
-        QMessageBox QPushButton {
-            background-color: #cce5ff;
-            border: 1px solid #3399ff;
-            padding: 8px 16px;
-            border-radius: 6px;
-        }
-        QMessageBox QPushButton:hover {
-            background-color: #b3daff;
-        }
-    """)
+    # Stylesheet-ul local a fost eliminat: dialog_styles.py stilizeaza deja global
+    # toate QMessageBox-urile. Comentariul original spunea "copiat din listari.py /
+    # validari.py" — exact tiparul pe care sursa unica de stil il inlocuieste.
 
     if icon == "info":
         msg.setIcon(QMessageBox.Information)
