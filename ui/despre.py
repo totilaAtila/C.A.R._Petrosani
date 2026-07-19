@@ -856,7 +856,15 @@ class DespreWidget(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("CAR Petroșani - Informații Aplicație")
-        self.setMinimumSize(900, 700)
+        # Minimul era 900x700. Widget-ul e adăugat în fereastra principală
+        # (main_ui.py: content_area.addWidget), deci minimul lui devine minimul
+        # ferestrei. Pe un ecran de 768 px, zona utilă rămâne ~720 px, iar după
+        # bara de titlu ~690 — sub cei 700 ceruți. Windows refuza redimensionarea
+        # și Qt scria "Unable to set geometry" la fiecare comutare de modul.
+        # Conținutul e oricum într-un QScrollArea cu setWidgetResizable(True),
+        # deci se derulează: un minim mare nu aducea nimic.
+        self.setMinimumSize(760, 480)
+        self.resize(900, 700)   # dimensiunea preferată, când e deschis ca fereastră
         self.setWindowFlags(Qt.Window | Qt.WindowCloseButtonHint)
 
         self._setup_ui()
