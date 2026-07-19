@@ -16,6 +16,9 @@ import xlsxwriter
 from utils import afiseaza_info, ProgressDialog
 from permisiuni import poate_scrie, MESAJ_READONLY  # gardian scriere post-conversie RON
 
+# Paleta unica de stil (redesign "Glass Verde"). Doar culori/tokeni, fara logica.
+from ui.palette import P, GRAD, RADIUS, FONT, table
+
 # Determina calea catre resurse (baze de date) la rulare
 if getattr(sys, 'frozen', False):
     BASE_RESOURCE_PATH = os.path.dirname(sys.executable)
@@ -162,36 +165,33 @@ class DividendeWidget(QWidget):
         self.tabel_dividende.setAlternatingRowColors(True)
         layout.addWidget(self.tabel_dividende)
 
-        # Stiluri (pastram stilurile existente)
-        self.setStyleSheet("""
-            QWidget {font-family:Arial; font-size:10pt; background:#f8f8f8;}
-            QLabel {color: #555; margin-right: 5px;}
-            QComboBox, QLineEdit {
-                background-color: #ffffff; border: 1px solid #b0c0b0;
-                border-radius: 5px; padding: 4px; margin: 2px;
-            }
-             QLineEdit:focus, QComboBox:focus {border-color: #3498db; outline: none;}
+        # Stiluri — re-tematizate pe paleta unica (verde). Tabelul foloseste
+        # fabrica table(); coloritul pe grupuri din cod (setBackground cu
+        # #e8f4ff/#fff5e6) ramane neatins — semnal vizual, ca in restul aplicatiei.
+        self.setStyleSheet(f"""
+            QWidget {{ font-family: {FONT}; font-size: 10pt; background: {GRAD.APP_BG}; }}
+            QLabel {{ color: {P.MUTED}; margin-right: 5px; }}
+            QComboBox, QLineEdit {{
+                background-color: {P.PANEL_2}; border: 1px solid {P.LINE};
+                border-radius: {RADIUS.MD}; padding: 4px; margin: 2px;
+                color: {P.INK};
+            }}
+            QLineEdit:focus, QComboBox:focus {{ border-color: {P.ACCENT}; outline: none; }}
 
-            QPushButton {
-                background:#90EE90; color:#000; border:1px solid #60c060;
-                border-radius:5px; padding: 6px 12px; font-weight:bold;
+            QPushButton {{
+                background: {P.ACCENT}; color: {P.WHITE}; border: 1px solid {P.ACCENT_DEEP};
+                border-radius: {RADIUS.MD}; padding: 6px 12px; font-weight: bold;
                 margin: 5px;
-            }
-            QPushButton:hover {background:#77dd77;}
-            QPushButton:pressed {background:#60c060;}
-            QPushButton:disabled {
-                background:#d0e0d0;
-                color:#808080;
-                border:1px solid #b0c0b0;
-            }
-            QTableWidget {background:#ffffff; alternate-background-color:#f0f0f0; margin-top:10px; border: 1px solid #d0d0d0;}
-            QTableWidget::item {padding:4px;}
-            QHeaderView::section {
-                background-color: #dce8ff; color:#333; padding: 6px;
-                border: 1px solid #c0c8d0; font-weight:bold;
-                white-space: pre-wrap;
-            }
+            }}
+            QPushButton:hover {{ background: {P.ACCENT_DEEP}; }}
+            QPushButton:pressed {{ background: {P.ACCENT_DEEP}; }}
+            QPushButton:disabled {{
+                background: {P.DISABLED};
+                color: {P.DISABLED_TEXT};
+                border: 1px solid {P.LINE};
+            }}
             """)
+        self.tabel_dividende.setStyleSheet(table())  # stil tabel din paleta unica
 
     def _set_cursors(self):
         """Setează cursorul de mână pentru elemente interactive."""
