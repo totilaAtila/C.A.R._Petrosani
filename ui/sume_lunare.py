@@ -883,8 +883,10 @@ class SumeLunareWidget(QWidget):
         button_layout_row2.addWidget(self.buton_modifica_tranzactie)
         header_layout.addLayout(button_layout_row2, 2, 4)
 
-        # Setăm stretch pentru coloane (0-4)
-        header_layout.setColumnStretch(1, 3)  # Nume, Adresa, Calitate
+        # Setăm stretch pentru coloane (0-4). Col1=2 / col3=1 identic cu celelalte
+        # ecrane de membru (adaugare/stergere/lichidare/verificare): stanga mai
+        # lata (Nume/Adresa/Calitate), dreapta mai ingusta (Nr Fisa/Data).
+        header_layout.setColumnStretch(1, 2)  # Nume, Adresa, Calitate
         header_layout.setColumnStretch(3, 1)  # Nr Fisa, Data Insc
         # Coloanele 0, 2, 4 au stretch implicit
 
