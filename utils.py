@@ -6,7 +6,7 @@ from PyQt5.QtCore import QObject, QRunnable, pyqtSignal, pyqtSlot, QThreadPool
 from PyQt5.QtCore import Qt, QMetaObject, Q_ARG
 from PyQt5.QtWidgets import QMessageBox, QApplication
 # Adăugare în utils.py
-from PyQt5.QtWidgets import QProgressDialog
+from PyQt5.QtWidgets import QProgressDialog, QInputDialog, QDialog
 from PyQt5.QtCore import Qt
 from dialog_styles import get_dialog_stylesheet
 
@@ -170,6 +170,54 @@ def mesaj_box(parent, icon, titlu, text, butoane=QMessageBox.Ok, buton_default=N
     else:
         print(f"[{titlu}] {text}")
         return QMessageBox.Ok
+
+
+def input_intreg(parent, titlu, eticheta, valoare=0, minim=-2147483647, maxim=2147483647, pas=1):
+    """QInputDialog (număr întreg) stilizat, cu stilul aplicat DIRECT pe instanță
+    (altfel butoanele native nu se randează pe Windows). Returnează (valoare, ok)."""
+    if not QApplication.instance():
+        return valoare, False
+    d = QInputDialog(parent)
+    d.setStyleSheet(get_dialog_stylesheet())
+    d.setInputMode(QInputDialog.IntInput)
+    d.setWindowTitle(titlu)
+    d.setLabelText(eticheta)
+    d.setIntRange(minim, maxim)
+    d.setIntValue(valoare)
+    d.setIntStep(pas)
+    ok = d.exec_() == QDialog.Accepted
+    return d.intValue(), ok
+
+
+def input_text(parent, titlu, eticheta, text=""):
+    """QInputDialog (text) stilizat. Returnează (text, ok)."""
+    if not QApplication.instance():
+        return text, False
+    d = QInputDialog(parent)
+    d.setStyleSheet(get_dialog_stylesheet())
+    d.setInputMode(QInputDialog.TextInput)
+    d.setWindowTitle(titlu)
+    d.setLabelText(eticheta)
+    d.setTextValue(text)
+    ok = d.exec_() == QDialog.Accepted
+    return d.textValue(), ok
+
+
+def input_zecimal(parent, titlu, eticheta, valoare=0.0, minim=-2147483647.0,
+                  maxim=2147483647.0, zecimale=1):
+    """QInputDialog (număr zecimal) stilizat. Returnează (valoare, ok)."""
+    if not QApplication.instance():
+        return valoare, False
+    d = QInputDialog(parent)
+    d.setStyleSheet(get_dialog_stylesheet())
+    d.setInputMode(QInputDialog.DoubleInput)
+    d.setWindowTitle(titlu)
+    d.setLabelText(eticheta)
+    d.setDoubleRange(minim, maxim)
+    d.setDoubleDecimals(zecimale)
+    d.setDoubleValue(valoare)
+    ok = d.exec_() == QDialog.Accepted
+    return d.doubleValue(), ok
 
 
 class QTextEditLogger(logging.Handler):

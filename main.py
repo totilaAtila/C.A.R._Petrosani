@@ -131,6 +131,21 @@ def main():
     _QMB.critical    = _styled_static(_QMB.Critical,    _QMB.Ok)
     _QMB.question    = _styled_static(_QMB.Question,    _QMB.Yes | _QMB.No)
 
+    # Si instantele create direct (msg_box = QMessageBox(self)) primesc tema pe
+    # __init__ -> butoane vizibile fara editari per-loc. Cine isi pune apoi un
+    # stylesheet propriu il suprascrie (ex. dialogul detaliat din Optimizare, care
+    # e reparat separat sa includa tema).
+    _QMB_orig_init = _QMB.__init__
+
+    def _qmb_styled_init(self, *args, **kwargs):
+        _QMB_orig_init(self, *args, **kwargs)
+        try:
+            self.setStyleSheet(_dlg_ss())
+        except Exception:
+            pass
+
+    _QMB.__init__ = _qmb_styled_init
+
     # ===== INTEGRARE SECURITATE: Verificări la pornire =====
     # 1. Curățare baze de date expuse din crash-uri anterioare
     if not cleanup_exposed_database():

@@ -1007,12 +1007,10 @@ class OptimizareIndexWidget(QWidget):
         msg_box.setDetailedText(full_message)
         msg_box.setIcon(QMessageBox.Information)
 
-        # Setează dimensiunea pentru dialog
-        msg_box.setStyleSheet("""
-            QMessageBox {
-                font-family: 'Segoe UI', Arial, sans-serif;
-                font-size: 9pt;
-            }
+        # Setează dimensiunea pentru dialog. Pastram tema aplicata pe __init__
+        # (styleSheet() curent) si adaugam doar custom-ul, ca butoanele sa ramana
+        # vizibile (altfel setStyleSheet ar suprascrie tema).
+        msg_box.setStyleSheet(msg_box.styleSheet() + """
             QMessageBox QTextEdit {
                 font-family: 'Courier New', monospace;
                 font-size: 9pt;

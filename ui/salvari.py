@@ -13,7 +13,8 @@ from datetime import datetime
 import glob
 
 # Importuri pentru dialoguri stilizate
-from utils import afiseaza_warning, afiseaza_eroare, afiseaza_info, afiseaza_intrebare
+from utils import (afiseaza_warning, afiseaza_eroare, afiseaza_info,
+                   afiseaza_intrebare, input_intreg, input_text)
 from dialog_styles import get_dialog_stylesheet
 
 # Gardian scriere: blocheaza modificarile pe RON dupa conversie (doar-citire).
@@ -603,9 +604,7 @@ class OperatiuniSalvareWidget(QWidget):
             afiseaza_warning(MESAJ_READONLY, parent=self)
             return
 
-        from PyQt5.QtWidgets import QInputDialog
-
-        year, ok = QInputDialog.getInt(
+        year, ok = input_intreg(
             self,
             "Ștergere An",
             "Introduceți anul de șters (YYYY):",
@@ -636,7 +635,7 @@ class OperatiuniSalvareWidget(QWidget):
             return
 
         # A doua confirmare cu scrierea anului
-        text, ok = QInputDialog.getText(
+        text, ok = input_text(
             self,
             "Confirmare Finală",
             f"Pentru a confirma ștergerea definitivă,\n"

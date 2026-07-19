@@ -22,7 +22,8 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt, QTimer, QMetaObject, Q_ARG, QObject, pyqtSignal
 from typing import Optional, Callable
 from pathlib import Path
-from utils import afiseaza_warning, afiseaza_eroare, afiseaza_info, afiseaza_intrebare
+from utils import (afiseaza_warning, afiseaza_eroare, afiseaza_info,
+                   afiseaza_intrebare, input_zecimal)
 from permisiuni import poate_scrie, MESAJ_READONLY  # gardian scriere post-conversie RON
 import json
 
@@ -1121,7 +1122,7 @@ class GenerareLunaNouaWidget(QWidget):
         current_permille = (
                 self.loan_interest_rate_on_extinction * 1000
         ).quantize(Decimal("0.1"), ROUND_HALF_UP)
-        new_permille, ok = QInputDialog.getDouble(
+        new_permille, ok = input_zecimal(
             self,
             "Modifică Rata Dobândă Stingere",
             "Introduceți noua rată (‰):",
