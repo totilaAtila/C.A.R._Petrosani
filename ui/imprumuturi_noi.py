@@ -12,6 +12,9 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QColor
 from PyQt5.QtCore import Qt, QTimer
 
+# REDESIGN: sursa unică de stil. Doar aspect — nicio logică atinsă.
+from ui.palette import P, RADIUS, table
+
 if getattr(sys, 'frozen', False):
     BASE_RESOURCE_PATH = os.path.dirname(sys.executable)
 else:
@@ -314,15 +317,15 @@ class ImprumuturiNoiWidget(QWidget):
         # Label descriptiv pentru modul curent
         self.mode_description = QLabel()
         self.mode_description.setWordWrap(True)
-        self.mode_description.setStyleSheet("""
-            QLabel {
+        self.mode_description.setStyleSheet(f"""
+            QLabel {{
                 font-size: 9px;
                 color: #555;
                 padding: 4px 6px;
-                background-color: #f0f0f0;
+                background-color: {P.PANEL_2};
                 border-radius: 3px;
-                border-left: 3px solid #3498db;
-            }
+                border-left: 3px solid {P.INFO};
+            }}
         """)
         self._update_mode_description()
         main_layout.addWidget(self.mode_description)
@@ -351,42 +354,17 @@ class ImprumuturiNoiWidget(QWidget):
         self.table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
 
         # Stilizare tabel
-        self.table.setStyleSheet("""
-            QTableWidget {
-                background-color: white;
-                border: 1px solid #bdc3c7;
-                border-radius: 5px;
-                gridline-color: #ecf0f1;
-                font-size: 10px;
-            }
-            QTableWidget::item {
-                padding: 6px;
-                color: #2c3e50;
-                background-color: white;
-            }
-            QTableWidget::item:hover {
-                background-color: #e8f4f8;
-            }
-            QTableWidget::item:alternate {
-                background-color: #f8f9fa;
-            }
-            QTableWidget::item:selected {
-                background-color: #3498db !important;
-                color: #2c3e50 !important;
-                border: none;
-            }
-            QTableWidget::item:selected:alternate {
-                background-color: #3498db !important;
-                color: #2c3e50 !important;
-            }
-            QHeaderView::section {
-                background-color: #34495e;
-                color: white;
-                padding: 6px;
-                border: none;
-                font-weight: bold;
-                font-size: 10px;
-            }
+        # Fabrica table() din paleta: acelasi antet, aceleasi randuri zebra si
+        # aceeasi selectie ca in toate celelalte tabele ale aplicatiei.
+        # Inainte, antetul era aproape negru iar selectia albastra cu text inchis
+        # peste ea — greu de citit si diferita de restul ecranelor.
+        # Se pastreaza densitatea specifica acestui tabel (font mic, padding mic).
+        # Nota: '!important' din varianta veche nu facea nimic — Qt nu il suporta.
+        self.table.setStyleSheet(table() + f"""
+            QTableWidget {{ font-size: 10px; }}
+            QTableWidget::item {{ padding: 6px; }}
+            QHeaderView::section {{ padding: 6px; font-size: 10px; }}
+            QTableWidget::item:hover {{ background-color: {P.PANEL_2}; }}
         """)
 
         # Conectare semnal pentru click pe celule - copiere automată în clipboard
@@ -403,19 +381,19 @@ class ImprumuturiNoiWidget(QWidget):
 
         # Buton actualizare
         self.btn_refresh = QPushButton("Actualizează")
-        self.btn_refresh.setStyleSheet(self._get_button_style("#3498db"))
+        self.btn_refresh.setStyleSheet(self._get_button_style(P.INFO))
         self.btn_refresh.clicked.connect(self.refresh_data)
         self.btn_refresh.setFixedHeight(32)
 
         # Buton salvare
         self.btn_save = QPushButton("Salvează")
-        self.btn_save.setStyleSheet(self._get_button_style("#27ae60"))
+        self.btn_save.setStyleSheet(self._get_button_style(P.POSITIVE))
         self.btn_save.clicked.connect(self.save_status)
         self.btn_save.setFixedHeight(32)
 
         # Buton ștergere
         self.btn_delete = QPushButton("Șterge")
-        self.btn_delete.setStyleSheet(self._get_button_style("#e74c3c"))
+        self.btn_delete.setStyleSheet(self._get_button_style(P.DANGER))
         self.btn_delete.clicked.connect(self.delete_list)
         self.btn_delete.setFixedHeight(32)
 
@@ -426,14 +404,14 @@ class ImprumuturiNoiWidget(QWidget):
 
         # Pictogramă info cu tooltip
         self.info_icon = QLabel("ℹ️")
-        self.info_icon.setStyleSheet("""
-            QLabel {
+        self.info_icon.setStyleSheet(f"""
+            QLabel {{
                 font-size: 18px;
                 padding: 5px;
-                background-color: #e8f4f8;
+                background-color: {P.PANEL_2};
                 border-radius: 12px;
-                border: 1px solid #3498db;
-            }
+                border: 1px solid {P.INFO};
+            }}
         """)
         self.info_icon.setFixedSize(28, 28)
         self.info_icon.setAlignment(Qt.AlignCenter)
@@ -463,35 +441,35 @@ class ImprumuturiNoiWidget(QWidget):
     def _update_toggle_styles(self):
         """Actualizează stilurile butoanelor toggle în funcție de starea lor"""
         # Stil pentru buton activ
-        active_style = """
-            QPushButton {
-                background-color: #3498db;
+        active_style = f"""
+            QPushButton {{
+                background-color: {P.INFO};
                 color: white;
                 border: none;
                 border-radius: 0px;
                 padding: 6px 12px;
                 font-weight: bold;
                 font-size: 10px;
-            }
-            QPushButton:hover {
-                background-color: #2980b9;
-            }
+            }}
+            QPushButton:hover {{
+                background-color: {P.INFO};
+            }}
         """
 
         # Stil pentru buton inactiv
-        inactive_style = """
-            QPushButton {
-                background-color: #ecf0f1;
+        inactive_style = f"""
+            QPushButton {{
+                background-color: {P.PANEL_2};
                 color: #555;
-                border: 1px solid #bdc3c7;
+                border: 1px solid {P.LINE};
                 border-radius: 0px;
                 padding: 6px 12px;
                 font-weight: normal;
                 font-size: 10px;
-            }
-            QPushButton:hover {
-                background-color: #d5dbdb;
-            }
+            }}
+            QPushButton:hover {{
+                background-color: {P.LINE};
+            }}
         """
 
         # Rotunjim colțurile exterioare
@@ -550,9 +528,9 @@ class ImprumuturiNoiWidget(QWidget):
         return f"""
             QPushButton {{
                 background-color: {color};
-                color: black;
+                color: {P.WHITE};
                 border: none;
-                border-radius: 4px;
+                border-radius: {RADIUS.SM};
                 padding: 6px 12px;
                 font-weight: bold;
                 font-size: 10px;

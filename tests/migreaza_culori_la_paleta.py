@@ -52,7 +52,7 @@ def _adauga(token, *hexuri):
 _adauga("PANEL_2", "#f8f9fa", "#ecf0f1", "#e9ecef", "#f0f0f0", "#eeeeee")
 _adauga("PANEL", "#ffffff")
 # Borduri
-_adauga("LINE", "#dee2e6", "#bdc3c7", "#adb5bd", "#d0d0d0", "#e0e0e0")
+_adauga("LINE", "#dee2e6", "#bdc3c7", "#adb5bd", "#d0d0d0", "#e0e0e0", "#d5dbdb")
 # Text
 _adauga("INK", "#2c3e50", "#34495e", "#333333", "#37474f")
 _adauga("MUTED", "#495057")
