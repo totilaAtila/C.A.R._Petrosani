@@ -16,6 +16,9 @@ import glob
 from utils import afiseaza_warning, afiseaza_eroare, afiseaza_info, afiseaza_intrebare
 from dialog_styles import get_dialog_stylesheet
 
+# Paleta unica de stil (redesign "Glass Verde"). Doar culori/tokeni, fara logica.
+from ui.palette import P, RADIUS
+
 
 class BackupWorker(QThread):
     """Thread pentru operațiile de backup în background"""
@@ -253,160 +256,167 @@ class OperatiuniSalvareWidget(QWidget):
         main_layout.addWidget(status_frame, 6)  # 60% width
 
     def _apply_styles(self):
-        self.setStyleSheet("""
-            QLabel#titleLabel {
+        # Re-tematizare pe paleta unica (verde). Geometria (padding/font/min)
+        # ramane; se schimba doar culorile -> tokeni. Rol butoane pastrat prin
+        # culoare semantica: backup=ACCENT, restore=INFO, delete=DANGER,
+        # verifica=WARNING, actiuni utilitare=NEUTRAL.
+        self.setStyleSheet(f"""
+            QLabel#titleLabel {{
                 font-size: 16pt;
                 font-weight: bold;
-                color: #2c3e50;
+                color: {P.INK};
                 margin-bottom: 5px;
-            }
-            QLabel#timeLabel {
+            }}
+            QLabel#timeLabel {{
                 font-size: 12pt;
-                color: #7f8c8d;
+                color: {P.FAINT};
                 margin-bottom: 5px;
-            }
-            QLabel#directoryLabel {
+            }}
+            QLabel#directoryLabel {{
                 font-size: 10pt;
-                color: #34495e;
-                background-color: #ecf0f1;
+                color: {P.MUTED};
+                background-color: {P.PANEL_2};
                 padding: 8px;
-                border-radius: 5px;
-                border: 1px solid #bdc3c7;
-            }
-            QFrame#controlFrame, QFrame#statusFrame {
-                border: 2px solid #3498db;
-                border-radius: 10px;
-                background-color: #f8f9fa;
+                border-radius: {RADIUS.SM};
+                border: 1px solid {P.LINE};
+            }}
+            QFrame#controlFrame, QFrame#statusFrame {{
+                border: 1px solid {P.LINE};
+                border-radius: {RADIUS.LG};
+                background-color: {P.PANEL_2};
                 padding: 10px;
-            }
-            QGroupBox {
+            }}
+            QGroupBox {{
                 font-size: 12pt;
                 font-weight: bold;
-                color: #2c3e50;
-                border: 2px solid #bdc3c7;
-                border-radius: 8px;
+                color: {P.INK};
+                border: 1px solid {P.LINE};
+                border-radius: {RADIUS.MD};
                 margin-top: 10px;
                 padding-top: 10px;
-            }
-            QGroupBox::title {
+            }}
+            QGroupBox::title {{
                 subcontrol-origin: margin;
                 left: 10px;
                 padding: 0 10px 0 10px;
-                background-color: #f8f9fa;
-            }
-            QPushButton#backupButton {
-                background-color: #27ae60;
-                color: white;
-                border: 1px solid #229954;
-                border-radius: 8px;
+                background-color: {P.PANEL_2};
+                color: {P.MUTED};
+            }}
+            QPushButton#backupButton {{
+                background-color: {P.ACCENT};
+                color: {P.WHITE};
+                border: 1px solid {P.ACCENT_DEEP};
+                border-radius: {RADIUS.MD};
                 padding: 12px;
                 font-size: 11pt;
                 font-weight: bold;
                 min-height: 20px;
-            }
-            QPushButton#backupButton:hover {
-                background-color: #229954;
-            }
-            QPushButton#restoreButton {
-                background-color: #3498db;
-                color: white;
-                border: 1px solid #2980b9;
-                border-radius: 8px;
+            }}
+            QPushButton#backupButton:hover {{
+                background-color: {P.ACCENT_DEEP};
+            }}
+            QPushButton#restoreButton {{
+                background-color: {P.INFO};
+                color: {P.WHITE};
+                border: 1px solid {P.INFO_DEEP};
+                border-radius: {RADIUS.MD};
                 padding: 12px;
                 font-size: 11pt;
                 font-weight: bold;
                 min-height: 20px;
-            }
-            QPushButton#restoreButton:hover {
-                background-color: #2980b9;
-            }
-            QPushButton#deleteYearButton {
-                background-color: #e74c3c;
-                color: white;
-                border: 1px solid #c0392b;
-                border-radius: 8px;
+            }}
+            QPushButton#restoreButton:hover {{
+                background-color: {P.INFO_DEEP};
+            }}
+            QPushButton#deleteYearButton {{
+                background-color: {P.DANGER};
+                color: {P.WHITE};
+                border: 1px solid {P.DANGER_DEEP};
+                border-radius: {RADIUS.MD};
                 padding: 12px;
                 font-size: 11pt;
                 font-weight: bold;
                 min-height: 20px;
-            }
-            QPushButton#deleteYearButton:hover {
-                background-color: #c0392b;
-            }
-            QPushButton#checkIntegrityButton {
-                background-color: #f39c12;
-                color: white;
-                border: 1px solid #e67e22;
-                border-radius: 8px;
+            }}
+            QPushButton#deleteYearButton:hover {{
+                background-color: {P.DANGER_DEEP};
+            }}
+            QPushButton#checkIntegrityButton {{
+                background-color: {P.WARNING};
+                color: {P.WHITE};
+                border: 1px solid {P.WARNING_DEEP};
+                border-radius: {RADIUS.MD};
                 padding: 12px;
                 font-size: 11pt;
                 font-weight: bold;
                 min-height: 20px;
-            }
-            QPushButton#checkIntegrityButton:hover {
-                background-color: #e67e22;
-            }
-            QPushButton#changeDirButton, QPushButton#refreshButton, QPushButton#openFolderButton {
-                background-color: #95a5a6;
-                color: white;
-                border: 1px solid #7f8c8d;
-                border-radius: 6px;
+            }}
+            QPushButton#checkIntegrityButton:hover {{
+                background-color: {P.WARNING_DEEP};
+            }}
+            QPushButton#changeDirButton, QPushButton#refreshButton, QPushButton#openFolderButton {{
+                background-color: {P.NEUTRAL};
+                color: {P.WHITE};
+                border: 1px solid {P.NEUTRAL_DEEP};
+                border-radius: {RADIUS.SM};
                 padding: 8px 16px;
                 font-size: 10pt;
                 font-weight: bold;
                 min-height: 15px;
-            }
-            QPushButton#changeDirButton:hover, QPushButton#refreshButton:hover, QPushButton#openFolderButton:hover {
-                background-color: #7f8c8d;
-            }
-            QPushButton#clearLogButton {
-                background-color: #e74c3c;
-                color: white;
-                border: 1px solid #c0392b;
-                border-radius: 5px;
+            }}
+            QPushButton#changeDirButton:hover, QPushButton#refreshButton:hover, QPushButton#openFolderButton:hover {{
+                background-color: {P.NEUTRAL_DEEP};
+            }}
+            QPushButton#clearLogButton {{
+                background-color: {P.DANGER};
+                color: {P.WHITE};
+                border: 1px solid {P.DANGER_DEEP};
+                border-radius: {RADIUS.SM};
                 padding: 6px 12px;
                 font-size: 9pt;
                 font-weight: bold;
-            }
-            QPushButton#clearLogButton:hover {
-                background-color: #c0392b;
-            }
-            QPushButton#saveLogButton {
-                background-color: #27ae60;
-                color: white;
-                border: 1px solid #229954;
-                border-radius: 5px;
+            }}
+            QPushButton#clearLogButton:hover {{
+                background-color: {P.DANGER_DEEP};
+            }}
+            QPushButton#saveLogButton {{
+                background-color: {P.ACCENT};
+                color: {P.WHITE};
+                border: 1px solid {P.ACCENT_DEEP};
+                border-radius: {RADIUS.SM};
                 padding: 6px 12px;
                 font-size: 9pt;
                 font-weight: bold;
-            }
-            QPushButton#saveLogButton:hover {
-                background-color: #229954;
-            }
-            QListWidget#filesList {
-                border: 1px solid #bdc3c7;
-                border-radius: 5px;
-                background-color: #ffffff;
+            }}
+            QPushButton#saveLogButton:hover {{
+                background-color: {P.ACCENT_DEEP};
+            }}
+            QListWidget#filesList {{
+                border: 1px solid {P.LINE};
+                border-radius: {RADIUS.SM};
+                background-color: {P.PANEL};
                 font-size: 10pt;
                 padding: 5px;
                 min-height: 120px;
-            }
-            QListWidget#filesList::item {
+                color: {P.INK};
+            }}
+            QListWidget#filesList::item {{
                 padding: 5px;
-                border-bottom: 1px solid #ecf0f1;
-            }
-            QListWidget#filesList::item:selected {
-                background-color: #3498db;
-                color: white;
-            }
-            QTextEdit#logText {
-                border: 1px solid #bdc3c7;
-                border-radius: 5px;
-                background-color: #ffffff;
+                border-bottom: 1px solid {P.LINE_SOFT};
+            }}
+            QListWidget#filesList::item:selected {{
+                background-color: {P.ACCENT};
+                color: {P.WHITE};
+            }}
+            QTextEdit#logText {{
+                border: 1px solid {P.LINE};
+                border-radius: {RADIUS.SM};
+                background-color: {P.PANEL};
                 font-family: 'Courier New', monospace;
                 font-size: 9pt;
                 padding: 8px;
-            }
+                color: {P.INK};
+            }}
         """)
 
     def _update_time(self):
