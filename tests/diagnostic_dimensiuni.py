@@ -51,6 +51,9 @@ WIDGETURI = [
     ("Despre / Versiune",     "ui.despre",                  "DespreWidget"),
     ("Salvari",               "ui.salvari",                 "OperatiuniSalvareWidget"),
     ("Optimizare index",      "ui.optimizare_index",        "OptimizareIndexWidget"),
+    # Widget-uri din rădăcina proiectului, nu din ui/ — ușor de uitat la audit
+    ("CAR DBF Converter",     "car_dbf_converter_widget",   "CARDBFConverterWidget"),
+    ("Conversie RON->EUR",    "conversie_widget",           "ConversieWidget"),
 ]
 
 

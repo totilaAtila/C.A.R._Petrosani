@@ -803,9 +803,13 @@ class CARDBFConverterWidget(QWidget):
 
     def init_ui(self):
         """Inițializează interfața simplificată."""
+        # Densitate redusă intenționat: înălțimea naturală a acestui widget era
+        # 700 px, iar Qt o folosește ca minim al ferestrei principale, peste zona
+        # utilă a unui ecran de 768 px. S-au strâns doar marginile și spațierile —
+        # niciun câmp, buton sau grup nu a fost eliminat.
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(15, 15, 15, 15)
-        main_layout.setSpacing(20)
+        main_layout.setContentsMargins(12, 10, 12, 10)
+        main_layout.setSpacing(10)
 
         # Header simplu și compact
         title_label = QLabel("🔄 CAR DBF Converter")
@@ -821,7 +825,8 @@ class CARDBFConverterWidget(QWidget):
         control_frame = QFrame()
         control_frame.setObjectName("controlFrame")
         control_layout = QVBoxLayout(control_frame)
-        control_layout.setSpacing(15)
+        control_layout.setSpacing(8)
+        control_layout.setContentsMargins(9, 6, 9, 6)
 
         # Grupa director
         dir_group = QGroupBox("📂 Director de Lucru")
@@ -855,7 +860,7 @@ class CARDBFConverterWidget(QWidget):
         steps_group = QGroupBox("⚡ Operațiuni Principale")
         steps_group.setObjectName("stepsGroup")
         steps_layout = QGridLayout(steps_group)
-        steps_layout.setSpacing(10)
+        steps_layout.setSpacing(5)
 
         # Pas 1
         self.step1_btn = QPushButton("1️⃣ Verifică Fișierele")
