@@ -995,7 +995,11 @@ class CARApp(QMainWindow):
     # ===== MODIFICARE 1: Constantă pentru meniuri protejate =====
     # Meniuri care necesită permisiuni de scriere în baze de date
     WRITE_PROTECTED_MENUS = [
-        "Actualizări",      # Submeniu întreg: Adăugare, Sume lunare, Lichidare, Ștergere, Dividende
+        # "Actualizări" NU mai e blocat la nivel de meniu: accesul e permis si in
+        # RON post-conversie (vizualizare istoric), iar scrierile efective sunt
+        # blocate la write-time de gardianul poate_scrie() din fiecare ecran
+        # (adaugare / sume_lunare / lichidare / stergere). Astfel "Verificare fise"
+        # (doar-citire) ramane accesibila in RON dupa mutarea ei in acest submeniu.
         "Generare lună",    # Operațiuni INSERT masive pentru lună nouă
         "Optimizare baze"   # Operațiuni structurale VACUUM/REINDEX
     ]
@@ -1476,9 +1480,9 @@ class CARApp(QMainWindow):
         if sender_name in ["Actualizări", "Vizualizări"]:
             submenu_items = []
             if sender_name == "Actualizări":
-                submenu_items = ["Adăugare membru", "Sume lunare", "Lichidare membru", "Ștergere membru", "Dividende"]
+                submenu_items = ["Adăugare membru", "Sume lunare", "Lichidare membru", "Ștergere membru", "Verificare fișe"]
             elif sender_name == "Vizualizări":
-                submenu_items = ["Situație lunară", "Situație trimestrială", "Situație anuală", "Verificare fișe",
+                submenu_items = ["Situație lunară", "Situație trimestrială", "Situație anuală", "Dividende",
                                  "Afișare membri inactivi"]
             self.load_submenu(submenu_items)
         elif sender_name == "Listări":
