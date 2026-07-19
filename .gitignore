@@ -60,3 +60,10 @@ MEMBRII.db
 dual_currency.json
 car_settings.json
 fix.patch
+
+# Baze de date - NU se comit niciodata (nici cele de productie, nici cele de test)
+# Bazele de test se regenereaza: python tests/genereaza_baze_test.py
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
