@@ -611,9 +611,9 @@ class TranzactieDialog(QDialog):
             """
 
             update_params = (
-                new_dobanda, new_impr_deb, new_impr_cred,
-                recalculated_impr_sold, new_dep_deb, new_dep_cred,
-                recalculated_dep_sold, self._loaded_nr_fisa, luna, anul
+                str(new_dobanda), str(new_impr_deb), str(new_impr_cred),
+                str(recalculated_impr_sold), str(new_dep_deb), str(new_dep_cred),
+                str(recalculated_dep_sold), self._loaded_nr_fisa, luna, anul
             )
 
             cursor.execute(update_query, update_params)
@@ -1328,7 +1328,7 @@ class SumeLunareWidget(QWidget):
             # Actualizăm cotizație standard în tabela membrii
             cursor.execute(
                 "UPDATE membrii SET COTIZATIE_STANDARD = ? WHERE NR_FISA = ?",
-                (noua_cotizatie, nr_fisa)
+                (str(noua_cotizatie), nr_fisa)
             )
 
             if cursor.rowcount == 0:
@@ -1540,8 +1540,8 @@ class SumeLunareWidget(QWidget):
 
                 # 4. Actualizăm înregistrarea existentă în DB cu noile solduri
                 update_params = {
-                    "isold": recalc_impr_sold,
-                    "dsold": recalc_dep_sold,
+                    "isold": str(recalc_impr_sold),
+                    "dsold": str(recalc_dep_sold),
                     "fisa": nr_fisa,
                     "luna": current_luna,
                     "anul": current_anul
@@ -2663,9 +2663,9 @@ class SumeLunareWidget(QWidget):
             """
 
             update_params = (
-                new_dobanda, new_impr_deb, new_impr_cred,
-                recalculated_impr_sold, new_dep_deb, new_dep_cred,
-                recalculated_dep_sold, self._loaded_nr_fisa, luna, anul
+                str(new_dobanda), str(new_impr_deb), str(new_impr_cred),
+                str(recalculated_impr_sold), str(new_dep_deb), str(new_dep_cred),
+                str(recalculated_dep_sold), self._loaded_nr_fisa, luna, anul
             )
 
             cursor.execute(update_query, update_params)
