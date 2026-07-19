@@ -101,6 +101,36 @@ def main():
     from dialog_styles import apply_global_dialog_styles
     apply_global_dialog_styles(app)
 
+    # ✨ BUTOANE VIZIBILE ÎN QMessageBox (fix global)
+    # Pe Windows, stilul aplicat la nivel de APLICAȚIE nu comută butoanele native
+    # QMessageBox în modul stilizat (fundalul și chenarul lor nu se randează ->
+    # butoanele apar doar ca text, fără cutie). Aplicat DIRECT pe instanța de
+    # dialog, se randează corect. Suprascriem metodele statice QMessageBox.* ca
+    # să creeze un box cu stilul aplicat direct — o singură intervenție repară
+    # toate apelurile brute din aplicație. (Aplicația deja face monkey-patch la
+    # __import__ pentru sistemul EUR, deci tiparul e consistent cu codul.)
+    from PyQt5.QtWidgets import QMessageBox as _QMB
+    from dialog_styles import get_dialog_stylesheet as _dlg_ss
+
+    def _styled_static(_icon, _default_buttons):
+        def _f(parent=None, title="", text="",
+               buttons=_default_buttons, defaultButton=_QMB.NoButton):
+            box = _QMB(parent)
+            box.setIcon(_icon)
+            box.setWindowTitle(title)
+            box.setText(text)
+            box.setStandardButtons(buttons)
+            if defaultButton != _QMB.NoButton:
+                box.setDefaultButton(defaultButton)
+            box.setStyleSheet(_dlg_ss())
+            return box.exec_()
+        return staticmethod(_f)
+
+    _QMB.information = _styled_static(_QMB.Information, _QMB.Ok)
+    _QMB.warning     = _styled_static(_QMB.Warning,     _QMB.Ok)
+    _QMB.critical    = _styled_static(_QMB.Critical,    _QMB.Ok)
+    _QMB.question    = _styled_static(_QMB.Question,    _QMB.Yes | _QMB.No)
+
     # ===== INTEGRARE SECURITATE: Verificări la pornire =====
     # 1. Curățare baze de date expuse din crash-uri anterioare
     if not cleanup_exposed_database():
