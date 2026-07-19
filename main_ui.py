@@ -1041,7 +1041,11 @@ class CARApp(QMainWindow):
         self._update_menu_write_permissions()
 
         # Reîncarcă widget-ul curent dacă este sensibil la monedă
-        if hasattr(self, 'current_submenu_text') and self.current_submenu_text:
+        if hasattr(self, 'statistici_widget') and self.content_area.currentWidget() is self.statistici_widget:
+            # Statistici e ecranul-acasă (current_submenu_text=None), deci ramurile de mai jos
+            # îl săreau: reîmprospătează-l direct ca sumele să reflecte moneda nouă.
+            self.statistici_widget.load_data()
+        elif hasattr(self, 'current_submenu_text') and self.current_submenu_text:
             self.on_submenu_clicked(self.current_submenu_text, force_reload=True)
         elif any(btn.is_active for btn in self.menu_buttons.values() if btn.text().endswith("Listări")):
             self.menu_buttons["Listări"].click()
