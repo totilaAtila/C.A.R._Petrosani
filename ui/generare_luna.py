@@ -1108,6 +1108,9 @@ class GenerareLunaNouaWidget(QWidget):
 
     def _modify_loan_rate_on_extinction(self) -> None:
         """Modifică rata dobânzii aplicată la lichidarea împrumutului."""
+        if not poate_scrie():
+            afiseaza_warning(MESAJ_READONLY, parent=self)
+            return
         current_permille = (
                 self.loan_interest_rate_on_extinction * 1000
         ).quantize(Decimal("0.1"), ROUND_HALF_UP)
