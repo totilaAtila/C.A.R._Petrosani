@@ -13,6 +13,10 @@ from ui.palette import P, RADIUS, FONT, table
 # Gardian scriere: blocheaza modificarile pe RON dupa conversie (doar-citire).
 from permisiuni import poate_scrie, MESAJ_READONLY
 
+# Dialog stilizat: stilul aplicat DIRECT pe box, ca butoanele sa fie vizibile pe
+# Windows (stilul app-level nu comuta butoanele native in mod stilizat).
+from utils import mesaj_box
+
 
 class MembriLichidatiWidget(QWidget):
     """Widget pentru afișarea membrilor cu date incomplete (lipsesc din luna anterioară ultimei luni procesate)."""
@@ -169,8 +173,8 @@ class MembriLichidatiWidget(QWidget):
 
             result = cursor_dep.fetchone()
             if not result:
-                QMessageBox.warning(self, "Nicio Lună Procesată",
-                                    "Nu s-au găsit luni procesate în DEPCRED.db.")
+                mesaj_box(self, QMessageBox.Warning, "Nicio Lună Procesată",
+                          "Nu s-au găsit luni procesate în DEPCRED.db.")
                 conn_dep.close()
                 progress_dialog.close()
                 return []
@@ -192,8 +196,8 @@ class MembriLichidatiWidget(QWidget):
             toti_membrii = cursor_m.fetchall()
 
             if not toti_membrii:
-                QMessageBox.warning(self, "Niciun Membru",
-                                    "Nu s-au găsit membri în MEMBRII.db.")
+                mesaj_box(self, QMessageBox.Warning, "Niciun Membru",
+                          "Nu s-au găsit membri în MEMBRII.db.")
                 conn_dep.close()
                 conn_membri.close()
                 progress_dialog.close()
@@ -272,11 +276,11 @@ class MembriLichidatiWidget(QWidget):
 
         except sqlite3.Error as e:
             progress_dialog.close()
-            QMessageBox.critical(self, "Eroare Baza de Date", f"Eroare la interogarea bazelor de date:\n{e}")
+            mesaj_box(self, QMessageBox.Critical, "Eroare Baza de Date", f"Eroare la interogarea bazelor de date:\n{e}")
             return []
         except Exception as e:
             progress_dialog.close()
-            QMessageBox.critical(self, "Eroare Generală", f"A apărut o eroare neașteptată:\n{e}")
+            mesaj_box(self, QMessageBox.Critical, "Eroare Generală", f"A apărut o eroare neașteptată:\n{e}")
             return []
 
     def reincarca_valuta(self):
@@ -344,14 +348,14 @@ class MembriLichidatiWidget(QWidget):
         # Gardian scriere: in modul RON post-conversie stergerea e interzisa
         # (arhiva RON e inghetata); modificarile se fac doar pe EUR.
         if not poate_scrie():
-            QMessageBox.warning(self, "Mod doar-citire", MESAJ_READONLY)
+            mesaj_box(self, QMessageBox.Warning, "Mod doar-citire", MESAJ_READONLY)
             return
 
         randuri_selectate = self.tabel.selectionModel().selectedRows()
 
         if not randuri_selectate:
-            QMessageBox.information(self, "Nicio Selecție",
-                                    "Vă rugăm să selectați cel puțin un membru din tabel pentru a-l șterge.")
+            mesaj_box(self, QMessageBox.Information, "Nicio Selecție",
+                      "Vă rugăm să selectați cel puțin un membru din tabel pentru a-l șterge.")
             return
 
         nr_fise_de_sters = []
@@ -370,16 +374,17 @@ class MembriLichidatiWidget(QWidget):
                 print(f"Warning: Could not retrieve item for nr_fisa at row {index.row()}")
 
         if not nr_fise_de_sters:
-            QMessageBox.warning(self, "Eroare Selecție",
-                                "Nu s-a putut identifica Nr. Fișă pentru rândurile selectate. Încercați din nou.")
+            mesaj_box(self, QMessageBox.Warning, "Eroare Selecție",
+                      "Nu s-a putut identifica Nr. Fișă pentru rândurile selectate. Încercați din nou.")
             return
 
         # Simplificăm dialogul de confirmare eliminând lista de nume
         mesaj = f"Sunteți absolut sigur că doriți să ștergeți definitiv {len(nr_fise_de_sters)} membri selectați?\n\n"
         mesaj += "Această acțiune este ireversibilă!"
 
-        confirm = QMessageBox.warning(
+        confirm = mesaj_box(
             self,
+            QMessageBox.Warning,
             "Confirmare Ștergere Permanentă",
             mesaj,
             QMessageBox.Yes | QMessageBox.Cancel,
@@ -429,18 +434,18 @@ class MembriLichidatiWidget(QWidget):
             progress_dialog.close()
 
             if not erori_stergere:
-                QMessageBox.information(self, "Succes", f"{succes_count} membri au fost șterși definitiv.")
+                mesaj_box(self, QMessageBox.Information, "Succes", f"{succes_count} membri au fost șterși definitiv.")
             else:
-                QMessageBox.warning(self, "Operație Finalizată cu Erori",
-                                    f"{succes_count} membri șterși cu succes.\n\n"
-                                    f"Au apărut {len(erori_stergere)} erori:\n" + "\n".join(erori_stergere))
+                mesaj_box(self, QMessageBox.Warning, "Operație Finalizată cu Erori",
+                          f"{succes_count} membri șterși cu succes.\n\n"
+                          f"Au apărut {len(erori_stergere)} erori:\n" + "\n".join(erori_stergere))
 
             self.incarca_date()
 
         except Exception as e:
             progress_dialog.close()
-            QMessageBox.critical(self, "Eroare Critică la Ștergere",
-                                 f"A apărut o eroare majoră în timpul procesului de ștergere:\n{e}")
+            mesaj_box(self, QMessageBox.Critical, "Eroare Critică la Ștergere",
+                      f"A apărut o eroare majoră în timpul procesului de ștergere:\n{e}")
             self.incarca_date()
 
 

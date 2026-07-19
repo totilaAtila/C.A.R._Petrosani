@@ -145,6 +145,33 @@ def afiseaza_intrebare(mesaj, titlu="Confirmare", parent=None, buton_default=QMe
         # În mod non-UI, returnăm implicit False (No)
         return False
 
+
+def mesaj_box(parent, icon, titlu, text, butoane=QMessageBox.Ok, buton_default=None):
+    """
+    QMessageBox stilizat, cu stilul aplicat DIRECT pe instanță (StyledMessageBox),
+    păstrând titlul custom, butoanele și valoarea returnată (butonul apăsat).
+
+    DE CE există: stilul aplicat la nivel de APLICAȚIE (selector descendent
+    'QMessageBox QPushButton') NU comută butoanele native Windows în modul
+    stilizat, așa că fundalul și chenarul lor nu se randează — butoanele apar
+    doar ca text, fără cutie. Aplicat DIRECT pe instanța de dialog, butoanele se
+    randează corect. Folosiți-l în locul apelurilor statice QMessageBox.warning/
+    information/critical când e nevoie de titlu propriu sau butoane custom.
+    """
+    if QApplication.instance():
+        box = StyledMessageBox(parent)
+        box.setIcon(icon)
+        box.setWindowTitle(titlu)
+        box.setText(text)
+        box.setStandardButtons(butoane)
+        if buton_default is not None:
+            box.setDefaultButton(buton_default)
+        return box.exec_()
+    else:
+        print(f"[{titlu}] {text}")
+        return QMessageBox.Ok
+
+
 class QTextEditLogger(logging.Handler):
     def __init__(self, text_edit_widget):
         super().__init__()
