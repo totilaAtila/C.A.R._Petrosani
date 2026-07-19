@@ -10,6 +10,9 @@ from PyQt5.QtWidgets import QMessageBox, QPushButton
 from PyQt5.QtGui import QIcon
 import sys
 
+# Paleta unica de stil (redesign "Glass Verde"). Doar culori/tokeni, fara logica.
+from ui.palette import P, RADIUS, FONT
+
 
 if getattr(sys, 'frozen', False):
     # Daca aplicatia este impachetata (ruleaza din executabil)
@@ -36,30 +39,32 @@ DB_LICHIDATI = os.path.join(BASE_RESOURCE_PATH, "LICHIDATI.db")
 # Configurare logging (opțional)
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Stil comun pentru QMessageBox-uri (încercare de consistență)
-DIALOG_STYLESHEET = """
-    QMessageBox {
-        background-color: #e8f1ff;
-        font-family: Arial;
+# Stil comun pentru QMessageBox-uri — aliniat la paleta unica (verde), ca sa fie
+# consistent cu dialog_styles.py. Doar culori -> tokeni; structura neschimbata.
+DIALOG_STYLESHEET = f"""
+    QMessageBox {{
+        background-color: {P.PANEL};
+        font-family: {FONT};
         font-size: 10pt;
-    }
-    QMessageBox QLabel#qt_msgbox_label { /* Țintește eticheta principală */
-        color: #333;
-    }
-    QMessageBox QPushButton {
-        background-color: #cce5ff;
-        border: 1px solid #3399ff;
+    }}
+    QMessageBox QLabel#qt_msgbox_label {{ /* Țintește eticheta principală */
+        color: {P.INK};
+    }}
+    QMessageBox QPushButton {{
+        background-color: {P.ACCENT_SOFT};
+        color: {P.ACCENT_DEEP};
+        border: 1px solid {P.ACCENT_LINE};
         padding: 8px 16px;
-        border-radius: 6px;
+        border-radius: {RADIUS.SM};
         min-width: 80px; /* Lățime minimă butoane */
-    }
-    QMessageBox QPushButton:hover {
-        background-color: #b3daff;
-    }
-    QMessageBox QPushButton:focus {
+    }}
+    QMessageBox QPushButton:hover {{
+        background-color: {P.ACCENT_PRESS};
+    }}
+    QMessageBox QPushButton:focus {{
         outline: none; /* Elimină conturul la focus */
-        border: 1px solid #0056b3; /* Evidențiază focusul subtil */
-    }
+        border: 1px solid {P.ACCENT}; /* Evidențiază focusul subtil */
+    }}
 """
 
 # --------------- DIALOG PERSONALIZAT (Da/Nu) ---------------
