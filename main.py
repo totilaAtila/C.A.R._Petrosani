@@ -80,15 +80,16 @@ def setup_early_database_patching():
 
 def main():
     """Punctul de intrare cu early database patching"""
+    # Atributele HiDPI trebuie setate ÎNAINTE de crearea QApplication, altfel Qt
+    # le ignoră ("must be set before QCoreApplication is created") și scalarea
+    # nu se aplică — de unde text tăiat în butoane pe ecrane cu scalare != 100%.
+    QApplication.setAttribute(Qt.AA_EnableHighDpiScaling, True)
+    QApplication.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
+
     app = QApplication(sys.argv)
     # ✨ APLICĂ STILURI GLOBALE PENTRU DIALOGURI
     from dialog_styles import apply_global_dialog_styles
     apply_global_dialog_styles(app)
-
-
-    # Setări pentru efecte mai bune
-    app.setAttribute(Qt.AA_EnableHighDpiScaling, True)
-    app.setAttribute(Qt.AA_UseHighDpiPixmaps, True)
 
     # ===== INTEGRARE SECURITATE: Verificări la pornire =====
     # 1. Curățare baze de date expuse din crash-uri anterioare
