@@ -4,16 +4,15 @@ import subprocess
 import platform
 from datetime import date
 import sys
-import tempfile
 from PyQt5.QtWidgets import (
     QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit,
     QPushButton, QMessageBox, QFileDialog, QFrame, QProgressBar,
     QSpinBox, QComboBox, QGroupBox, QGridLayout, QTableWidget, QTableWidgetItem,
     QHeaderView, QTextEdit, QTableView
 )
-from PyQt5.QtGui import QFont, QIntValidator, QPixmap, QIcon, QPainter, QColor, QPen, QBrush, QRadialGradient, \
+from PyQt5.QtGui import QIntValidator, \
     QStandardItemModel, QStandardItem
-from PyQt5.QtCore import Qt, QSize, QTimer, QPropertyAnimation, QEasingCurve, QRect, QThread, pyqtSignal, QTime, QDate
+from PyQt5.QtCore import Qt, QTimer, QTime
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics

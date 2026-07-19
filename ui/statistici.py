@@ -4,8 +4,8 @@ from PyQt5.QtWidgets import (
     QWidget, QLabel, QVBoxLayout, QGridLayout, QGroupBox, QHBoxLayout,
     QGraphicsDropShadowEffect, QFrame, QProgressBar, QSizePolicy, QApplication
 )
-from PyQt5.QtGui import QIcon, QFont, QPixmap, QPainter, QColor, QLinearGradient
-from PyQt5.QtCore import Qt, QTimer, QPropertyAnimation, QEasingCurve, QRect, QSize
+from PyQt5.QtGui import QIcon, QColor
+from PyQt5.QtCore import Qt, QTimer
 import sys
 import os
 

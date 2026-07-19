@@ -17,7 +17,7 @@ from PyQt5.QtWidgets import (
     QScrollArea, QMessageBox, QTableWidget, QTableWidgetItem, QComboBox,
     QHeaderView, QFileDialog
 )
-from PyQt5.QtGui import QCursor, QColor, QBrush
+from PyQt5.QtGui import QColor, QBrush
 from PyQt5.QtCore import Qt, QEvent
 from reportlab.lib.pagesizes import A4, landscape
 from reportlab.pdfgen import canvas

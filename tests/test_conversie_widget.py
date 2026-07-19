@@ -12,7 +12,6 @@ import sqlite3
 from decimal import Decimal, ROUND_HALF_UP
 from pathlib import Path
 import sys
-import os
 
 # Adaugă calea pentru import
 sys.path.insert(0, str(Path(__file__).parent.parent))

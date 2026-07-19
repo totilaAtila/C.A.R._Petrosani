@@ -11,14 +11,12 @@ import os
 import json
 import sqlite3
 import shutil
-import hashlib
 import re
 import subprocess
 import random
 import string
 from datetime import datetime, date
 from pathlib import Path
-from decimal import Decimal, InvalidOperation
 
 # PyQt imports
 try:

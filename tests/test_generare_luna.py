@@ -10,7 +10,6 @@ Testează:
 import pytest
 import sqlite3
 from decimal import Decimal, ROUND_HALF_UP
-from pathlib import Path
 
 
 class TestCalculSolduri:

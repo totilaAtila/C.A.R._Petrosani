@@ -64,17 +64,14 @@ class CurrencyLogic(QObject):
         # Actualizat pentru compatibilitate cu conversie_widget
         base_path = self._get_base_path()
 
-        # Numele canonic este dual_currency.json — el este scris de
-        # conversie_widget.py (_save_conversion_status) și citit de main_ui.py.
-        # Trebuie să fie PRIMUL: fallback-ul de la finalul funcției întoarce
-        # possible_config_files[0] ca fișier de creat, iar înainte acela era
-        # "conversion_config.json", un nume pe care nu îl citește nimeni —
-        # statusul conversiei s-ar fi scris unde nu se uită nicio componentă.
-        # Celelalte rămân doar pentru compatibilitate la citire.
+        # dual_currency.json este singurul nume real: scris de conversie_widget.py
+        # (_save_conversion_status), citit de main_ui.py și de acest modul.
+        # Lista continea si "conversion_config.json" si "car_conversion_config.json",
+        # nume pe care nu le scrie si nu le citeste nimic din proiect. Mai rau,
+        # primul dintre ele era intors ca fisier de creat de fallback-ul de mai jos,
+        # deci statusul conversiei s-ar fi scris unde nu se uita nicio componenta.
         possible_config_files = [
             "dual_currency.json",
-            "conversion_config.json",
-            "car_conversion_config.json"
         ]
 
         for config_file in possible_config_files:

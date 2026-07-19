@@ -4,7 +4,6 @@ from PyQt5.QtWidgets import (
     QTextEdit, QGroupBox, QListWidget, QSplitter, QListWidgetItem,
     QApplication, QSpacerItem, QSizePolicy
 )
-from PyQt5.QtGui import QIcon, QFont, QPixmap, QPainter, QColor
 from PyQt5.QtCore import Qt, QTimer, QThread, pyqtSignal
 import os
 import sys

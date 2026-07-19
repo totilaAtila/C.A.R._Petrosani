@@ -1,10 +1,9 @@
 import os
 import sqlite3
 import sys
-from datetime import datetime
 from decimal import Decimal, ROUND_HALF_UP, InvalidOperation
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtWidgets
 from PyQt5.QtCore import Qt, QStringListModel
 from PyQt5.QtGui import QFont
 from PyQt5.QtWidgets import (

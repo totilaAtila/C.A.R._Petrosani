@@ -9,8 +9,8 @@ from PyQt5.QtWidgets import (
     QGraphicsDropShadowEffect, QApplication, QAbstractItemView, QSizePolicy,
     QMainWindow
 )
-from PyQt5.QtGui import QFont, QColor, QIcon
-from PyQt5.QtCore import Qt, QTimer, QSize, QRect
+from PyQt5.QtGui import QColor
+from PyQt5.QtCore import Qt, QTimer
 
 if getattr(sys, 'frozen', False):
     BASE_RESOURCE_PATH = os.path.dirname(sys.executable)

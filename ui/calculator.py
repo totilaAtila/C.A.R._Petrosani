@@ -3,12 +3,9 @@ from PyQt5.QtWidgets import (
     QPushButton, QLineEdit, QLabel, QFrame, QFileDialog,
     QMessageBox, QTextEdit, QSizePolicy
 )
-from PyQt5.QtGui import QIcon, QFont, QKeySequence
 from PyQt5.QtCore import Qt, QTimer
 import math
-import subprocess
 import sys
-import os
 from datetime import datetime
 
 # REDESIGN: sursa unică de stil. Doar aspect — nicio logică atinsă.

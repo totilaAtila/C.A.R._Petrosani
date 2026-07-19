@@ -15,7 +15,7 @@ from PyQt5.QtWidgets import (
     QSpacerItem, QGridLayout, QCheckBox
 )
 from PyQt5.QtCore import Qt, QThread, pyqtSignal
-from PyQt5.QtGui import QFont, QDoubleValidator
+from PyQt5.QtGui import QDoubleValidator
 from decimal import Decimal, ROUND_HALF_UP, InvalidOperation
 from datetime import datetime
 

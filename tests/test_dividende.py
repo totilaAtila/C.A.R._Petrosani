@@ -416,7 +416,6 @@ class TestExportExcel:
     def test_openpyxl_nu_este_folosit(self):
         """Test că openpyxl NU este folosit (BUG #10 fix)"""
         # Verificăm că dividende.py nu importă openpyxl
-        import sys
         from pathlib import Path
 
         # Citește fișierul dividende.py

@@ -23,7 +23,6 @@ Atinge exclusiv literali string care conțin culori. Nu se apropie de cod.
 """
 import argparse
 import ast
-import io
 import re
 import sys
 from pathlib import Path

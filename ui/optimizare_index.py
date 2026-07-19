@@ -19,7 +19,6 @@ from PyQt5.QtWidgets import (
     QPushButton, QMessageBox, QFileDialog, QFrame, QProgressBar,
     QGroupBox, QGridLayout, QListWidget, QTextEdit, QSplitter
 )
-from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtCore import Qt, QTimer, QTime, QThread, pyqtSignal
 
 
@@ -217,10 +216,6 @@ class DatabaseIndexer(QThread):
                 "CREATE INDEX IF NOT EXISTS idx_depcred_compound ON DEPCRED(NR_FISA, ANUL, LUNA);",
                 "CREATE INDEX IF NOT EXISTS idx_depcred_fisa ON DEPCRED(NR_FISA);",
                 "CREATE INDEX IF NOT EXISTS idx_depcred_perioada ON DEPCRED(ANUL, LUNA);"
-            ],
-            "depcredm.db": [
-                "CREATE INDEX IF NOT EXISTS idx_depcredm_compound ON DEPCREDM(NR_FISA, ANUL, LUNA);",
-                "CREATE INDEX IF NOT EXISTS idx_depcredm_fisa ON DEPCREDM(NR_FISA);"
             ],
             "activi.db": [
                 "CREATE INDEX IF NOT EXISTS idx_activi_numpren ON ACTIVI(NUM_PREN);",

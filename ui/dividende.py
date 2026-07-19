@@ -10,10 +10,10 @@ from PyQt5.QtWidgets import (
     QTableWidget, QTableWidgetItem, QLineEdit, QMessageBox, QHeaderView,
     QFileDialog, QApplication, QProgressDialog
 )
-from PyQt5.QtCore import Qt, QTimer, QLocale
+from PyQt5.QtCore import Qt, QLocale
 from PyQt5.QtGui import QBrush, QColor, QCursor, QDoubleValidator
 import xlsxwriter
-from utils import afiseaza_warning, afiseaza_eroare, afiseaza_info, afiseaza_intrebare, ProgressDialog
+from utils import afiseaza_info, ProgressDialog
 
 # Determina calea catre resurse (baze de date) la rulare
 if getattr(sys, 'frozen', False):

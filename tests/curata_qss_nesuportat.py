@@ -25,7 +25,6 @@ Elimină DOAR declarații QSS. Nu atinge cod Python: un `cursor` de bază de dat
 `proprietate: valoare;`. Rulează întâi fără --scrie și citește raportul.
 """
 import argparse
-import io
 import re
 import sys
 from pathlib import Path

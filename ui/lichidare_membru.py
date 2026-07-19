@@ -5,7 +5,7 @@ import sys
 import logging
 from datetime import datetime
 
-from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import (
     QWidget, QLabel, QPushButton, QVBoxLayout, QHBoxLayout, QMessageBox, QCheckBox,
     QApplication, QMainWindow, QFrame, QGridLayout, QLineEdit, QScrollArea,

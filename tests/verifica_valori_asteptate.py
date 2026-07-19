@@ -84,11 +84,26 @@ def coloane(conn, tabel):
     return [r[1] for r in conn.execute(f"PRAGMA table_info({tabel})")]
 
 
+def exista_reala(cale: Path) -> bool:
+    """
+    Fișier prezent ȘI nevid.
+
+    ATENȚIE: sqlite3.connect(cale) CREEAZĂ fișierul dacă lipsește. Fără această
+    verificare, simpla rulare a acestui script fabrica baze goale pe disc — iar
+    security_manager le-ar fi raportat apoi drept 'baze neprotejate detectate'.
+    Verificăm întotdeauna existența înainte de a deschide o conexiune.
+    """
+    return cale.exists() and cale.stat().st_size > 0
+
+
 def verifica_structura(baza: Path, rap: Raport):
     for fisier, (tabel, cols_asteptate) in SCHEME_ASTEPTATE.items():
         cale = baza / fisier
-        if not cale.exists():
-            rap.eroare(f"[structura] lipsește {fisier}")
+        if not exista_reala(cale):
+            lipsa = "lipsește" if not cale.exists() else "este gol (0 octeți)"
+            rap.eroare(f"[structura] {fisier} {lipsa}"
+                       + (" — probabil e în MEMBRII.zip; porniți aplicația pentru extragere"
+                          if fisier.startswith("MEMBRII") else ""))
             continue
         with sqlite3.connect(cale) as conn:
             cols = coloane(conn, tabel)
@@ -101,7 +116,7 @@ def verifica_structura(baza: Path, rap: Raport):
 
     # verificarea critica: DEPCRED trebuie sa aiba fix 11 coloane
     cale = baza / "DEPCRED.db"
-    if cale.exists():
+    if exista_reala(cale):
         with sqlite3.connect(cale) as conn:
             n = len(coloane(conn, "DEPCRED"))
         if n != 11:
@@ -116,7 +131,7 @@ def verifica_structura(baza: Path, rap: Raport):
 
 def verifica_recurente(baza: Path, rap: Raport):
     cale = baza / "DEPCRED.db"
-    if not cale.exists():
+    if not exista_reala(cale):
         return
     with sqlite3.connect(cale) as conn:
         randuri = conn.execute(
@@ -176,7 +191,7 @@ def verifica_prima(baza: Path, rap: Raport):
     Deci: o singură perioadă poate avea prima=1, și trebuie să fie ultima.
     """
     cale = baza / "DEPCRED.db"
-    if not cale.exists():
+    if not exista_reala(cale):
         return
     with sqlite3.connect(cale) as c:
         active = c.execute(
@@ -207,7 +222,7 @@ def verifica_prima(baza: Path, rap: Raport):
 
 def verifica_integritate(baza: Path, rap: Raport):
     m, dp = baza / "MEMBRII.db", baza / "DEPCRED.db"
-    if not (m.exists() and dp.exists()):
+    if not (exista_reala(m) and exista_reala(dp)):
         return
     with sqlite3.connect(m) as c:
         fise_membrii = {r[0] for r in c.execute("SELECT NR_FISA FROM MEMBRII")}
@@ -225,8 +240,20 @@ def verifica_integritate(baza: Path, rap: Raport):
 def verifica_eur(baza: Path, rap: Raport):
     for f_ron, f_eur, tabel, chei, cols in PERECHI_EUR:
         c_ron, c_eur = baza / f_ron, baza / f_eur
-        if not (c_ron.exists() and c_eur.exists()):
-            rap.eroare(f"[eur] lipsește {f_ron} sau {f_eur}")
+        # Cu --fara-eur, setul EUR sta in tests/eur_referinta, ca sa lase radacina
+        # libera pentru conversia facuta de aplicatie. Il cautam si acolo.
+        if not exista_reala(c_eur):
+            alternativ = Path(__file__).resolve().parent / "eur_referinta" / f_eur
+            if exista_reala(alternativ):
+                c_eur = alternativ
+        if not (exista_reala(c_ron) and exista_reala(c_eur)):
+            unde = []
+            if not exista_reala(c_ron):
+                unde.append(f_ron)
+            if not exista_reala(c_eur):
+                unde.append(f_eur)
+            rap.nota(f"[eur] sarit: lipsesc {', '.join(unde)} "
+                     f"(normal inainte de conversie)")
             continue
         sel = f"SELECT {chei}, {', '.join(cols)} FROM {tabel} ORDER BY {chei}"
         with sqlite3.connect(c_ron) as a, sqlite3.connect(c_eur) as b:

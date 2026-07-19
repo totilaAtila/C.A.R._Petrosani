@@ -4,11 +4,10 @@ import traceback
 import logging
 from PyQt5.QtCore import QObject, QRunnable, pyqtSignal, pyqtSlot, QThreadPool
 from PyQt5.QtCore import Qt, QMetaObject, Q_ARG
-from PyQt5.QtWidgets import QMessageBox, QDialogButtonBox, QVBoxLayout, QLabel, QDialog, QApplication
-from PyQt5.QtGui import QFont, QPixmap
+from PyQt5.QtWidgets import QMessageBox, QApplication
 # Adăugare în utils.py
 from PyQt5.QtWidgets import QProgressDialog
-from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtCore import Qt
 from dialog_styles import get_dialog_stylesheet
 
 

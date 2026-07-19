@@ -6,10 +6,8 @@ import sqlite3 # Added import for sqlite3
 import glob    # Added import for glob to find db files
 from datetime import datetime
 from decimal import Decimal, InvalidOperation
-from PyQt5.QtWidgets import QMessageBox, QApplication, QPushButton
-from PyQt5.QtGui import QPixmap, QIcon
-from PyQt5.QtCore import Qt
-import glob
+from PyQt5.QtWidgets import QMessageBox, QPushButton
+from PyQt5.QtGui import QIcon
 import sys
 
 

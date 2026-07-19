@@ -20,8 +20,7 @@ from PyQt5.QtWidgets import (
     QFileDialog
 )
 from PyQt5.QtCore import Qt, QTimer, QMetaObject, Q_ARG, QObject, pyqtSignal
-from PyQt5.QtGui import QCursor
-from typing import Optional, Callable, Any
+from typing import Optional, Callable
 from pathlib import Path
 from utils import afiseaza_warning, afiseaza_eroare, afiseaza_info, afiseaza_intrebare
 import json

@@ -1,4 +1,4 @@
-﻿# -*- coding: utf-8 -*-
+# -*- coding: utf-8 -*-
 """
 C.A.R. Petroșani - Interface cu Teme Plastic și Preview Real-Time + Conversie RON->EUR
 Versiunea completă cu monkey patching condițional pentru comutare dinamică RON/EUR
@@ -62,11 +62,9 @@ except ImportError:
 
 # --- Importuri standard Python ---
 import sqlite3
-import subprocess
 import sys
 import json
 import os
-import importlib
 from pathlib import Path
 import inspect
 

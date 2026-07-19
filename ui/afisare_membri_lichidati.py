@@ -5,7 +5,6 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt
 import sqlite3
-from datetime import datetime
 from decimal import Decimal, ROUND_HALF_UP
 
 

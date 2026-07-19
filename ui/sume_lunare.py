@@ -5,7 +5,6 @@ import os
 import sqlite3
 import logging
 import traceback
-from datetime import datetime
 import decimal
 from decimal import Decimal, ROUND_HALF_UP, ROUND_UP, InvalidOperation
 import json
@@ -29,7 +28,7 @@ from utils import afiseaza_warning, afiseaza_eroare, afiseaza_info, afiseaza_int
 
 # --- Import Utils pentru Threading ---
 try:
-    from utils import run_task_in_background, WorkerSignals
+    from utils import run_task_in_background
 except ImportError as import_err:
     logging.error(
         f"Eroare import utils: {import_err}. "
