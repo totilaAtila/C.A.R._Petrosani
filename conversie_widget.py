@@ -574,7 +574,7 @@ class ConversieWorker(QThread):
                             DOBANDA = ?, IMPR_DEB = ?, IMPR_CRED = ?, IMPR_SOLD = ?,
                             DEP_DEB = ?, DEP_CRED = ?, DEP_SOLD = ?
                         WHERE rowid = ?
-                    """, (*converted_values, rowid))
+                    """, (*[str(v) for v in converted_values], rowid))
 
                     rezultat["inregistrari_convertite"] += 1
 
@@ -631,7 +631,7 @@ class ConversieWorker(QThread):
 
                     # Actualizează în baza de date
                     cursor.execute("UPDATE MEMBRII SET COTIZATIE_STANDARD = ? WHERE NR_FISA = ?",
-                                 (eur, nr_fisa))
+                                 (str(eur), nr_fisa))
 
                     # Acumulează pentru statistici
                     rezultat["suma_originala_ron"] += ron
@@ -696,7 +696,7 @@ class ConversieWorker(QThread):
                         UPDATE ACTIVI SET
                             DEP_SOLD = ?, DIVIDEND = ?
                         WHERE NR_FISA = ?
-                    """, (dep_sold_eur, dividend_eur, nr_fisa))
+                    """, (str(dep_sold_eur), str(dividend_eur), nr_fisa))
 
                     # Acumulează pentru statistici
                     suma_ron_membru = dep_sold_ron + dividend_ron
