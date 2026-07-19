@@ -468,10 +468,14 @@ class AdaugareMembruWidget(QWidget):
     def apply_styles(self):
         """Aplică stilurile pentru interfață cu design modern îmbunătățit."""
         general_styles = f"""
-            AdaugareMembruWidget, QWidget {{
+            /* fundal pe CLASA, nu pe 'QWidget' bare: altfel se propaga in
+               QMessageBox-urile copil si suprascrie tema globala de dialog. */
+            AdaugareMembruWidget {{
+                background: {GRAD.APP_BG};
+            }}
+            QWidget {{
                 font-family: {FONT};
                 font-size: 10pt;
-                background: {GRAD.APP_BG};
             }}
             QScrollArea {{
                 border: none;

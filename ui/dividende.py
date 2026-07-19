@@ -169,7 +169,10 @@ class DividendeWidget(QWidget):
         # fabrica table(); coloritul pe grupuri din cod (setBackground cu
         # #e8f4ff/#fff5e6) ramane neatins — semnal vizual, ca in restul aplicatiei.
         self.setStyleSheet(f"""
-            QWidget {{ font-family: {FONT}; font-size: 10pt; background: {GRAD.APP_BG}; }}
+            /* fundal pe CLASA, nu pe 'QWidget' bare: altfel se propaga in
+               QMessageBox-urile copil si suprascrie tema globala de dialog. */
+            DividendeWidget {{ background: {GRAD.APP_BG}; }}
+            QWidget {{ font-family: {FONT}; font-size: 10pt; }}
             QLabel {{ color: {P.MUTED}; margin-right: 5px; }}
             QComboBox, QLineEdit {{
                 background-color: {P.PANEL_2}; border: 1px solid {P.LINE};

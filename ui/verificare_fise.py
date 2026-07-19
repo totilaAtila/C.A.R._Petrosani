@@ -427,10 +427,14 @@ class VerificareFiseWidget(QWidget):
         """Aplică stiluri globale widget-ului cu îmbunătățiri vizuale."""
         self.setStyleSheet(
             f"""
-            VerificareFiseWidget, QWidget {{
+            /* fundal pe CLASA, nu pe 'QWidget' bare: altfel se propaga in
+               QMessageBox-urile copil si suprascrie tema globala de dialog. */
+            VerificareFiseWidget {{
+                background: {GRAD.APP_BG};
+            }}
+            QWidget {{
                 font-family: {FONT};
                 font-size: 10pt;
-                background: {GRAD.APP_BG};
             }}
             QScrollArea {{
                 border: none;

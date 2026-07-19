@@ -387,10 +387,14 @@ class LichidareMembruWidget(QWidget):
     def _apply_styles(self):
         """ Aplică stilurile moderne cu efecte 3D. """
         general_styles = f"""
-            LichidareMembruWidget, QWidget {{
+            /* fundal pe CLASA, nu pe 'QWidget' bare: altfel se propaga in
+               QMessageBox-urile copil si suprascrie tema globala de dialog. */
+            LichidareMembruWidget {{
+                background: {GRAD.APP_BG};
+            }}
+            QWidget {{
                 font-family: {FONT};
                 font-size: 10pt;
-                background: {GRAD.APP_BG};
             }}
             QScrollArea {{
                 border: none;

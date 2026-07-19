@@ -32,9 +32,15 @@ class MembriLichidatiWidget(QWidget):
         # Re-tematizare pe paleta unica (verde). Tabelul foloseste fabrica table();
         # butonul de stergere definitiva devine rosu (DANGER) — conventia de
         # "stergere = rosu" din restul aplicatiei (inainte era portocaliu).
+        # IMPORTANT: fundalul se pune pe CLASA widget-ului, NU pe 'QWidget' bare.
+        # O regula 'QWidget {{ background }}' se propaga in QMessageBox-urile copil
+        # (parent=self) si suprascrie tema globala de dialog (dialog_styles) ->
+        # dialoguri netematizate. Font-family ramane pe QWidget (se propaga inofensiv).
         self.setStyleSheet(f"""
-            QWidget {{
+            MembriLichidatiWidget {{
                 background-color: {P.BG};
+            }}
+            QWidget {{
                 font-family: {FONT};
             }}
             QLabel#titleLabel {{

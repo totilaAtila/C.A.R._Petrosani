@@ -364,7 +364,10 @@ class GenerareLunaNouaWidget(QWidget):
             /* Re-tematizat pe paleta unica (ui.palette). Roluri butoane pastrate:
                generate=ACCENT, modify_rate=WARNING, delete=DANGER, extra=NEUTRAL,
                generic=secundar (PANEL_2/LINE). */
-            QWidget {{ background-color: {GRAD.APP_BG}; font-family: {FONT}; font-size: 10pt; }}
+            /* fundal pe CLASA, nu pe 'QWidget' bare: altfel se propaga in
+               QMessageBox-urile copil si suprascrie tema globala de dialog. */
+            GenerareLunaNouaWidget {{ background-color: {GRAD.APP_BG}; }}
+            QWidget {{ font-family: {FONT}; font-size: 10pt; }}
             QLabel {{ color: {P.INK}; padding-bottom: 1px; }}
             QLabel#lblCurrentPeriod, QLabel#lblNextPeriod, QLabel#lblCurrentRate {{ font-weight: bold; }}
             QTextEdit#txtStatusLog {{ background-color: {P.PANEL}; border: 1px solid {P.LINE}; border-radius: {RADIUS.SM}; padding: 6px;

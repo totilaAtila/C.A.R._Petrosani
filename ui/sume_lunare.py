@@ -1120,10 +1120,14 @@ class SumeLunareWidget(QWidget):
     def _apply_styles(self):
         """ Aplică stilurile CSS moderne centralizate. """
         general_styles = f"""
-            SumeLunareWidget, QWidget {{
+            /* fundal pe CLASA, nu pe 'QWidget' bare: altfel se propaga in
+               QMessageBox-urile copil si suprascrie tema globala de dialog. */
+            SumeLunareWidget {{
+                background: {GRAD.APP_BG};
+            }}
+            QWidget {{
                 font-family: {FONT};
                 font-size: 10pt;
-                background: {GRAD.APP_BG};
             }}
             QScrollArea {{
                 border: none;

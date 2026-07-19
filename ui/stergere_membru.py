@@ -409,10 +409,14 @@ class StergereMembruWidget(QWidget):
         """ Aplică stiluri CSS moderne cu efecte 3D și gradienți. """
         # Stiluri generale moderne cu efecte îmbunătățite
         general_styles = f"""
-            StergereMembruWidget, QWidget {{
+            /* fundal pe CLASA, nu pe 'QWidget' bare: altfel se propaga in
+               QMessageBox-urile copil si suprascrie tema globala de dialog. */
+            StergereMembruWidget {{
+                background: {GRAD.APP_BG};
+            }}
+            QWidget {{
                 font-family: {FONT};
                 font-size: 10pt;
-                background: {GRAD.APP_BG};
             }}
             QScrollArea {{
                 border: none;
