@@ -53,7 +53,6 @@ QMessageBox QPushButton {{
     border: 1px solid {P.LINE};
     padding: 9px 26px;
     border-radius: {RADIUS.SM};
-    min-width: 110px;
     font-family: 'Segoe UI';
     font-size: 10pt;
     font-weight: bold;
@@ -103,7 +102,6 @@ QDialog QPushButton {{
     border: 1px solid {P.LINE};
     padding: 9px 26px;
     border-radius: {RADIUS.SM};
-    min-width: 110px;
     font-family: 'Segoe UI';
     font-size: 10pt;
     font-weight: bold;
@@ -168,7 +166,6 @@ QInputDialog QPushButton {{
     border: 1px solid {P.LINE};
     padding: 9px 26px;
     border-radius: {RADIUS.SM};
-    min-width: 110px;
     font-family: 'Segoe UI';
     font-size: 10pt;
     font-weight: bold;
@@ -190,7 +187,6 @@ QFileDialog QPushButton {{
     border: 1px solid {P.LINE};
     padding: 7px 20px;
     border-radius: {RADIUS.SM};
-    min-width: 96px;
     font-family: 'Segoe UI';
     font-size: 10pt;
     font-weight: bold;
@@ -211,7 +207,6 @@ QDialogButtonBox QPushButton {{
     border: 1px solid {P.LINE};
     padding: 9px 26px;
     border-radius: {RADIUS.SM};
-    min-width: 110px;
     font-family: 'Segoe UI';
     font-size: 10pt;
     font-weight: bold;
