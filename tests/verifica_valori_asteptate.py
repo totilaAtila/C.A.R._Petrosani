@@ -25,6 +25,7 @@ Ce verifică:
 import argparse
 import sqlite3
 import sys
+from contextlib import closing
 from collections import defaultdict
 from decimal import Decimal, ROUND_HALF_UP
 from pathlib import Path
@@ -105,7 +106,7 @@ def verifica_structura(baza: Path, rap: Raport):
                        + (" — probabil e în MEMBRII.zip; porniți aplicația pentru extragere"
                           if fisier.startswith("MEMBRII") else ""))
             continue
-        with sqlite3.connect(cale) as conn:
+        with closing(sqlite3.connect(cale)) as conn:
             cols = coloane(conn, tabel)
             if not cols:
                 rap.eroare(f"[structura] {fisier}: tabelul '{tabel}' nu există")
@@ -117,7 +118,7 @@ def verifica_structura(baza: Path, rap: Raport):
     # verificarea critica: DEPCRED trebuie sa aiba fix 11 coloane
     cale = baza / "DEPCRED.db"
     if exista_reala(cale):
-        with sqlite3.connect(cale) as conn:
+        with closing(sqlite3.connect(cale)) as conn:
             n = len(coloane(conn, "DEPCRED"))
         if n != 11:
             rap.eroare(
@@ -133,7 +134,7 @@ def verifica_recurente(baza: Path, rap: Raport):
     cale = baza / "DEPCRED.db"
     if not exista_reala(cale):
         return
-    with sqlite3.connect(cale) as conn:
+    with closing(sqlite3.connect(cale)) as conn:
         randuri = conn.execute(
             "SELECT NR_FISA, ANUL, LUNA, IMPR_DEB, IMPR_CRED, IMPR_SOLD,"
             " DEP_DEB, DEP_CRED, DEP_SOLD FROM DEPCRED"
@@ -193,7 +194,7 @@ def verifica_prima(baza: Path, rap: Raport):
     cale = baza / "DEPCRED.db"
     if not exista_reala(cale):
         return
-    with sqlite3.connect(cale) as c:
+    with closing(sqlite3.connect(cale)) as c:
         active = c.execute(
             "SELECT ANUL, LUNA, COUNT(*) FROM DEPCRED WHERE PRIMA=1"
             " GROUP BY ANUL, LUNA ORDER BY ANUL, LUNA").fetchall()
@@ -224,9 +225,9 @@ def verifica_integritate(baza: Path, rap: Raport):
     m, dp = baza / "MEMBRII.db", baza / "DEPCRED.db"
     if not (exista_reala(m) and exista_reala(dp)):
         return
-    with sqlite3.connect(m) as c:
+    with closing(sqlite3.connect(m)) as c:
         fise_membrii = {r[0] for r in c.execute("SELECT NR_FISA FROM MEMBRII")}
-    with sqlite3.connect(dp) as c:
+    with closing(sqlite3.connect(dp)) as c:
         fise_depcred = {r[0] for r in c.execute("SELECT DISTINCT NR_FISA FROM DEPCRED")}
 
     orfani = sorted(fise_depcred - fise_membrii)
@@ -256,7 +257,7 @@ def verifica_eur(baza: Path, rap: Raport):
                      f"(normal inainte de conversie)")
             continue
         sel = f"SELECT {chei}, {', '.join(cols)} FROM {tabel} ORDER BY {chei}"
-        with sqlite3.connect(c_ron) as a, sqlite3.connect(c_eur) as b:
+        with closing(sqlite3.connect(c_ron)) as a, sqlite3.connect(c_eur) as b:
             ron = a.execute(sel).fetchall()
             eur = b.execute(sel).fetchall()
         if len(ron) != len(eur):
@@ -279,7 +280,7 @@ def verifica_eur(baza: Path, rap: Raport):
 
 def rezumat(baza: Path):
     print("\n--- Cifre de referință (compară cu ecranele aplicației) ---")
-    with sqlite3.connect(baza / "DEPCRED.db") as c:
+    with closing(sqlite3.connect(baza / "DEPCRED.db")) as c:
         for an, luna in [(2023, 12), (2024, 12), (2025, 11)]:
             row = c.execute(
                 "SELECT COUNT(*), COALESCE(SUM(DEP_SOLD),0), COALESCE(SUM(IMPR_SOLD),0)"

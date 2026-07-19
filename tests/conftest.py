@@ -27,7 +27,10 @@ def temp_dir():
     """Fixture pentru director temporar"""
     temp_path = Path(tempfile.mkdtemp())
     yield temp_path
-    shutil.rmtree(temp_path)
+    # Pe Windows, un fisier .db ramas deschis blocheaza stergerea (WinError 32).
+    # Cauza: `with sqlite3.connect(...)` gestioneaza TRANZACTIA, nu inchide
+    # conexiunea. Nu lasam curatenia sa transforme un test trecut in eroare.
+    shutil.rmtree(temp_path, ignore_errors=True)
 
 
 @pytest.fixture
