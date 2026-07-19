@@ -519,6 +519,246 @@ MANUAL_STRUCTURE = {
 }
 
 
+# ---------------------------------------------------------------------------
+# GHID_STRUCTURE — conținutul filei "Ghid Utilizare".
+#
+# Folosește ACELEAȘI chei ca MANUAL_STRUCTURE (descriere / submeniuri /
+# functionalitati / note), ca să fie randat de același cod, în același acordeon.
+# Diferența e de ton: manualul descrie CE face fiecare modul, ghidul explică
+# CUM se face, pas cu pas, pentru cineva fără cunoștințe tehnice.
+#
+# ATENȚIE — text duplicat: aceleași informații există și în README.md
+# (secțiunile "Utilizare" și "Troubleshooting"). Dacă modifici una, actualizeaz-o
+# și pe cealaltă. Comenzile de shell și SQL din README au fost intenționat lăsate
+# afară: ghidul se adresează utilizatorului, nu administratorului.
+# ---------------------------------------------------------------------------
+GHID_STRUCTURE = {
+    "1. Primii pași": {
+        "descriere": "Ce se întâmplă când porniți aplicația și ce vedeți pe ecran",
+        "functionalitati": [
+            "Aplicația cere parola pentru dezarhivarea bazelor de date protejate",
+            "Se încarcă automat tema salvată de la ultima utilizare",
+            "Se verifică dacă a fost făcută conversia la EUR",
+            "Se deschide fereastra principală: meniul lateral în stânga, conținutul în dreapta",
+            "Ecranul de pornire este <b>Statistici</b>, cu situația lunii curente"
+        ],
+        "note": "La închiderea aplicației, bazele de date sunt rearhivate automat cu parolă. "
+                "Nu închideți aplicația forțat din Task Manager — datele rămân neprotejate pe disc."
+    },
+    "2. Navigare în aplicație": {
+        "descriere": "Cum ajungeți rapid la ce vă trebuie",
+        "submeniuri": {
+            "Meniul lateral": {
+                "descriere": "Coloana din stânga, cu toate modulele aplicației",
+                "functionalitati": [
+                    "Click pe un buton deschide modulul respectiv",
+                    "Modulele cu mai multe opțiuni deschid un submeniu",
+                    "Butonul <b>⬅ Ieșire Meniu</b> vă întoarce la Statistici",
+                    "Indicatorul de jos arată dacă aveți drept de scriere sau doar de citire"
+                ]
+            },
+            "Scurtături de tastatură": {
+                "descriere": "Mai rapid decât mouse-ul, pentru operațiunile zilnice",
+                "functionalitati": [
+                    "<b>Alt+A</b> — Actualizări (adăugare membru, sume lunare)",
+                    "<b>Alt+V</b> — Vizualizări (situații lunare, trimestriale, anuale)",
+                    "<b>Alt+L</b> — Listări (chitanțe PDF)",
+                    "<b>Alt+S</b> — Salvări (backup și restaurare)",
+                    "<b>Alt+G</b> — Generare lună nouă",
+                    "<b>Alt+T</b> — Selector temă",
+                    "<b>Ctrl+Alt+R</b> — Conversie RON→EUR",
+                    "Lista completă se află în fila <b>Scurtături</b>"
+                ]
+            },
+            "Comutarea RON / EUR": {
+                "descriere": "Butoanele din partea de jos a meniului lateral",
+                "functionalitati": [
+                    "Disponibilă doar după ce conversia a fost efectuată",
+                    "Comutarea e instantanee, fără repornirea aplicației",
+                    "Ecranele se reîncarcă automat cu datele monedei alese"
+                ]
+            }
+        }
+    },
+    "3. Operațiuni comune": {
+        "descriere": "Cele mai frecvente activități, pas cu pas",
+        "submeniuri": {
+            "Adăugare membru nou": {
+                "descriere": "Actualizări (Alt+A) → Adăugare membru",
+                "functionalitati": [
+                    "Completați datele: nume, prenume, domiciliu, calitatea",
+                    "Numărul de fișă este atribuit automat și verificat împotriva duplicatelor",
+                    "Stabiliți cotizația standard lunară",
+                    "Alegeți data înscrierii din calendar",
+                    "Click pe <b>Salvare</b> — membrul intră în MEMBRII.db și DEPCRED.db"
+                ]
+            },
+            "Introducere plăți lunare": {
+                "descriere": "Actualizări (Alt+A) → Sume lunare",
+                "functionalitati": [
+                    "Căutați membrul după numărul de fișă sau după nume",
+                    "Introduceți datele lunii: cotizație, rată împrumut, împrumut nou, retrageri",
+                    "Soldurile se recalculează automat după fiecare modificare",
+                    "Click pe <b>Salvare</b> pentru a înregistra tranzacția"
+                ],
+                "note": "Dacă modificați o lună din trecut, toate lunile următoare se recalculează. "
+                        "Verificați soldul final după o astfel de modificare."
+            },
+            "Generare lună nouă": {
+                "descriere": "Generare lună (Alt+G)",
+                "functionalitati": [
+                    "Alegeți luna și anul de generat",
+                    "Soldurile sunt preluate automat din luna anterioară",
+                    "Rata de împrumut se moștenește din luna precedentă",
+                    "Cotizația standard se aplică tuturor membrilor activi",
+                    "Membrii lichidați sunt excluși automat",
+                    "Dobânda se calculează pentru împrumuturile care se sting în această lună"
+                ],
+                "note": "Membrii fără înregistrare în luna anterioară sunt săriți și raportați. "
+                        "Verificați lista de omisiuni la finalul generării."
+            },
+            "Generare chitanțe PDF": {
+                "descriere": "Listări (Alt+L)",
+                "functionalitati": [
+                    "Alegeți luna și anul pentru care tipăriți chitanțele",
+                    "Setați numărul primei chitanțe (de exemplu 1001)",
+                    "Configurați câte chitanțe intră pe pagină (între 5 și 15, implicit 10)",
+                    "Click pe <b>Preview</b> și verificați totalurile afișate",
+                    "Click pe <b>Tipărește PDF</b> — fișierul se salvează ca chitante_LUNA_AN.pdf",
+                    "PDF-ul se deschide automat la final"
+                ],
+                "note": "Numerotarea continuă de la ultima tipărire, memorată în CHITANTE.db. "
+                        "Dacă numărul a crescut nejustificat, folosiți butonul Reset."
+            },
+            "Vizualizare rapoarte": {
+                "descriere": "Vizualizări (Alt+V)",
+                "functionalitati": [
+                    "Alegeți tipul: situație lunară, trimestrială sau anuală",
+                    "Selectați perioada dorită",
+                    "Se afișează toate tranzacțiile și soldurile perioadei",
+                    "Datele pot fi exportate în Excel"
+                ]
+            }
+        }
+    },
+    "4. Conversie RON → EUR": {
+        "descriere": "Operațiune IREVERSIBILĂ. Se face o singură dată, la trecerea la euro.",
+        "submeniuri": {
+            "Înainte de conversie": {
+                "descriere": "Pregătirea, obligatorie",
+                "functionalitati": [
+                    "Faceți un backup complet: Salvări (Alt+S) → Backup Complet",
+                    "Verificați că backup-ul s-a creat și conține toate bazele",
+                    "Copiați backup-ul pe un dispozitiv extern"
+                ],
+                "note": "Conversia NU poate fi anulată. Backup-ul este singura cale de întoarcere."
+            },
+            "Efectuarea conversiei": {
+                "descriere": "Conversie RON→EUR (Ctrl+Alt+R)",
+                "functionalitati": [
+                    "Verificați cursul de schimb afișat",
+                    "Confirmați în dialogul de avertizare",
+                    "Se creează baze noi, cu sufixul EUR: MEMBRIIEUR.db, DEPCREDEUR.db și celelalte",
+                    "Bazele originale în lei rămân neatinse"
+                ]
+            },
+            "După conversie": {
+                "descriere": "Ce se schimbă în funcționarea zilnică",
+                "functionalitati": [
+                    "<b>Modul EUR</b> — citire și scriere, toate operațiunile permise",
+                    "<b>Modul RON</b> — doar citire, pentru consultarea istoricului",
+                    "Comutarea între monede se face din meniul lateral, fără repornire"
+                ]
+            }
+        }
+    },
+    "5. Backup și siguranța datelor": {
+        "descriere": "Cum vă protejați datele și cum le recuperați",
+        "submeniuri": {
+            "Crearea unui backup": {
+                "descriere": "Salvări (Alt+S) → Backup Complet",
+                "functionalitati": [
+                    "Se creează automat un director cu data curentă, în folderul backup_db",
+                    "Toate bazele de date sunt copiate acolo",
+                    "Folderul se deschide singur la final, ca să puteți verifica"
+                ]
+            },
+            "Restaurarea din backup": {
+                "descriere": "Salvări (Alt+S) → Restaurare",
+                "functionalitati": [
+                    "Alegeți folderul de backup din care restaurați",
+                    "Datele curente sunt salvate automat înainte de restaurare",
+                    "După restaurare, aplicația trebuie repornită"
+                ]
+            },
+            "Recomandări": {
+                "descriere": "Obiceiuri care previn pierderea datelor",
+                "functionalitati": [
+                    "Faceți backup lunar și înainte de orice operațiune majoră",
+                    "Păstrați cel puțin o copie pe un dispozitiv extern",
+                    "Verificați periodic integritatea: Salvări → Verifică Integritatea"
+                ],
+                "note": "Un backup pe care nu l-ați verificat niciodată nu este un backup."
+            }
+        }
+    },
+    "6. Rezolvare probleme comune": {
+        "descriere": "Ce puteți verifica singur, înainte de a cere ajutor",
+        "submeniuri": {
+            "Aplicația nu pornește": {
+                "functionalitati": [
+                    "Verificați că bazele de date se află în directorul aplicației",
+                    "Verificați că nu ați introdus greșit parola de dezarhivare",
+                    "Dacă problema persistă, contactați administratorul"
+                ]
+            },
+            "Nu pot modifica datele": {
+                "functionalitati": [
+                    "Verificați indicatorul de permisiuni din meniul lateral",
+                    "Dacă scrie <b>Doar Citire</b>, sunteți probabil în modul RON după conversie",
+                    "Comutați pe EUR pentru a putea modifica"
+                ]
+            },
+            "Comutarea RON/EUR nu funcționează": {
+                "functionalitati": [
+                    "Bazele EUR lipsesc — conversia nu a fost făcută sau a eșuat",
+                    "Fișierul dual_currency.json lipsește sau e deteriorat",
+                    "Contactați administratorul: ambele cazuri cer verificare tehnică"
+                ]
+            },
+            "Chitanțele nu au diacritice": {
+                "functionalitati": [
+                    "Lipsesc fonturile Arial.ttf și DejaVuSans-Bold.ttf",
+                    "Ele trebuie să existe atât în folderul fonts, cât și în rădăcina aplicației",
+                    "Contactați administratorul pentru copierea lor"
+                ]
+            },
+            "Numărul chitanței a devenit prea mare": {
+                "functionalitati": [
+                    "Apăsați <b>Reset</b> în modulul Listări",
+                    "Confirmați resetarea la 1, sau introduceți manual un număr potrivit",
+                    "Numărul nou se memorează automat"
+                ]
+            },
+            "Erori la generarea lunii noi": {
+                "functionalitati": [
+                    "Verificați că luna anterioară a fost generată complet",
+                    "Membrii fără înregistrare în luna anterioară sunt săriți — e normal pentru cei noi",
+                    "Citiți lista de omisiuni afișată la finalul generării"
+                ]
+            },
+            "Tema nu se salvează": {
+                "functionalitati": [
+                    "Fișierul car_settings.json nu poate fi scris",
+                    "Cel mai des e o problemă de permisiuni pe director",
+                    "Contactați administratorul"
+                ]
+            }
+        }
+    }
+}
+
+
 class AccordionSection(QWidget):
     """Secțiune acordeon modernă slick - stil profesional clean"""
 
@@ -790,213 +1030,25 @@ class DespreWidget(QDialog):
         """Încarcă ghidul de utilizare pentru utilizatori non-tehnici"""
         intro_label = QLabel(
             "<b>Ghid de Utilizare CAR Petroșani</b><br>"
-            "Ghid complet pentru utilizarea aplicației, destinat utilizatorilor care nu au cunoștințe de programare."
+            "Ghid pas cu pas pentru utilizarea aplicației, destinat utilizatorilor "
+            "care nu au cunoștințe tehnice. Click pe orice secțiune pentru a o deschide."
         )
         intro_label.setWordWrap(True)
         intro_label.setStyleSheet(f"padding: 10px; background: {P.ACCENT_SOFT}; border-radius: 6px; color: {P.POSITIVE};")
         self.content_layout.addWidget(intro_label)
 
-        # Secțiunea 1: Introducere
-        intro_frame = self._create_section_frame("Despre Aplicație")
-        intro_layout = QVBoxLayout(intro_frame)
-
-        intro_text = QLabel(
-            "CAR Petroșani este o aplicație desktop pentru gestionarea Casei de Ajutor Reciproc Petroșani. "
-            "Aplicația vă permite să gestionați membri, plăți lunare, împrumuturi, dividende și să generați rapoarte și chitanțe PDF."
-        )
-        intro_text.setWordWrap(True)
-        intro_text.setStyleSheet(f"color: {P.MUTED}; padding: 8px;")
-        intro_layout.addWidget(intro_text)
-        self.content_layout.addWidget(intro_frame)
-
-        # Secțiunea 2: Operațiuni Comune
-        operations_frame = self._create_section_frame("Operațiuni Comune")
-        operations_layout = QVBoxLayout(operations_frame)
-
-        operations_html = """
-        <p style='margin-bottom: 15px;'><b>1. Adăugare Membru Nou</b></p>
-        <ul style='margin: 5px 0 15px 20px;'>
-            <li>Click pe butonul <b>Actualizări</b> din meniul lateral (sau apăsați <b>Alt+A</b>)</li>
-            <li>Selectați <b>Adăugare membru</b></li>
-            <li>Completați datele membrului: nume, prenume, CNP, domiciliu, funcție</li>
-            <li>Sistemul va atribui automat un număr de fișă unic</li>
-            <li>Click pe <b>Salvare</b> pentru a înregistra membrul</li>
-        </ul>
-
-        <p style='margin-bottom: 15px;'><b>2. Introducere Plăți Lunare</b></p>
-        <ul style='margin: 5px 0 15px 20px;'>
-            <li>Click pe <b>Actualizări</b> → <b>Sume lunare</b> (sau <b>Alt+A</b>)</li>
-            <li>Căutați membrul folosind numărul de fișă sau numele</li>
-            <li>Introduceți datele pentru luna selectată: rate, cotizații, împrumuturi noi</li>
-            <li>Sistemul va calcula automat soldurile</li>
-            <li>Click pe <b>Salvare</b> pentru a înregistra tranzacția</li>
-        </ul>
-
-        <p style='margin-bottom: 15px;'><b>3. Generare Lună Nouă</b></p>
-        <ul style='margin: 5px 0 15px 20px;'>
-            <li>Click pe <b>Generare lună</b> (sau apăsați <b>Alt+G</b>)</li>
-            <li>Selectați luna și anul pentru care doriți să generați înregistrările</li>
-            <li>Sistemul va prelua automat soldurile din luna anterioară</li>
-            <li>Aplicați cotizația standard pentru toți membrii activi</li>
-            <li>Click pe <b>Generează</b> pentru a finaliza operația</li>
-        </ul>
-
-        <p style='margin-bottom: 15px;'><b>4. Generare Chitanțe PDF</b></p>
-        <ul style='margin: 5px 0 15px 20px;'>
-            <li>Click pe <b>Listări</b> (sau apăsați <b>Alt+L</b>)</li>
-            <li>Selectați luna și anul pentru care doriți să generați chitanțele</li>
-            <li>Setați numărul chitanței inițial (de exemplu: 1001)</li>
-            <li>Configurați numărul de chitanțe per pagină (implicit: 10)</li>
-            <li>Click pe <b>Preview</b> pentru a verifica datele</li>
-            <li>Click pe <b>Tipărește PDF</b> pentru a genera fișierul PDF</li>
-            <li>PDF-ul va fi salvat automat și deschis pentru vizualizare</li>
-        </ul>
-
-        <p style='margin-bottom: 15px;'><b>5. Vizualizare Rapoarte</b></p>
-        <ul style='margin: 5px 0 15px 20px;'>
-            <li>Click pe <b>Vizualizări</b> (sau apăsați <b>Alt+V</b>)</li>
-            <li>Selectați tipul de raport: <b>Situație lunară</b>, <b>Situație trimestrială</b> sau <b>Situație anuală</b></li>
-            <li>Alegeți perioada dorită (lună, trimestru sau an)</li>
-            <li>Sistemul va afișa toate tranzacțiile și soldurile pentru perioada selectată</li>
-            <li>Puteți exporta datele în format Excel prin butonul <b>Export Excel</b></li>
-        </ul>
-        """
-        operations_label = QLabel(operations_html)
-        operations_label.setWordWrap(True)
-        operations_label.setTextFormat(Qt.RichText)
-        operations_label.setStyleSheet(f"color: {P.MUTED};")
-        operations_layout.addWidget(operations_label)
-        self.content_layout.addWidget(operations_frame)
-
-        # Secțiunea 3: Conversie RON - EUR
-        currency_frame = self._create_section_frame("Conversie RON → EUR (Opțional)")
-        currency_layout = QVBoxLayout(currency_frame)
-
-        currency_html = """
-        <p style='margin-bottom: 10px;'>Aplicația suportă conversie completă de la moneda RON la EUR. Această operație este <b>IREVERSIBILĂ</b>
-        și trebuie efectuată cu atenție maximă.</p>
-
-        <p style='margin-bottom: 10px;'><b>Pași pentru conversie:</b></p>
-        <ul style='margin: 5px 0 15px 20px;'>
-            <li><b>Înainte de conversie:</b> Creați un backup complet al bazelor de date (Meniu <b>Salvări</b> → <b>Backup Complet</b>)</li>
-            <li>Apăsați <b>Ctrl+Alt+R</b> sau click pe butonul <b>Conversie RON→EUR</b></li>
-            <li>Verificați cursul de schimb afișat (implicit: 4.9755 RON/EUR)</li>
-            <li>Confirmați operația în dialogul de avertizare</li>
-            <li>Sistemul va crea baze de date noi cu sufix EUR (MEMBRIIEUR.db, DEPCREDEUR.db, etc.)</li>
-            <li>După conversie, puteți comuta între RON și EUR folosind toggle-ul din interfață</li>
-        </ul>
-
-        <p style='margin-bottom: 10px;'><b>După conversie:</b></p>
-        <ul style='margin: 5px 0 15px 20px;'>
-            <li><b>Modul RON:</b> Doar citire (nu puteți modifica datele RON)</li>
-            <li><b>Modul EUR:</b> Citire și scriere completă (toate operațiunile sunt permise)</li>
-            <li>Toggle între RON și EUR se face instant, fără restart aplicație</li>
-        </ul>
-        """
-        currency_label = QLabel(currency_html)
-        currency_label.setWordWrap(True)
-        currency_label.setTextFormat(Qt.RichText)
-        currency_label.setStyleSheet(f"color: {P.MUTED};")
-        currency_layout.addWidget(currency_label)
-
-        # Notă de avertizare
-        warning_label = QLabel(
-            "<b>IMPORTANT:</b> Operația de conversie este IREVERSIBILĂ. "
-            "Asigurați-vă că aveți un backup complet înainte de a continua."
-        )
-        warning_label.setWordWrap(True)
-        warning_label.setStyleSheet(f"""
-            color: {P.DANGER};
-            background: {P.DANGER_SOFT};
-            padding: 10px;
-            border-radius: 4px;
-            border-left: 4px solid {P.DANGER};
-            margin-top: 10px;
-        """)
-        currency_layout.addWidget(warning_label)
-        self.content_layout.addWidget(currency_frame)
-
-        # Secțiunea 4: Backup și Salvări
-        backup_frame = self._create_section_frame("Backup și Siguranța Datelor")
-        backup_layout = QVBoxLayout(backup_frame)
-
-        backup_html = """
-        <p style='margin-bottom: 10px;'><b>Crearea unui backup:</b></p>
-        <ul style='margin: 5px 0 15px 20px;'>
-            <li>Click pe <b>Salvări</b> (sau apăsați <b>Alt+S</b>)</li>
-            <li>Selectați <b>Backup Complet</b></li>
-            <li>Sistemul va crea automat un director cu data curentă în folder-ul <b>backup_db</b></li>
-            <li>Toate bazele de date vor fi copiate în acest director</li>
-            <li>Sistemul va deschide automat folder-ul de backup după finalizare</li>
-        </ul>
-
-        <p style='margin-bottom: 10px;'><b>Restaurarea din backup:</b></p>
-        <ul style='margin: 5px 0 15px 20px;'>
-            <li>Click pe <b>Salvări</b> → <b>Restaurare</b></li>
-            <li>Selectați folder-ul de backup din care doriți să restaurați</li>
-            <li>Confirmați operația (sistemul va crea automat un backup al datelor curente înainte de restaurare)</li>
-            <li>Datele vor fi restaurate și aplicația va trebui repornită</li>
-        </ul>
-
-        <p style='margin-bottom: 10px;'><b>Recomandări:</b></p>
-        <ul style='margin: 5px 0 15px 20px;'>
-            <li>Creați backup-uri regulate (recomandat: lunar sau înainte de operațiuni majore)</li>
-            <li>Păstrați backup-urile pe un dispozitiv extern (USB, cloud, etc.)</li>
-            <li>Verificați periodic integritatea bazelor de date (<b>Salvări</b> → <b>Verifică Integritatea</b>)</li>
-        </ul>
-        """
-        backup_label = QLabel(backup_html)
-        backup_label.setWordWrap(True)
-        backup_label.setTextFormat(Qt.RichText)
-        backup_label.setStyleSheet(f"color: {P.MUTED};")
-        backup_layout.addWidget(backup_label)
-        self.content_layout.addWidget(backup_frame)
-
-        # Secțiunea 5: Probleme Comune
-        troubleshooting_frame = self._create_section_frame("Rezolvare Probleme Comune")
-        troubleshooting_layout = QVBoxLayout(troubleshooting_frame)
-
-        troubleshooting_html = """
-        <p style='margin-bottom: 10px;'><b>Aplicația nu pornește:</b></p>
-        <ul style='margin: 5px 0 15px 20px;'>
-            <li>Verificați că toate bazele de date (MEMBRII.db, DEPCRED.db, etc.) sunt în directorul aplicației</li>
-            <li>Contactați administratorul pentru asistență tehnică</li>
-        </ul>
-
-        <p style='margin-bottom: 10px;'><b>Nu pot modifica date după conversie EUR:</b></p>
-        <ul style='margin: 5px 0 15px 20px;'>
-            <li>Verificați că sunteți în modul EUR (nu RON)</li>
-            <li>Comutați la EUR folosind toggle-ul din interfață</li>
-            <li>Modul RON este doar pentru vizualizare după conversie</li>
-        </ul>
-
-        <p style='margin-bottom: 10px;'><b>Chitanțele PDF nu au caractere românești (diacritice):</b></p>
-        <ul style='margin: 5px 0 15px 20px;'>
-            <li>Verificați că fișierele de font (Arial.ttf, DejaVuSans-Bold.ttf) sunt în folder-ul <b>fonts</b></li>
-            <li>Fonturile trebuie să fie și în directorul rădăcină al aplicației</li>
-            <li>Contactați administratorul dacă problema persistă</li>
-        </ul>
-
-        <p style='margin-bottom: 10px;'><b>Erori la generare lună nouă:</b></p>
-        <ul style='margin: 5px 0 15px 20px;'>
-            <li>Verificați că luna anterioară a fost generată corect</li>
-            <li>Asigurați-vă că toți membrii activi au înregistrări în luna anterioară</li>
-            <li>Folosiți opțiunea <b>Vizualizări</b> → <b>Afișare Membri cu Date Incomplete</b> pentru identificare probleme</li>
-        </ul>
-        """
-        troubleshooting_label = QLabel(troubleshooting_html)
-        troubleshooting_label.setWordWrap(True)
-        troubleshooting_label.setTextFormat(Qt.RichText)
-        troubleshooting_label.setStyleSheet(f"color: {P.MUTED};")
-        troubleshooting_layout.addWidget(troubleshooting_label)
-        self.content_layout.addWidget(troubleshooting_frame)
+        # Aceeași randare ca la Manual Tehnic: acordeon, o secțiune per subiect.
+        for sectiune_nume, sectiune_date in GHID_STRUCTURE.items():
+            section_widget = self._create_menu_section_widget(sectiune_nume, sectiune_date)
+            accordion = AccordionSection(sectiune_nume, section_widget)
+            self.content_layout.addWidget(accordion)
 
         # Contact și Suport
         support_frame = QFrame()
         support_frame.setStyleSheet(f"""
             QFrame {{
                 background: {P.PANEL_2};
-                border: 1px solid {P.PANEL_2};
+                border: 1px solid {P.LINE};
                 border-radius: 6px;
                 padding: 12px;
                 margin: 8px 0;
