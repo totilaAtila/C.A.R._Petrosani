@@ -21,7 +21,7 @@ from PyQt5.QtCore import (
 
 # --- Importuri statice pentru modulele de bază ---
 # REDESIGN: sursa unică de stil. Doar aspect — nicio logică atinsă.
-from ui.palette import P
+from ui.palette import P, GRAD, RADIUS, FONT
 from ui.statistici import StatisticiWidget
 from ui.adaugare_membru import AdaugareMembruWidget
 from ui.listari import ListariWidget
@@ -697,7 +697,7 @@ class CurrencyToggleWidget(QWidget):
         # Separator vizual
         separator = QFrame()
         separator.setFrameShape(QFrame.HLine)
-        separator.setStyleSheet("background-color: rgba(189, 195, 199, 120); margin: 2px 10px;")
+        separator.setStyleSheet(f"background-color: {P.LINE}; margin: 2px 10px;")
         layout.addWidget(separator)
 
         # Container pentru butoane
@@ -754,7 +754,7 @@ class CurrencyToggleWidget(QWidget):
         base_style = "border-radius: 8px; font-size: 9pt; font-weight: bold; padding: 4px 8px;"
         active_style = f"background: qlineargradient(x1:0, y1:0, x2:0, y2:1, {theme['menu_active'][0]}); color: white; border: 2px solid {theme['menu_active'][1]};"
         inactive_style = f"background: qlineargradient(x1:0, y1:0, x2:0, y2:1, {theme['menu_gradient'][0]}); color: {theme['menu_text']}; border: 1px solid {theme['menu_border']};"
-        disabled_style = "background-color: #d3d3d3; color: #808080; border: 1px solid #a0a0a0;"
+        disabled_style = f"background-color: {P.DISABLED}; color: {P.DISABLED_TEXT}; border: 1px solid {P.LINE};"
 
         # Aplicarea stilurilor RON
         if current_currency == 'RON':
@@ -781,22 +781,21 @@ class CurrencyToggleWidget(QWidget):
 
         # Actualizarea indicatorului de permisiuni
         permission_text = "Citire-Scriere" if can_write else "Doar Citire"
-        permission_color = "#27AE60" if can_write else "#E67E22"
+        permission_color = P.ACCENT if can_write else P.WARNING
         icon = "✅" if can_write else "🔒"
 
         # Setare text cu icon
         self.permission_label.setText(f"{icon} {permission_text}")
 
-        # Stil tip card modern - OPTIMIZAT pentru evitarea text clipping
+        # Stil tip card modern - OPTIMIZAT pentru evitarea text clipping.
+        # Fundal plat verde-pal (scriere) sau chihlimbar-pal (doar-citire).
         self.permission_label.setStyleSheet(f"""
-            background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                stop:0 {'#eafaf1' if can_write else '#fdf6e3'},
-                stop:1 {'#d4efdf' if can_write else '#fbeee0'});
+            background: {P.ACCENT_SOFT if can_write else P.WARNING_SOFT};
             color: {permission_color};
             font-size: 9pt;
             font-weight: bold;
             padding: 6px 20px;
-            border-radius: 12px;
+            border-radius: {RADIUS.LG};
             margin-left: 16px;
             margin-right: 16px;
         """)
@@ -981,11 +980,10 @@ class CalculatorWindow(QMainWindow):
         self.setCentralWidget(calculator_widget)
 
         # Styling modern
-        self.setStyleSheet("""
-            QMainWindow {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 rgba(236, 240, 241, 240), stop:1 rgba(189, 195, 199, 220));
-            }
+        self.setStyleSheet(f"""
+            QMainWindow {{
+                background: {GRAD.APP_BG};
+            }}
         """)
 
         self.setWindowFlags(Qt.Window | Qt.WindowCloseButtonHint | Qt.WindowMinimizeButtonHint)
@@ -1222,7 +1220,7 @@ class CARApp(QMainWindow):
     def _setup_menu_container(self):
         """Configurează container-ul de meniu cu toggle RON/EUR integrat"""
         self.menu_container.setStyleSheet(
-            "border: 2px solid black; border-radius: 5px; background-color: rgba(240, 240, 240, 200);")
+            f"border: 1px solid {P.LINE}; border-radius: {RADIUS.MD}; background-color: {P.PANEL_2};")
         menu_layout = QVBoxLayout(self.menu_container)
         menu_layout.setSpacing(2)
         menu_layout.setContentsMargins(10, 10, 10, 10)
@@ -1297,7 +1295,7 @@ class CARApp(QMainWindow):
     def _setup_content_container(self):
         """Configurează container-ul de conținut"""
         self.content_container.setStyleSheet(
-            "border: 2px solid black; border-radius: 5px; background-color: rgba(255, 255, 255, 200);")
+            f"border: 1px solid {P.LINE}; border-radius: {RADIUS.MD}; background-color: {P.PANEL};")
         content_layout = QVBoxLayout(self.content_container)
 
         # Submenu bar
@@ -1311,7 +1309,7 @@ class CARApp(QMainWindow):
         # Content area
         self.content_area = QStackedWidget()
         self.content_area.setStyleSheet(
-            "border: none; background-color: rgba(248, 248, 248, 200);")
+            f"border: none; background-color: {P.PANEL};")
         content_layout.addWidget(self.content_area)
 
     def _load_initial_stats_widget(self):
@@ -1546,21 +1544,19 @@ class CARApp(QMainWindow):
 
         # Buton ieșire cu styling modern
         iesire_btn = ModernSubmenuButton("⬅ Ieșire Meniu")
-        iesire_btn.setStyleSheet("""
-            QPushButton {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 rgba(231, 76, 60, 220), stop:1 rgba(192, 57, 43, 240));
-                color: white;
-                border: 1px solid rgba(169, 50, 38, 180);
-                border-radius: 8px;
+        iesire_btn.setStyleSheet(f"""
+            QPushButton {{
+                background: {P.DANGER};
+                color: {P.WHITE};
+                border: 1px solid {P.DANGER_DEEP};
+                border-radius: {RADIUS.MD};
                 padding: 6px 12px;
                 font-size: 10pt;
                 font-weight: bold;
-            }
-            QPushButton:hover {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 rgba(236, 112, 99, 200), stop:1 rgba(203, 67, 53, 220));
-            }
+            }}
+            QPushButton:hover {{
+                background: {P.DANGER_DEEP};
+            }}
         """)
         iesire_btn.clicked.connect(self.revino_la_statistici)
         self.submenu_layout.addWidget(iesire_btn)
@@ -1588,12 +1584,12 @@ class CARApp(QMainWindow):
 
         # Header cu informații
         label = QLabel(f"Selectează tema dorită din cele {len(self.theme_manager.themes)} disponibile:")
-        label.setStyleSheet("font-size: 11pt; font-weight: bold; margin: 10px;")
+        label.setStyleSheet(f"font-size: 11pt; font-weight: bold; margin: 10px; color: {P.INK};")
         layout.addWidget(label)
 
         # Label cu tema curentă
         current_label = QLabel(f"Tema curentă: {self.theme_manager.get_theme_name()}")
-        current_label.setStyleSheet("font-size: 10pt; color: #666; margin-left: 10px;")
+        current_label.setStyleSheet(f"font-size: 10pt; color: {P.MUTED}; margin-left: 10px;")
         layout.addWidget(current_label)
 
         # Lista cu teme organizată pe categorii
@@ -1615,23 +1611,24 @@ class CARApp(QMainWindow):
 
         theme_list.setCurrentRow(self._find_theme_row(self.theme_manager.current_theme))
 
-        theme_list.setStyleSheet("""
-            QListWidget {
+        theme_list.setStyleSheet(f"""
+            QListWidget {{
                 font-size: 10pt;
                 padding: 5px;
-                background-color: rgba(255, 255, 255, 230);
-                border: 1px solid #ccc;
-                border-radius: 5px;
-            }
-            QListWidget::item {
+                background-color: {P.PANEL};
+                border: 1px solid {P.LINE};
+                border-radius: {RADIUS.SM};
+                color: {P.INK};
+            }}
+            QListWidget::item {{
                 padding: 8px;
-                border-bottom: 1px solid #eee;
-            }
-            QListWidget::item:selected {
-                background-color: rgba(59, 130, 246, 200);
-                color: white;
-                border-radius: 3px;
-            }
+                border-bottom: 1px solid {P.LINE_SOFT};
+            }}
+            QListWidget::item:selected {{
+                background-color: {P.ACCENT};
+                color: {P.WHITE};
+                border-radius: {RADIUS.SM};
+            }}
         """)
         layout.addWidget(theme_list)
 
@@ -1651,30 +1648,26 @@ class CARApp(QMainWindow):
                 }
             """)
 
-        ok_btn.setStyleSheet(ok_btn.styleSheet() + """
-            QPushButton {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 rgba(34, 197, 94, 200), stop:1 rgba(22, 163, 74, 220));
-                color: white;
-                border: 1px solid rgba(22, 163, 74, 180);
-            }
-            QPushButton:hover {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 rgba(74, 222, 128, 180), stop:1 rgba(34, 197, 94, 200));
-            }
+        ok_btn.setStyleSheet(ok_btn.styleSheet() + f"""
+            QPushButton {{
+                background: {P.ACCENT};
+                color: {P.WHITE};
+                border: 1px solid {P.ACCENT_DEEP};
+            }}
+            QPushButton:hover {{
+                background: {P.ACCENT_DEEP};
+            }}
         """)
 
-        cancel_btn.setStyleSheet(cancel_btn.styleSheet() + """
-            QPushButton {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 rgba(239, 68, 68, 200), stop:1 rgba(220, 38, 38, 220));
-                color: white;
-                border: 1px solid rgba(185, 28, 28, 180);
-            }
-            QPushButton:hover {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 rgba(248, 113, 113, 180), stop:1 rgba(239, 68, 68, 200));
-            }
+        cancel_btn.setStyleSheet(cancel_btn.styleSheet() + f"""
+            QPushButton {{
+                background: {P.DANGER};
+                color: {P.WHITE};
+                border: 1px solid {P.DANGER_DEEP};
+            }}
+            QPushButton:hover {{
+                background: {P.DANGER_DEEP};
+            }}
         """)
 
         # Funcții pentru butoane
@@ -1734,7 +1727,7 @@ class CARApp(QMainWindow):
 
         # Instrucțiuni
         info_label = QLabel("💡 Navighează prin liste pentru preview real-time ")
-        info_label.setStyleSheet("font-size: 9pt; color: #666; margin: 5px; font-style: italic;")
+        info_label.setStyleSheet(f"font-size: 9pt; color: {P.FAINT}; margin: 5px; font-style: italic;")
         layout.addWidget(info_label)
 
         dialog.exec_()
