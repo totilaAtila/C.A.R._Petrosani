@@ -350,8 +350,8 @@ class VizualizareTrimestrialaWidget(QWidget):
 
     def reincarca_valuta(self):
         """Re-rulează afișarea în noua valută (bazele sunt deja re-patchuite),
-        păstrând trimestrul/anul selectate. Doar dacă s-a rulat deja o interogare."""
-        if self.tabel.rowCount() > 0:
+        păstrând trimestrul/anul selectate. Flag persistent (nu se pierde pe rezultat gol)."""
+        if getattr(self, '_a_afisat', False):
             self.afiseaza_trimestru()
 
     def afiseaza_trimestru(self) -> None:
@@ -362,6 +362,7 @@ class VizualizareTrimestrialaWidget(QWidget):
             return
         anul = int(an_txt)
         luni_trimestru = self.trimestre[self.combo_trimestru.currentText()]
+        self._a_afisat = True  # marcaj persistent pt. reincarca_valuta la toggle valută
 
         # Inițializează dialog progres
         from utils import ProgressDialog

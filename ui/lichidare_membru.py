@@ -658,6 +658,11 @@ class LichidareMembruWidget(QWidget):
             self.txt_nr_fisa.selectAll()
             self.txt_nr_fisa.setFocus()
 
+    def reincarca_valuta(self):
+        """Re-afișează datele fișei curente în noua valută (bazele re-patchuite)."""
+        if self._loaded_nr_fisa is not None:
+            self._load_member_data(nr_fisa=self._loaded_nr_fisa)
+
     def _load_member_data(self, nr_fisa=None, name=None):
         """ Metodă centrală pentru încărcarea datelor unui membru. """
         if self._verificare_activa:

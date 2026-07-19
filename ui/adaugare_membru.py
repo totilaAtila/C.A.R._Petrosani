@@ -862,6 +862,12 @@ class AdaugareMembruWidget(QWidget):
             if conn:
                 conn.close()
 
+    def reincarca_valuta(self):
+        """Re-afișează istoricul fișei curente în noua valută (bazele re-patchuite),
+        dacă un membru existent e încărcat."""
+        if self._loaded_nr_fisa is not None:
+            self._load_complete_member_history(self._loaded_nr_fisa)
+
     def _load_complete_member_history(self, nr_fisa):
         """Încarcă întregul istoric al membrului cu formatare vizuală avansată."""
         conn = None

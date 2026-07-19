@@ -282,6 +282,11 @@ class MembriLichidatiWidget(QWidget):
             QMessageBox.critical(self, "Eroare Generală", f"A apărut o eroare neașteptată:\n{e}")
             return []
 
+    def reincarca_valuta(self):
+        """Re-identifică membrii cu date incomplete în noua valută (bazele re-patchuite).
+        Soldurile afișate (Împrumut/Depunere) reflectă valuta curentă."""
+        self.incarca_date()
+
     def incarca_date(self):
         """Identifică membrii cu date incomplete și îi afișează în tabel."""
         self.all_missing_members_data = self.identifica_membri_lipsa()

@@ -208,8 +208,9 @@ class VizualizareLunaraWidget(QWidget):
 
     def reincarca_valuta(self):
         """Re-rulează afișarea în noua valută (bazele sunt deja re-patchuite),
-        păstrând luna/anul selectate. Doar dacă s-a rulat deja o interogare."""
-        if self.date_curente:
+        păstrând luna/anul selectate. Flag persistent: nu se pierde dacă un
+        rezultat e gol (ex. lună fără date în valuta comutată -> mesaj 'nu există date')."""
+        if getattr(self, '_a_afisat', False):
             self.afiseaza_luna()
 
     def afiseaza_luna(self):
@@ -220,6 +221,7 @@ class VizualizareLunaraWidget(QWidget):
             QMessageBox.warning(self, "Eroare", "Selectați un an valid din listă.")
             return
 
+        self._a_afisat = True  # marcaj persistent pt. reincarca_valuta la toggle valută
         self.tabel.setRowCount(0)
         self.date_curente.clear()
         self.date_sortate_afisate.clear()

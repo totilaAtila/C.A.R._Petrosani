@@ -355,8 +355,8 @@ class VizualizareAnualaWidget(QWidget):
     # ------------------------------------------------------------------
     def reincarca_valuta(self):
         """Re-rulează afișarea în noua valută (bazele sunt deja re-patchuite),
-        păstrând anul selectat. Doar dacă s-a rulat deja o interogare."""
-        if self.tabel.rowCount() > 0:
+        păstrând anul selectat. Flag persistent (nu se pierde pe rezultat gol)."""
+        if getattr(self, '_a_afisat', False):
             self.afiseaza_an()
 
     def afiseaza_an(self) -> None:
@@ -365,6 +365,7 @@ class VizualizareAnualaWidget(QWidget):
             QMessageBox.warning(self, "Eroare", "Selectați un an valid.")
             return
         anul = int(an_txt)
+        self._a_afisat = True  # marcaj persistent pt. reincarca_valuta la toggle valută
         self.tabel.setRowCount(0)
         self.date_curente.clear()
 
