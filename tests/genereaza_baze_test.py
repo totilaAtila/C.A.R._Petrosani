@@ -424,6 +424,11 @@ def main():
     ap = argparse.ArgumentParser(description="Genereaza bazele de date de test.")
     ap.add_argument("--dir", default=None, help="Directorul tinta (implicit: radacina proiectului)")
     ap.add_argument("--force", action="store_true", help="Suprascrie baze existente")
+    ap.add_argument("--fara-eur", action="store_true", dest="fara_eur",
+                    help="Nu scrie bazele EUR in radacina; le pune in tests/eur_referinta/. "
+                         "Foloseste asta cand vrei sa testezi conversia RON->EUR din "
+                         "aplicatie: radacina ramane curata, iar setul de referinta "
+                         "serveste la compararea rezultatului conversiei.")
     args = ap.parse_args()
 
     baza = Path(args.dir).resolve() if args.dir else Path(__file__).resolve().parent.parent
@@ -481,23 +486,29 @@ def main():
              ["STARTCH_PR", "STARTCH_AC"])
 
     # ---------------- scriere EUR ----------------
+    # Cu --fara-eur, bazele EUR NU ajung in radacina: aplicatia trebuie sa le
+    # creeze ea, prin Conversie RON->EUR. Setul generat aici ramane in
+    # tests/eur_referinta/ ca REZULTAT ASTEPTAT al acelei conversii.
+    baza_eur = (Path(__file__).resolve().parent / "eur_referinta") if args.fara_eur else baza
+    baza_eur.mkdir(parents=True, exist_ok=True)
+
     def eur(v):
         return f(Decimal(str(v)) / CURS_EUR_RON)
 
-    scrie_db(baza / "MEMBRIIEUR.db", "MEMBRII",
+    scrie_db(baza_eur / "MEMBRIIEUR.db", "MEMBRII",
              [(m["fisa"], m["nume"], m["domiciliu"], m["calitate"],
                m["data_inscr"], eur(f(m["cotizatie"]))) for m in membri],
              ["NR_FISA", "NUM_PREN", "DOMICILIUL", "CALITATEA", "DATA_INSCR",
               "COTIZATIE_STANDARD"])
-    scrie_db(baza / "DEPCREDEUR.db", "DEPCRED",
+    scrie_db(baza_eur / "DEPCREDEUR.db", "DEPCRED",
              [tuple(r[c] if c in ("NR_FISA", "LUNA", "ANUL", "PRIMA") else eur(f(r[c]))
                     for c in col_dep) for r in randuri], col_dep)
-    scrie_db(baza / "activiEUR.db", "ACTIVI",
+    scrie_db(baza_eur / "activiEUR.db", "ACTIVI",
              [(a[0], a[1], eur(a[2]), eur(a[3])) for a in activi],
              ["NR_FISA", "NUM_PREN", "DEP_SOLD", "DIVIDEND"])
-    scrie_db(baza / "INACTIVIEUR.db", "INACTIVI", inactivi,
+    scrie_db(baza_eur / "INACTIVIEUR.db", "INACTIVI", inactivi,
              ["nr_fisa", "num_pren", "lipsa_luni"])
-    scrie_db(baza / "LICHIDATIEUR.db", "LICHIDATI", lichidati,
+    scrie_db(baza_eur / "LICHIDATIEUR.db", "LICHIDATI", lichidati,
              ["nr_fisa", "data_lichidare"])
 
     # ---------------- fisa de valori asteptate ----------------

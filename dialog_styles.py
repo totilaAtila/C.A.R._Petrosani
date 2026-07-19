@@ -1,217 +1,219 @@
 # dialog_styles.py
 """
 Stiluri centralizate pentru toate dialogurile aplicației CAR Petroșani.
-Versiune îmbunătățită cu consistență completă fundal-text.
+Versiune redesign "Glass Verde Rafinat".
 
 CARACTERISTICI:
-- Fundal dialog: #e8f1ff (albastru deschis)
-- Text principal: #2c3e50 (gri închis) - contrast optim
-- Fundal text: #ffffff (alb curat) cu chenar bleu
-- Butoane: #cce5ff cu efecte hover și pressed
+- Toate culorile vin din ui/palette.py — niciun hex literal în acest fișier
+- Fundal dialog: P.PANEL_2 (neutru discret)
+- Text principal: P.INK — contrast optim
+- Fundal text: P.PANEL (alb curat) cu chenar P.LINE
+- Butoane: neutre; butonul implicit (:default) e singurul accent verde
 - Padding generos pentru lizibilitate maximă
-- Toate culorile sunt definite explicit pentru consistență
 
-MODIFICĂRI FAȚĂ DE VERSIUNEA ANTERIOARĂ:
-- Adăugată culoarea textului (#2c3e50) pentru toate containerele principale
-- Clarificat fundalul pentru QMessageBox QLabel (transparent, se integrează cu fundalul dialogului)
-- Eliminată ambiguitatea prin specificarea explicită a tuturor culorilor
+REDESIGN: s-au schimbat exclusiv valorile de stil.
+Structura, numele, funcțiile și comportamentul rămân identice.
 """
 
-GLOBAL_DIALOG_STYLESHEET = """
+# REDESIGN: sursa unică de stil. Doar aspect — nicio logică atinsă.
+from ui.palette import P, GRAD, RADIUS, FONT
+
+GLOBAL_DIALOG_STYLESHEET = f"""
 /* ==================== QMessageBox ==================== */
-QMessageBox {
-    background-color: #e8f1ff;
-    color: #2c3e50;
-    font-family: Arial;
+QMessageBox {{
+    background-color: {P.PANEL_2};
+    color: {P.INK};
+    font-family: {FONT};
     font-size: 10pt;
     min-width: 420px;
-}
+}}
 
 /* Zona de text principală - FUNDAL ALB CURAT */
-QMessageBox QLabel#qt_msgbox_label {
-    background-color: #ffffff;
-    color: #2c3e50;
+QMessageBox QLabel#qt_msgbox_label {{
+    background-color: {P.PANEL};
+    color: {P.INK};
     padding: 14px 18px;
-    border: 1px solid #b3d1ff;
-    border-radius: 6px;
+    border: 1px solid {P.LINE};
+    border-radius: {RADIUS.SM};
     font-size: 10pt;
     margin: 4px;
-}
+}}
 
 /* Label-uri secundare (titluri, informații suplimentare) */
-QMessageBox QLabel {
+QMessageBox QLabel {{
     background-color: transparent;
-    color: #2c3e50;
+    color: {P.INK};
     padding: 6px;
-}
+}}
 
 /* Butoane - stil validari.py */
-QMessageBox QPushButton {
-    background-color: #cce5ff;
-    color: #2c3e50;
-    border: 1px solid #3399ff;
-    padding: 8px 16px;
-    border-radius: 6px;
-    min-width: 80px;
+QMessageBox QPushButton {{
+    background-color: {P.PANEL};
+    color: {P.MUTED};
+    border: 1px solid {P.LINE};
+    padding: 9px 22px;
+    border-radius: {RADIUS.SM};
+    min-width: 110px;
     font-weight: bold;
-}
+}}
 
-QMessageBox QPushButton:hover {
-    background-color: #b3daff;
-    border-color: #2680d9;
-}
+QMessageBox QPushButton:hover {{
+    background-color: {P.ACCENT_SOFT};
+    border-color: {P.ACCENT_LINE};
+}}
 
-QMessageBox QPushButton:pressed {
-    background-color: #99ccff;
-    border-color: #1a66b3;
-}
+QMessageBox QPushButton:pressed {{
+    background-color: #dceee4;
+    border-color: {P.ACCENT};
+}}
 
-QMessageBox QPushButton:focus {
+QMessageBox QPushButton:focus {{
     outline: none;
-    border: 2px solid #0056b3;
-}
+    border: 2px solid {P.ACCENT};
+}}
 
-QMessageBox QPushButton:default {
-    border: 2px solid #0056b3;
-    background-color: #b3daff;
-}
+QMessageBox QPushButton:default {{
+    border: none;
+    background: {GRAD.ACCENT};
+    color: {P.WHITE};
+}}
 
 /* ==================== QDialog ==================== */
-QDialog {
-    background-color: #e8f1ff;
-    color: #2c3e50;
-    font-family: Arial;
+QDialog {{
+    background-color: {P.PANEL_2};
+    color: {P.INK};
+    font-family: {FONT};
     font-size: 10pt;
-}
+}}
 
 /* Text din dialoguri custom */
-QDialog QLabel {
-    background-color: #ffffff;
-    color: #2c3e50;
+QDialog QLabel {{
+    background-color: {P.PANEL};
+    color: {P.INK};
     padding: 12px 16px;
-    border: 1px solid #b3d1ff;
-    border-radius: 6px;
-}
+    border: 1px solid {P.LINE};
+    border-radius: {RADIUS.SM};
+}}
 
-QDialog QPushButton {
-    background-color: #cce5ff;
-    color: #2c3e50;
-    border: 1px solid #3399ff;
-    padding: 8px 16px;
-    border-radius: 6px;
-    min-width: 80px;
+QDialog QPushButton {{
+    background-color: {P.PANEL};
+    color: {P.MUTED};
+    border: 1px solid {P.LINE};
+    padding: 9px 22px;
+    border-radius: {RADIUS.SM};
+    min-width: 110px;
     font-weight: bold;
-}
+}}
 
-QDialog QPushButton:hover {
-    background-color: #b3daff;
-}
+QDialog QPushButton:hover {{
+    background-color: {P.ACCENT_SOFT};
+}}
 
-QDialog QPushButton:pressed {
-    background-color: #99ccff;
-}
+QDialog QPushButton:pressed {{
+    background-color: #dceee4;
+}}
 
-QDialog QPushButton:focus {
+QDialog QPushButton:focus {{
     outline: none;
-    border: 2px solid #0056b3;
-}
+    border: 2px solid {P.ACCENT};
+}}
 
-QDialog QPushButton:disabled {
-    background-color: #cccccc;
-    color: #666666;
-    border-color: #999999;
-}
+QDialog QPushButton:disabled {{
+    background-color: {P.PANEL_2};
+    color: {P.FAINT};
+    border-color: {P.LINE};
+}}
 
 /* ==================== QInputDialog ==================== */
-QInputDialog {
-    background-color: #e8f1ff;
-    color: #2c3e50;
-    font-family: Arial;
+QInputDialog {{
+    background-color: {P.PANEL_2};
+    color: {P.INK};
+    font-family: {FONT};
     font-size: 10pt;
-}
+}}
 
-QInputDialog QLabel {
-    background-color: #ffffff;
-    color: #2c3e50;
+QInputDialog QLabel {{
+    background-color: {P.PANEL};
+    color: {P.INK};
     padding: 10px 14px;
-    border: 1px solid #b3d1ff;
-    border-radius: 4px;
+    border: 1px solid {P.LINE};
+    border-radius: {RADIUS.SM};
     margin: 4px;
-}
+}}
 
 QInputDialog QLineEdit,
 QInputDialog QSpinBox,
-QInputDialog QComboBox {
-    background-color: #ffffff;
-    color: #2c3e50;
-    border: 2px solid #3399ff;
-    border-radius: 4px;
+QInputDialog QComboBox {{
+    background-color: {P.PANEL};
+    color: {P.INK};
+    border: 1px solid {P.LINE};
+    border-radius: {RADIUS.SM};
     padding: 6px 10px;
     font-size: 10pt;
-}
+}}
 
 QInputDialog QLineEdit:focus,
 QInputDialog QSpinBox:focus,
-QInputDialog QComboBox:focus {
-    border-color: #0056b3;
-}
+QInputDialog QComboBox:focus {{
+    border-color: {P.ACCENT};
+}}
 
-QInputDialog QPushButton {
-    background-color: #cce5ff;
-    color: #2c3e50;
-    border: 1px solid #3399ff;
-    padding: 8px 16px;
-    border-radius: 6px;
-    min-width: 80px;
+QInputDialog QPushButton {{
+    background-color: {P.PANEL};
+    color: {P.MUTED};
+    border: 1px solid {P.LINE};
+    padding: 9px 22px;
+    border-radius: {RADIUS.SM};
+    min-width: 110px;
     font-weight: bold;
-}
+}}
 
-QInputDialog QPushButton:hover {
-    background-color: #b3daff;
-}
+QInputDialog QPushButton:hover {{
+    background-color: {P.ACCENT_SOFT};
+}}
 
 /* ==================== QFileDialog ==================== */
-QFileDialog {
-    background-color: #f8f9fa;
-    color: #2c3e50;
-}
+QFileDialog {{
+    background-color: {P.PANEL_2};
+    color: {P.INK};
+}}
 
-QFileDialog QPushButton {
-    background-color: #cce5ff;
-    color: #2c3e50;
-    border: 1px solid #3399ff;
-    padding: 6px 12px;
-    border-radius: 6px;
-    min-width: 70px;
+QFileDialog QPushButton {{
+    background-color: {P.PANEL};
+    color: {P.MUTED};
+    border: 1px solid {P.LINE};
+    padding: 7px 18px;
+    border-radius: {RADIUS.SM};
+    min-width: 96px;
     font-weight: bold;
-}
+}}
 
-QFileDialog QPushButton:hover {
-    background-color: #b3daff;
-}
+QFileDialog QPushButton:hover {{
+    background-color: {P.ACCENT_SOFT};
+}}
 
-QFileDialog QPushButton:pressed {
-    background-color: #99ccff;
-}
+QFileDialog QPushButton:pressed {{
+    background-color: #dceee4;
+}}
 
 /* ==================== QDialogButtonBox ==================== */
-QDialogButtonBox QPushButton {
-    background-color: #cce5ff;
-    color: #2c3e50;
-    border: 1px solid #3399ff;
-    padding: 8px 16px;
-    border-radius: 6px;
-    min-width: 80px;
+QDialogButtonBox QPushButton {{
+    background-color: {P.PANEL};
+    color: {P.MUTED};
+    border: 1px solid {P.LINE};
+    padding: 9px 22px;
+    border-radius: {RADIUS.SM};
+    min-width: 110px;
     font-weight: bold;
-}
+}}
 
-QDialogButtonBox QPushButton:hover {
-    background-color: #b3daff;
-}
+QDialogButtonBox QPushButton:hover {{
+    background-color: {P.ACCENT_SOFT};
+}}
 
-QDialogButtonBox QPushButton:pressed {
-    background-color: #99ccff;
-}
+QDialogButtonBox QPushButton:pressed {{
+    background-color: #dceee4;
+}}
 """
 
 
@@ -219,13 +221,12 @@ def apply_global_dialog_styles(app):
     """
     Aplică stilurile centralizate pentru dialoguri cu consistență completă fundal-text.
 
-    CARACTERISTICI VERSIUNE ÎMBUNĂTĂȚITĂ:
-    - Fundal text alb curat cu chenar bleu (#ffffff)
-    - Culoare text definită explicit (#2c3e50) pentru toate elementele
-    - Butoane stilizate cu hover și pressed (#cce5ff → #b3daff → #99ccff)
+    CARACTERISTICI VERSIUNE REDESIGN:
+    - Fundal text alb curat cu chenar discret (P.PANEL / P.LINE)
+    - Culoare text definită explicit (P.INK) pentru toate elementele
+    - Butoane neutre cu hover verde deschis; butonul implicit = accent verde
     - Padding generos pentru lizibilitate maximă
     - Consistență vizuală 100% în toată aplicația
-    - Eliminarea ambiguității prin specificare explicită
 
     Args:
         app: Instanța QApplication
