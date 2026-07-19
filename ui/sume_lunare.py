@@ -27,6 +27,9 @@ from PyQt5.QtWidgets import (
 from utils import afiseaza_warning, afiseaza_eroare, afiseaza_info, afiseaza_intrebare
 from permisiuni import poate_scrie, MESAJ_READONLY  # gardian scriere post-conversie RON
 
+# Paleta unica de stil (redesign "Glass Verde"). Doar culori/tokeni, fara logica.
+from ui.palette import P, GRAD, RADIUS, FONT
+
 # --- Import Utils pentru Threading ---
 try:
     from utils import run_task_in_background
@@ -221,54 +224,51 @@ class TranzactieDialog(QDialog):
         self.setMinimumWidth(350)  # Lărgim mai mult dialogul
 
         # Adaugă stilizarea modernă pentru toate butoanele din dialog
-        self.setStyleSheet("""
-            QDialog {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #f8f9fa, stop:1 #e9ecef);
-                border-radius: 12px;
-            }
-            QLabel {
-                color: #2c3e50;
+        self.setStyleSheet(f"""
+            QDialog {{
+                background: {GRAD.APP_BG};
+                border-radius: {RADIUS.LG};
+            }}
+            QLabel {{
+                color: {P.INK};
                 font-weight: bold;
                 padding: 4px;
-            }
-            QLineEdit {
-                background-color: #ffffff;
-                border: 2px solid #b3d1ff;
-                border-radius: 6px;
+            }}
+            QLineEdit {{
+                background-color: {P.PANEL_2};
+                border: 1px solid {P.LINE};
+                border-radius: {RADIUS.MD};
                 padding: 6px 10px;
                 font-size: 10pt;
-            }
-            QLineEdit:focus {
-                border-color: #4a90e2;
-            }
-            QPushButton {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #4a90e2, stop:1 #357abd);
-                border: 2px solid #4a90e2;
-                color: white;
+                color: {P.INK};
+            }}
+            QLineEdit:focus {{
+                border-color: {P.ACCENT};
+            }}
+            QPushButton {{
+                background: {P.INFO};
+                border: 1px solid {P.INFO_DEEP};
+                color: {P.WHITE};
                 padding: 8px 16px;
-                border-radius: 6px;
+                border-radius: {RADIUS.MD};
                 min-width: 80px;
                 font-weight: bold;
-            }
-            QPushButton:hover {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #5ba0f2, stop:1 #4a90e2);
-                border-color: #357abd;
-            }
-            QPushButton:pressed {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #357abd, stop:1 #2e6ba8);
-            }
-            QDialogButtonBox QPushButton {
+            }}
+            QPushButton:hover {{
+                background: {P.INFO_DEEP};
+                border-color: {P.INFO_DEEP};
+            }}
+            QPushButton:pressed {{
+                background: {P.INFO_DEEP};
+            }}
+            QDialogButtonBox QPushButton {{
                 min-width: 80px;
-            }
-            QFrame {
-                border: 1px solid #dee2e6;
-                border-radius: 6px;
-                background-color: rgba(255, 255, 255, 0.8);
-            }
+            }}
+            QFrame {{
+                border: 1px solid {P.LINE};
+                border-radius: {RADIUS.MD};
+                background-color: {P.PANEL};
+            }}
         """)
 
         layout = QVBoxLayout(self)
@@ -335,7 +335,7 @@ class TranzactieDialog(QDialog):
 
         # Etichetă pentru rezultatul calculului
         self.rezultat_calc_label = QLabel("Rezultat calcul: -")
-        self.rezultat_calc_label.setStyleSheet("font-weight: bold; color: #28a745; font-size: 11pt;")
+        self.rezultat_calc_label.setStyleSheet(f"font-weight: bold; color: {P.ACCENT}; font-size: 11pt;")
         form_layout.addRow("", self.rezultat_calc_label)
 
         layout.addLayout(form_layout)
@@ -731,44 +731,43 @@ class SumeLunareWidget(QWidget):
         self.current_rate_label = QLabel(
             f"Rata dobândă la zi: {dobanda_curenta:.1f} ‰")
         self.current_rate_label.setObjectName("lblCurrentRate")
-        self.current_rate_label.setStyleSheet("""
-            QLabel#lblCurrentRate { 
-                color: #17a2b8; 
-                font-weight: bold; 
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                    stop:0 rgba(23, 162, 184, 0.1), stop:1 rgba(23, 162, 184, 0.05));
+        self.current_rate_label.setStyleSheet(f"""
+            QLabel#lblCurrentRate {{
+                color: {P.INFO};
+                font-weight: bold;
+                background: {P.PANEL_2};
                 padding: 6px 12px;
-                border-radius: 6px;
-                border: 1px solid rgba(23, 162, 184, 0.3);
-            }
+                border-radius: {RADIUS.MD};
+                border: 1px solid {P.LINE};
+            }}
         """)
 
         # Etichetă pentru ghidare flux de lucru cu design îmbunătățit
         self.lbl_workflow_hint = QLabel(
             "Flux de lucru pentru achitare anticipată a împrumutului: 1. Aplică Dobândă → 2. Modifică Tranzacție")
         self.lbl_workflow_hint.setObjectName("lblWorkflowHint")
-        self.lbl_workflow_hint.setStyleSheet("""
-            QLabel#lblWorkflowHint { 
-                color: #6c757d; 
+        self.lbl_workflow_hint.setStyleSheet(f"""
+            QLabel#lblWorkflowHint {{
+                color: {P.MUTED};
                 font-style: italic;
-                background: rgba(108, 117, 125, 0.05);
+                background: {P.PANEL_2};
                 padding: 4px 8px;
-                border-radius: 4px;
-            }
+                border-radius: {RADIUS.SM};
+            }}
         """)
 
         # Etichetă pentru status recalculare cu design modern
         self.lbl_recalc_status = QLabel("")
         self.lbl_recalc_status.setAlignment(Qt.AlignRight)
-        self.lbl_recalc_status.setStyleSheet("""
-            QLabel { 
-                color: #17a2b8; 
+        self.lbl_recalc_status.setStyleSheet(f"""
+            QLabel {{
+                color: {P.INFO};
                 font-weight: bold;
-                background: rgba(23, 162, 184, 0.1);
+                background: {P.PANEL_2};
                 padding: 4px 10px;
-                border-radius: 6px;
-                border: 1px solid rgba(23, 162, 184, 0.2);
-            }
+                border-radius: {RADIUS.MD};
+                border: 1px solid {P.LINE};
+            }}
         """)
 
         self.bottom_info_layout.addWidget(self.current_rate_label)
@@ -911,15 +910,17 @@ class SumeLunareWidget(QWidget):
         columns_layout.setContentsMargins(0, 0, 0, 0)
         columns_layout.setSpacing(8)
 
-        # Secțiuni cu design îmbunătățit
+        # Secțiuni cu design îmbunătățit. Culorile vin acum din paleta unica,
+        # alese dupa titlu in _create_financial_section_frame (params de culoare
+        # pastrati doar pentru compatibilitatea semnaturii -> None).
         self.loan_section = self._create_financial_section_frame(
-            "Situație Împrumuturi", "#e74c3c", "#fff5f5", "#ffcdd2"
+            "Situație Împrumuturi", None, None, None
         )
         self.date_section = self._create_financial_section_frame(
-            "Dată", "#6c757d", "#f8f9fa", "#dee2e6"
+            "Dată", None, None, None
         )
         self.deposit_section = self._create_financial_section_frame(
-            "Situație Depuneri", "#28a745", "#f8fff8", "#d4edda"
+            "Situație Depuneri", None, None, None
         )
 
         self.loan_columns_layout = QHBoxLayout()
@@ -960,29 +961,26 @@ class SumeLunareWidget(QWidget):
         # Design îmbunătățit cu gradienți
         if "Împrumuturi" in title:
             section.setStyleSheet(f"""
-                QFrame {{ 
-                    border: 3px solid {border_color}; 
-                    border-radius: 12px; 
-                    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                        stop:0 {bg_color}, stop:1 #ffebee); 
+                QFrame {{
+                    border: 1px solid {P.DANGER};
+                    border-radius: {RADIUS.LG};
+                    background: {P.DANGER_SOFT};
                 }}
             """)
         elif "Depuneri" in title:
             section.setStyleSheet(f"""
-                QFrame {{ 
-                    border: 3px solid {border_color}; 
-                    border-radius: 12px; 
-                    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                        stop:0 {bg_color}, stop:1 #e8f5e8); 
+                QFrame {{
+                    border: 1px solid {P.ACCENT_LINE};
+                    border-radius: {RADIUS.LG};
+                    background: {P.ACCENT_SOFT};
                 }}
             """)
         else:  # Dată
             section.setStyleSheet(f"""
-                QFrame {{ 
-                    border: 3px solid {border_color}; 
-                    border-radius: 12px; 
-                    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                        stop:0 {bg_color}, stop:1 #e9ecef); 
+                QFrame {{
+                    border: 1px solid {P.LINE};
+                    border-radius: {RADIUS.LG};
+                    background: {P.PANEL_2};
                 }}
             """)
 
@@ -990,46 +988,43 @@ class SumeLunareWidget(QWidget):
         lbl_header.setAlignment(Qt.AlignCenter)
         lbl_header.setMinimumHeight(38)
         if "Împrumuturi" in title:
-            lbl_header.setStyleSheet("""
-                        QLabel {
-                            background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                stop:0 #ffcdd2, stop:1 #ef9a9a);
-                            border: 2px solid #e74c3c;
-                            border-radius: 8px;
+            lbl_header.setStyleSheet(f"""
+                        QLabel {{
+                            background: {P.DANGER};
+                            border: 1px solid {P.DANGER_DEEP};
+                            border-radius: {RADIUS.SM};
                             padding: 8px 15px;
                             font-weight: bold;
                             font-size: 11pt;
-                            color: #2c3e50;
+                            color: {P.WHITE};
                             margin-bottom: 6px;
-                        }
+                        }}
                     """)
         elif "Depuneri" in title:
-            lbl_header.setStyleSheet("""
-                        QLabel {
-                            background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                stop:0 #d4edda, stop:1 #a3d977);
-                            border: 2px solid #28a745;
-                            border-radius: 8px;
+            lbl_header.setStyleSheet(f"""
+                        QLabel {{
+                            background: {P.ACCENT};
+                            border: 1px solid {P.ACCENT_DEEP};
+                            border-radius: {RADIUS.SM};
                             padding: 8px 15px;
                             font-weight: bold;
                             font-size: 11pt;
-                            color: #2c3e50;
+                            color: {P.WHITE};
                             margin-bottom: 6px;
-                        }
+                        }}
                     """)
         else:  # Dată
-            lbl_header.setStyleSheet("""
-                        QLabel {
-                            background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                stop:0 #dee2e6, stop:1 #adb5bd);
-                            border: 2px solid #6c757d;
-                            border-radius: 8px;
+            lbl_header.setStyleSheet(f"""
+                        QLabel {{
+                            background: {P.NEUTRAL};
+                            border: 1px solid {P.NEUTRAL_DEEP};
+                            border-radius: {RADIUS.SM};
                             padding: 8px 15px;
                             font-weight: bold;
                             font-size: 11pt;
-                            color: #2c3e50;
+                            color: {P.WHITE};
                             margin-bottom: 6px;
-                        }
+                        }}
                     """)
         section_layout.addWidget(lbl_header)
         return section
@@ -1050,25 +1045,25 @@ class SumeLunareWidget(QWidget):
         if not font.exactMatch(): font = QFont("Courier New", 10)
         text_edit.setFont(font)
 
-        text_edit.setStyleSheet("""
-            QTextEdit {
-                border: 2px solid #adb5bd;
+        text_edit.setStyleSheet(f"""
+            QTextEdit {{
+                border: 1px solid {P.LINE};
                 border-top: none; border-radius: 0px;
-                border-bottom-left-radius: 8px;
-                border-bottom-right-radius: 8px; 
-                padding: 6px; 
-                background-color: #ffffff; 
-                color: #495057;
-                selection-background-color: #b3d1ff;
-            }
-            QTextEdit:read-only {
-                background-color: #f8f9fa; 
-                color: #6c757d;
-            }
-            QTextEdit:focus {
-                border-color: #4a90e2;
-                background-color: #fafbfc;
-            }
+                border-bottom-left-radius: {RADIUS.SM};
+                border-bottom-right-radius: {RADIUS.SM};
+                padding: 6px;
+                background-color: {P.PANEL};
+                color: {P.INK};
+                selection-background-color: {P.ACCENT_SOFT};
+            }}
+            QTextEdit:read-only {{
+                background-color: {P.PANEL_2};
+                color: {P.FAINT};
+            }}
+            QTextEdit:focus {{
+                border-color: {P.ACCENT};
+                background-color: {P.PANEL};
+            }}
         """)
 
         layout = QVBoxLayout()
@@ -1078,19 +1073,18 @@ class SumeLunareWidget(QWidget):
             label = QLabel(title)
             label.setAlignment(Qt.AlignCenter)
             label.setFixedHeight(32)
-            label.setStyleSheet("""
-                QLabel {
-                    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                        stop:0 #f1f3f4, stop:1 #e8eaed);
-                    border: 2px solid #adb5bd;
+            label.setStyleSheet(f"""
+                QLabel {{
+                    background: {P.PANEL_2};
+                    border: 1px solid {P.LINE};
                     border-bottom: none;
-                    border-top-left-radius: 8px;
-                    border-top-right-radius: 8px; 
+                    border-top-left-radius: {RADIUS.SM};
+                    border-top-right-radius: {RADIUS.SM};
                     padding: 6px;
-                    font-weight: bold; 
-                    font-size: 9pt; 
-                    color: #2c3e50;
-                }
+                    font-weight: bold;
+                    font-size: 9pt;
+                    color: {P.MUTED};
+                }}
             """)
             layout.addWidget(label)
         layout.addWidget(text_edit, stretch=1)
@@ -1116,147 +1110,139 @@ class SumeLunareWidget(QWidget):
 
     def _apply_styles(self):
         """ Aplică stilurile CSS moderne centralizate. """
-        general_styles = """
-            SumeLunareWidget, QWidget {
-                font-family: 'Segoe UI', Arial, sans-serif; 
-                font-size: 10pt; 
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #f8f9fa, stop:1 #e9ecef);
-            }
-            QScrollArea { 
-                border: none; 
+        general_styles = f"""
+            SumeLunareWidget, QWidget {{
+                font-family: {FONT};
+                font-size: 10pt;
+                background: {GRAD.APP_BG};
+            }}
+            QScrollArea {{
+                border: none;
                 background-color: transparent;
-            }
+            }}
             /* ScrollBar modern */
-            QScrollBar:vertical {
-                border: none; background: rgba(0,0,0,0.1); width: 12px;
+            QScrollBar:vertical {{
+                border: none; background: {P.LINE_SOFT}; width: 12px;
                 margin: 0; border-radius: 6px;
-            }
-            QScrollBar::handle:vertical {
-                background: rgba(74, 144, 226, 0.7); min-height: 20px; 
+            }}
+            QScrollBar::handle:vertical {{
+                background: {P.ACCENT_LINE}; min-height: 20px;
                 border-radius: 6px; margin: 2px;
-            }
-            QScrollBar::handle:vertical:hover { 
-                background: rgba(74, 144, 226, 0.9); 
-            }
-            QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+            }}
+            QScrollBar::handle:vertical:hover {{
+                background: {P.ACCENT};
+            }}
+            QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {{
                 border: none; background: none; height: 0px;
-            }
-            QScrollBar:horizontal {
-                border: none; background: rgba(0,0,0,0.1); height: 12px;
+            }}
+            QScrollBar:horizontal {{
+                border: none; background: {P.LINE_SOFT}; height: 12px;
                 margin: 0; border-radius: 6px;
-            }
-            QScrollBar::handle:horizontal {
-                background: rgba(74, 144, 226, 0.7); min-width: 20px; 
+            }}
+            QScrollBar::handle:horizontal {{
+                background: {P.ACCENT_LINE}; min-width: 20px;
                 border-radius: 6px; margin: 2px;
-            }
-            QScrollBar::handle:horizontal:hover { 
-                background: rgba(74, 144, 226, 0.9); 
-            }
-            QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {
+            }}
+            QScrollBar::handle:horizontal:hover {{
+                background: {P.ACCENT};
+            }}
+            QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {{
                 border: none; background: none; width: 0px;
-            }
-            QLineEdit {
-                background-color: #ffffff;
-                border: 2px solid #b3d1ff;
-                border-radius: 6px;
+            }}
+            QLineEdit {{
+                background-color: {P.PANEL_2};
+                border: 1px solid {P.LINE};
+                border-radius: {RADIUS.MD};
                 padding: 6px 10px;
                 min-height: 23px;
                 font-size: 10pt;
-            }
-            QLineEdit:focus {
-                border-color: #4a90e2;
-            }
-            QLineEdit:read-only {
-                background-color: #f8f9fa;
-                color: #6c757d;
-                border-color: #dee2e6;
-            }
-            QLabel { 
-                color: #2c3e50; 
-                padding-bottom: 2px; 
+                color: {P.INK};
+            }}
+            QLineEdit:focus {{
+                border-color: {P.ACCENT};
+            }}
+            QLineEdit:read-only {{
+                background-color: {P.PANEL_2};
+                color: {P.MUTED};
+                border-color: {P.LINE_SOFT};
+            }}
+            QLabel {{
+                color: {P.INK};
+                padding-bottom: 2px;
                 font-weight: bold;
-            }
+            }}
         """
 
-        header_styles = """
-            QFrame#header_frame {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #f8fbff, stop:1 #e7f3ff);
-                border: 2px solid #4a90e2;
-                border-radius: 10px;
+        header_styles = f"""
+            QFrame#header_frame {{
+                background: {P.PANEL_2};
+                border: 1px solid {P.LINE};
+                border-radius: {RADIUS.LG};
                 padding: 10px 15px;
-            }
-            QFrame#header_frame QLabel {
-                font-weight: bold; 
-                padding-bottom: 0px; 
+            }}
+            QFrame#header_frame QLabel {{
+                font-weight: bold;
+                padding-bottom: 0px;
                 background: none;
                 border: none;
-                color: #2c3e50;
-            }
+                color: {P.INK};
+            }}
         """
 
-        button_styles = """
-            QPushButton#reset_button {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #ff6b6b, stop:1 #ee5a52);
-                border: 2px solid #e74c3c;
-                border-radius: 8px;
+        button_styles = f"""
+            QPushButton#reset_button {{
+                background: {P.DANGER};
+                border: 1px solid {P.DANGER_DEEP};
+                border-radius: {RADIUS.MD};
                 font-size: 10pt; font-weight: bold;
-                padding: 8px 16px; color: white; 
+                padding: 8px 16px; color: {P.WHITE};
                 min-width: 120px;
-            }
-            QPushButton#reset_button:hover {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #ff7b7b, stop:1 #ff6b6b);
-                border-color: #dc3545;
-            }
-            QPushButton#reset_button:pressed {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #ee5a52, stop:1 #e74c3c);
-            }
+            }}
+            QPushButton#reset_button:hover {{
+                background: {P.DANGER_DEEP};
+                border-color: {P.DANGER_DEEP};
+            }}
+            QPushButton#reset_button:pressed {{
+                background: {P.DANGER_DEEP};
+            }}
 
-            QPushButton#buton_modifica {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #ffc107, stop:1 #e0a800);
-                border: 2px solid #ffc107;
-                border-radius: 8px;
-                color: #2c3e50; 
+            QPushButton#buton_modifica {{
+                background: {P.WARNING};
+                border: 1px solid {P.WARNING_DEEP};
+                border-radius: {RADIUS.MD};
+                color: {P.WHITE};
                 font-weight: bold;
                 padding: 8px 16px;
                 min-width: 140px;
-            }
-            QPushButton#buton_modifica:hover {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #ffcd39, stop:1 #ffc107);
-                border-color: #e0a800;
-            }
-            QPushButton#buton_modifica:disabled {
-                background-color: #6c757d; 
-                color: #cccccc;
-                border-color: #6c757d;
-            }
+            }}
+            QPushButton#buton_modifica:hover {{
+                background: {P.WARNING_DEEP};
+                border-color: {P.WARNING_DEEP};
+            }}
+            QPushButton#buton_modifica:disabled {{
+                background-color: {P.DISABLED};
+                color: {P.DISABLED_TEXT};
+                border-color: {P.DISABLED};
+            }}
 
-            QPushButton#buton_dobanda {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #17a2b8, stop:1 #138496);
-                border: 2px solid #17a2b8;
-                border-radius: 8px;
-                color: white; 
+            QPushButton#buton_dobanda {{
+                background: {P.INFO};
+                border: 1px solid {P.INFO_DEEP};
+                border-radius: {RADIUS.MD};
+                color: {P.WHITE};
                 font-weight: bold;
                 padding: 8px 16px;
                 min-width: 140px;
-            }
-            QPushButton#buton_dobanda:hover {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #20c9e0, stop:1 #17a2b8);
-                border-color: #138496;
-            }
-            QPushButton#buton_dobanda:disabled {
-                background-color: #6c757d; 
-                color: #cccccc;
-                border-color: #6c757d;
-            }
+            }}
+            QPushButton#buton_dobanda:hover {{
+                background: {P.INFO_DEEP};
+                border-color: {P.INFO_DEEP};
+            }}
+            QPushButton#buton_dobanda:disabled {{
+                background-color: {P.DISABLED};
+                color: {P.DISABLED_TEXT};
+                border-color: {P.DISABLED};
+            }}
         """
 
         self.setStyleSheet(general_styles + header_styles + button_styles)
@@ -1414,7 +1400,7 @@ class SumeLunareWidget(QWidget):
             self._recalculation_running = True
             self.setCursor(Qt.WaitCursor)
             self.lbl_recalc_status.setText(f"⏳ Recalculare solduri {nr_fisa}...")
-            self.lbl_recalc_status.setStyleSheet("QLabel { color: #17a2b8; font-weight: bold; }")
+            self.lbl_recalc_status.setStyleSheet(f"QLabel {{ color: {P.INFO}; font-weight: bold; }}")
             self.buton_modifica_tranzactie.setEnabled(False)
             self.buton_aplica_dobanda.setEnabled(False)
             QApplication.processEvents()
@@ -1629,7 +1615,7 @@ class SumeLunareWidget(QWidget):
         self._recalculation_running = False
         self.setCursor(Qt.ArrowCursor)
         self.lbl_recalc_status.setText("⛔ Eroare recalculare!")
-        self.lbl_recalc_status.setStyleSheet("QLabel { color: red; font-weight: bold; }")
+        self.lbl_recalc_status.setStyleSheet(f"QLabel {{ color: {P.DANGER}; font-weight: bold; }}")
         afiseaza_eroare(f"Eroare recalculare:\n{error_message}\nIstoricul poate fi inconsistent.", parent=self)
 
         # Reîmprospătăm istoricul afișat (poate fi inconsistent)
@@ -2729,7 +2715,7 @@ class SumeLunareWidget(QWidget):
                 logging.info("Închidere fereastră blocată - recalculare în curs")
                 # Actualizează mesajul de status pentru utilizator
                 self.lbl_recalc_status.setText("⏳ Așteptați finalizarea recalculării pentru a închide...")
-                self.lbl_recalc_status.setStyleSheet("QLabel { color: #ff6b6b; font-weight: bold; }")
+                self.lbl_recalc_status.setStyleSheet(f"QLabel {{ color: {P.DANGER}; font-weight: bold; }}")
             else:
                 # Utilizatorul alege să închidă oricum (NU RECOMANDAT)
                 logging.warning("Fereastră închisă forțat în timpul recalculării - risc de inconsistențe!")
