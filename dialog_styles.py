@@ -49,13 +49,13 @@ QMessageBox QLabel {{
 /* Butoane - stil validari.py */
 QMessageBox QPushButton {{
     background-color: {P.PANEL};
-    color: {P.MUTED};
-    border: 1px solid {P.LINE};
+    color: {P.INK};
+    border: 1px solid {P.NEUTRAL};
     padding: 9px 26px;
     border-radius: {RADIUS.SM};
     font-family: 'Segoe UI';
     font-size: 10pt;
-    font-weight: normal;
+    font-weight: bold;
 }}
 
 QMessageBox QPushButton:hover {{
@@ -98,13 +98,13 @@ QDialog QLabel {{
 
 QDialog QPushButton {{
     background-color: {P.PANEL};
-    color: {P.MUTED};
-    border: 1px solid {P.LINE};
+    color: {P.INK};
+    border: 1px solid {P.NEUTRAL};
     padding: 9px 26px;
     border-radius: {RADIUS.SM};
     font-family: 'Segoe UI';
     font-size: 10pt;
-    font-weight: normal;
+    font-weight: bold;
 }}
 
 QDialog QPushButton:hover {{
@@ -162,13 +162,13 @@ QInputDialog QComboBox:focus {{
 
 QInputDialog QPushButton {{
     background-color: {P.PANEL};
-    color: {P.MUTED};
-    border: 1px solid {P.LINE};
+    color: {P.INK};
+    border: 1px solid {P.NEUTRAL};
     padding: 9px 26px;
     border-radius: {RADIUS.SM};
     font-family: 'Segoe UI';
     font-size: 10pt;
-    font-weight: normal;
+    font-weight: bold;
 }}
 
 QInputDialog QPushButton:hover {{
@@ -183,13 +183,13 @@ QFileDialog {{
 
 QFileDialog QPushButton {{
     background-color: {P.PANEL};
-    color: {P.MUTED};
-    border: 1px solid {P.LINE};
+    color: {P.INK};
+    border: 1px solid {P.NEUTRAL};
     padding: 7px 20px;
     border-radius: {RADIUS.SM};
     font-family: 'Segoe UI';
     font-size: 10pt;
-    font-weight: normal;
+    font-weight: bold;
 }}
 
 QFileDialog QPushButton:hover {{
@@ -203,13 +203,13 @@ QFileDialog QPushButton:pressed {{
 /* ==================== QDialogButtonBox ==================== */
 QDialogButtonBox QPushButton {{
     background-color: {P.PANEL};
-    color: {P.MUTED};
-    border: 1px solid {P.LINE};
+    color: {P.INK};
+    border: 1px solid {P.NEUTRAL};
     padding: 9px 26px;
     border-radius: {RADIUS.SM};
     font-family: 'Segoe UI';
     font-size: 10pt;
-    font-weight: normal;
+    font-weight: bold;
 }}
 
 QDialogButtonBox QPushButton:hover {{
