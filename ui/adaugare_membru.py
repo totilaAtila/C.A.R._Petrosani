@@ -1118,7 +1118,7 @@ class AdaugareMembruWidget(QWidget):
                         return
 
                     # Inserare membru nou - INCLUDEM COTIZATIE_STANDARD
-                    membrii_data = (nume, adresa, calitate, data_inscr, nr_fisa, cotizatie_standard)
+                    membrii_data = (nume, adresa, calitate, data_inscr, nr_fisa, str(cotizatie_standard))
                     cursor_m.execute(
                         "INSERT INTO membrii (NUM_PREN, DOMICILIUL, CALITATEA, DATA_INSCR, NR_FISA, COTIZATIE_STANDARD) VALUES (?, ?, ?, ?, ?, ?)",
                         membrii_data
@@ -1143,8 +1143,8 @@ class AdaugareMembruWidget(QWidget):
                     prima_flag = 1  # Marcam ca fiind prima înregistrare
 
                     depcred_data = (
-                        nr_fisa, luna, anul, dobanda, impr_deb, impr_cred, impr_sold_nou,
-                        dep_deb, dep_cred, dep_sold_nou, prima_flag
+                        nr_fisa, luna, anul, str(dobanda), str(impr_deb), str(impr_cred), str(impr_sold_nou),
+                        str(dep_deb), str(dep_cred), str(dep_sold_nou), prima_flag
                     )
 
                     logging.info(f"Inserare în DEPCRED (prima linie) pentru fișa {nr_fisa}...")
