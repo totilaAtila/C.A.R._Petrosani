@@ -46,6 +46,17 @@ QMessageBox QLabel {{
     padding: 6px;
 }}
 
+/* Detalii (setDetailedText) — casetă tematizată, cu scroll cand textul e lung */
+QMessageBox QTextEdit {{
+    background-color: {P.PANEL};
+    color: {P.INK};
+    border: 1px solid {P.LINE};
+    border-radius: {RADIUS.SM};
+    padding: 8px;
+    min-height: 200px;
+    max-height: 360px;
+}}
+
 /* Butoane - stil validari.py */
 QMessageBox QPushButton {{
     background-color: {P.PANEL};

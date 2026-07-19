@@ -1010,12 +1010,13 @@ class OptimizareIndexWidget(QWidget):
         # Setează dimensiunea pentru dialog. Pastram tema aplicata pe __init__
         # (styleSheet() curent) si adaugam doar custom-ul, ca butoanele sa ramana
         # vizibile (altfel setStyleSheet ar suprascrie tema).
+        # Doar fontul monospace + latimea; restul (border, scroll, min/max-height)
+        # vine din tema (dialog_styles: QMessageBox QTextEdit).
         msg_box.setStyleSheet(msg_box.styleSheet() + """
             QMessageBox QTextEdit {
                 font-family: 'Courier New', monospace;
                 font-size: 9pt;
-                min-width: 600px;
-                min-height: 400px;
+                min-width: 560px;
             }
         """)
 
