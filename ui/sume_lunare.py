@@ -2064,6 +2064,12 @@ class SumeLunareWidget(QWidget):
             if not load_successful:
                 QTimer.singleShot(0, lambda: setattr(self, '_update_completer_flag', True))
 
+    def reincarca_valuta(self):
+        """Re-afișează fișa curentă în noua valută (bazele sunt deja re-patchuite).
+        Păstrează interogarea: dacă o fișă e încărcată, o re-interoghează și re-afișează."""
+        if self._loaded_nr_fisa is not None:
+            self._afiseaza_istoric(self._loaded_nr_fisa)
+
     def _afiseaza_istoric(self, nr_fisa):
         """ Prelucrează și afișează istoricul financiar cu formatare vizuală avansată. """
         self._clear_financial_history()

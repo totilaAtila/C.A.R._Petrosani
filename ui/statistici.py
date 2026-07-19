@@ -495,6 +495,10 @@ class StatisticiWidget(QWidget):
             now = datetime.now()
             return now.month, now.year
 
+    def reincarca_valuta(self):
+        """Reîncarcă statisticile la schimbarea RON/EUR (bazele sunt deja re-patchuite)."""
+        self.load_data()
+
     def load_data(self):
         try:
             # Gasim cea mai recenta luna/an din DEPCRED

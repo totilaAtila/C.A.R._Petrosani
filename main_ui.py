@@ -1042,11 +1042,17 @@ class CARApp(QMainWindow):
         # ===== MODIFICARE 3: Actualizare permisiuni după schimbare monedă =====
         self._update_menu_write_permissions()
 
-        # Reîncarcă widget-ul curent dacă este sensibil la monedă
-        if hasattr(self, 'statistici_widget') and self.content_area.currentWidget() is self.statistici_widget:
-            # Statistici e ecranul-acasă (current_submenu_text=None), deci ramurile de mai jos
-            # îl săreau: reîmprospătează-l direct ca sumele să reflecte moneda nouă.
-            self.statistici_widget.load_data()
+        # Reîmprospătare LIVE la schimbarea valutei, PĂSTRÂND interogarea curentă:
+        # orice ecran sensibil la monedă implementează reincarca_valuta() și își
+        # re-rulează interogarea pe bazele re-patchuite, FĂRĂ a fi recreat (deci
+        # fișa/plaja selectată nu se pierde). Ecranele fără metodă cad pe
+        # comportamentul vechi (recreare), fără regresie.
+        current = self.content_area.currentWidget()
+        if current is not None and hasattr(current, 'reincarca_valuta'):
+            try:
+                current.reincarca_valuta()
+            except Exception as e:
+                print(f"reincarca_valuta a esuat pe {type(current).__name__}: {e}")
         elif hasattr(self, 'current_submenu_text') and self.current_submenu_text:
             self.on_submenu_clicked(self.current_submenu_text, force_reload=True)
         elif any(btn.is_active for btn in self.menu_buttons.values() if btn.text().endswith("Listări")):

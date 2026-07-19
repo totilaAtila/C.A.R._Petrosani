@@ -348,6 +348,12 @@ class VizualizareTrimestrialaWidget(QWidget):
                 if it:
                     it.setBackground(brush)
 
+    def reincarca_valuta(self):
+        """Re-rulează afișarea în noua valută (bazele sunt deja re-patchuite),
+        păstrând trimestrul/anul selectate. Doar dacă s-a rulat deja o interogare."""
+        if self.tabel.rowCount() > 0:
+            self.afiseaza_trimestru()
+
     def afiseaza_trimestru(self) -> None:
         # 1. Citește perioada selectată
         an_txt = self.combo_an.currentText()

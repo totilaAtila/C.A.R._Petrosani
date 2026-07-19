@@ -353,6 +353,12 @@ class VizualizareAnualaWidget(QWidget):
     # ------------------------------------------------------------------
     # Logica principală
     # ------------------------------------------------------------------
+    def reincarca_valuta(self):
+        """Re-rulează afișarea în noua valută (bazele sunt deja re-patchuite),
+        păstrând anul selectat. Doar dacă s-a rulat deja o interogare."""
+        if self.tabel.rowCount() > 0:
+            self.afiseaza_an()
+
     def afiseaza_an(self) -> None:
         an_txt = self.combo_an.currentText()
         if not an_txt.isdigit():

@@ -206,6 +206,12 @@ class VizualizareLunaraWidget(QWidget):
         self.setLayout(layout_principal)
         self.aplica_stiluri()  # Aplicăm stilul standardizat
 
+    def reincarca_valuta(self):
+        """Re-rulează afișarea în noua valută (bazele sunt deja re-patchuite),
+        păstrând luna/anul selectate. Doar dacă s-a rulat deja o interogare."""
+        if self.date_curente:
+            self.afiseaza_luna()
+
     def afiseaza_luna(self):
         luna = self.combo_luna.currentIndex() + 1
         try:
