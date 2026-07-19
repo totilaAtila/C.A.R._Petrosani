@@ -2,7 +2,20 @@ from PyQt5.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QFormLayout, QLab
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import Qt
 import sqlite3
+import sys
+import os
 from datetime import datetime
+
+# Modulul folosea sqlite3.connect("membrii.db") — cale relativă, fără constantă DB_.
+# Două probleme: (1) depindea de directorul curent al procesului, nu de cel al
+# aplicației; (2) mecanismul de patching RON→EUR caută atribute care încep cu 'DB_',
+# deci acest modul nu era patchuit niciodată și scria în baza RON și în modul EUR.
+if getattr(sys, 'frozen', False):
+    BASE_RESOURCE_PATH = os.path.dirname(sys.executable)
+else:
+    BASE_RESOURCE_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+
+DB_MEMBRII = os.path.join(BASE_RESOURCE_PATH, "MEMBRII.db")
 
 
 class ActualizareMembruWidget(QWidget):
@@ -108,7 +121,7 @@ class ActualizareMembruWidget(QWidget):
     def verifica_numar_fisa(self):
         """Verifică dacă numărul de fișă există deja în baza de date și preia datele asociate."""
         nr_fisa = self.nr_fisa.text()
-        conn = sqlite3.connect("membrii.db", timeout=30.0)
+        conn = sqlite3.connect(DB_MEMBRII, timeout=30.0)
         cursor = conn.cursor()
         cursor.execute("SELECT num_pren, domiciliul, calitatea, data_inscr FROM membrii WHERE nr_fisa=?", (nr_fisa,))
         row = cursor.fetchone()
@@ -129,7 +142,7 @@ class ActualizareMembruWidget(QWidget):
 
     def adauga_membru(self):
         """Adaugă un membru nou în baza de date."""
-        conn = sqlite3.connect("membrii.db", timeout=30.0)
+        conn = sqlite3.connect(DB_MEMBRII, timeout=30.0)
         cursor = conn.cursor()
         try:
             cursor.execute("""
@@ -144,7 +157,7 @@ class ActualizareMembruWidget(QWidget):
 
     def modifica_membru(self):
         """Modifică datele unui membru existent."""
-        conn = sqlite3.connect("membrii.db", timeout=30.0)
+        conn = sqlite3.connect(DB_MEMBRII, timeout=30.0)
         cursor = conn.cursor()
         try:
             cursor.execute("""

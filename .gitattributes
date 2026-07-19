@@ -1,0 +1,18 @@
+# Normalizare terminații de linie.
+#
+# Fără acest fișier și cu core.autocrlf nesetat, git tratează CRLF ca schimbare
+# de conținut: fișiere neatinse de nimeni apar drept modificate, iar un commit de
+# 5 linii ajunge să arate ca unul de 1800. "text=auto" spune git-ului să
+# stocheze totul cu LF în repository și să convertească la checkout după
+# platformă, astfel încât diff-urile să arate doar modificările reale.
+* text=auto
+
+# Fișiere binare — nu se normalizează niciodată.
+*.db      binary
+*.zip     binary
+*.ico     binary
+*.png     binary
+*.jpg     binary
+*.pdf     binary
+*.ttf     binary
+*.xlsx    binary

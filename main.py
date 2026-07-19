@@ -29,7 +29,12 @@ def setup_early_database_patching():
     db_mapping = {
         "MEMBRII.db": "MEMBRIIEUR.db",
         "DEPCRED.db": "DEPCREDEUR.db",
-        "activi.db": "activiEUR.db",
+        # Cheia trebuie scrisă exact ca în modulele UI (DB_ACTIVI = "ACTIVI.db").
+        # Era "activi.db", iar potrivirea de mai jos e pe subșir: "activi.db" nu se
+        # regăsește în "ACTIVI.db", deci DB_ACTIVI nu era patchuit NICIODATĂ, iar în
+        # modul EUR se citea și se scria în baza RON. Fișierul EUR chiar se numește
+        # cu 'a' mic — așa îl creează conversie_widget.py.
+        "ACTIVI.db": "activiEUR.db",
         "INACTIVI.db": "INACTIVIEUR.db",
         "LICHIDATI.db": "LICHIDATIEUR.db"
         # NOTĂ: CHITANTE.db nu se convertește - este doar pentru tipărire
@@ -49,11 +54,16 @@ def setup_early_database_patching():
                         currency_logic.current_currency == "EUR"):
 
                     # Înlocuiește cu calea EUR
+                    current_value_str = str(current_value)
+                    # Potrivire pe NUMELE EXACT al fișierului, nu pe subșir din cale.
+                    # "ACTIVI.db" este subșir al lui "INACTIVI.db", deci o potrivire
+                    # pe subșir ar patchui INACTIVI cu activiEUR.db. Comparația e
+                    # insensibilă la majuscule, ca o diferență de scriere să nu mai
+                    # lase un modul nepatchuit în tăcere.
+                    nume_fisier = os.path.basename(current_value_str)
                     for ron_db, eur_db in db_mapping.items():
-                        # CORECȚIA: Convertește current_value la string
-                        current_value_str = str(current_value)
-                        if ron_db in current_value_str:
-                            new_value = current_value_str.replace(ron_db, eur_db)
+                        if nume_fisier.lower() == ron_db.lower():
+                            new_value = current_value_str[:len(current_value_str) - len(nume_fisier)] + eur_db
 
                             # Verifică că fișierul EUR există
                             if (base_path / eur_db).exists():

@@ -1057,7 +1057,9 @@ class CARApp(QMainWindow):
         db_mapping = {
             "MEMBRII.db": "MEMBRIIEUR.db",
             "DEPCRED.db": "DEPCREDEUR.db",
-            "activi.db": "activiEUR.db",
+            # Vezi nota din main.py: cheia era "activi.db", nu se potrivea cu
+            # DB_ACTIVI = "ACTIVI.db", iar atributul rămânea nepatchuit.
+            "ACTIVI.db": "activiEUR.db",
             "INACTIVI.db": "INACTIVIEUR.db",
             "LICHIDATI.db": "LICHIDATIEUR.db"
             # NOTĂ: CHITANTE.db nu se convertește - este doar pentru tipărire
@@ -1076,12 +1078,16 @@ class CARApp(QMainWindow):
                 for attr_name in dir(module):
                     if attr_name.startswith('DB_'):
                         current_value_str = str(getattr(module, attr_name))
+                        # Potrivire pe NUMELE EXACT al fișierului, nu pe subșir:
+                        # "ACTIVI.db" e subșir al lui "INACTIVI.db".
+                        nume_fisier = os.path.basename(current_value_str)
+                        prefix = current_value_str[:len(current_value_str) - len(nume_fisier)]
 
                         if current_currency == "EUR":
                             # Comută la EUR
                             for ron_db, eur_db in db_mapping.items():
-                                if ron_db in current_value_str and eur_db not in current_value_str:
-                                    new_value = current_value_str.replace(ron_db, eur_db)
+                                if nume_fisier.lower() == ron_db.lower():
+                                    new_value = prefix + eur_db
                                     if (base_path / eur_db).exists():
                                         setattr(module, attr_name, new_value)
                                         print(f"RE-PATCH EUR: {module_name}.{attr_name} -> {eur_db}")
@@ -1092,8 +1098,8 @@ class CARApp(QMainWindow):
                         else:
                             # Comută la RON
                             for ron_db, eur_db in db_mapping.items():
-                                if eur_db in current_value_str:
-                                    new_value = current_value_str.replace(eur_db, ron_db)
+                                if nume_fisier.lower() == eur_db.lower():
+                                    new_value = prefix + ron_db
                                     setattr(module, attr_name, new_value)
                                     print(f"RE-PATCH RON: {module_name}.{attr_name} -> {ron_db}")
                                     patched_count += 1

@@ -776,7 +776,7 @@ class ConversieWorker(QThread):
             db_paths = {
                 'depcred': base_path / "DEPCRED.db",
                 'membrii': base_path / "MEMBRII.db",
-                'activi': base_path / "activi.db",
+                'activi': base_path / "ACTIVI.db",
                 'inactivi': base_path / "INACTIVI.db",
                 'lichidati': base_path / "LICHIDATI.db"
             }
@@ -1149,7 +1149,7 @@ class ConversieWidget(QWidget):
             db_files = {
                 "DEPCRED": base_path / "DEPCRED.db",
                 "MEMBRII": base_path / "MEMBRII.db",
-                "ACTIVI": base_path / "activi.db",
+                "ACTIVI": base_path / "ACTIVI.db",
                 "INACTIVI": base_path / "INACTIVI.db",
                 "LICHIDATI": base_path / "LICHIDATI.db"
             }
