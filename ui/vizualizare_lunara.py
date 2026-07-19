@@ -909,7 +909,9 @@ class VizualizareLunaraWidget(QWidget):
         # Stil preluat din vizualizare_trimestriala.py pentru consistență
         self.setStyleSheet(
             f"""
-            QWidget {{font-family:Arial; font-size:10pt; background:{P.PANEL_2};}}
+            /* fundal pe CLASA, nu pe 'QWidget' bare (nu se scurge in dialoguri). */
+            VizualizareLunaraWidget {{background:{P.PANEL_2};}}
+            QWidget {{font-family:Arial; font-size:10pt;}}
             QPushButton {{
                 background:{P.POSITIVE}; color:#000; border:1px solid {P.POSITIVE};
                 border-radius:5px; padding:8px 16px; font-weight:bold;
