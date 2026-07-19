@@ -28,6 +28,15 @@ Ce declanșează ALARMĂ ROȘIE (interzis de regula de aur):
 """
 import sys, subprocess, re, difflib
 
+# Consola Windows e implicit cp1252 si nu poate afisa diacriticele/emoji-urile
+# de mai jos -> UnicodeEncodeError la print, dupa ce analiza s-a facut deja.
+# Fortam UTF-8 pe stdout/stderr. Nu afecteaza analiza, doar afisarea.
+for _stream in (sys.stdout, sys.stderr):
+    try:
+        _stream.reconfigure(encoding='utf-8', errors='replace')
+    except Exception:
+        pass
+
 STYLE_SAFE = re.compile(
     r'#[0-9a-fA-F]{3,8}\b|rgba?\(|qlineargradient|border-radius|padding|margin'
     r'|background|(?<!\w)color\s*:|font-size|font-weight|font-family|(?<!\w)border'
