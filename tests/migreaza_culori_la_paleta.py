@@ -58,7 +58,11 @@ _adauga("INK", "#2c3e50", "#34495e", "#333333", "#37474f")
 _adauga("MUTED", "#495057")
 _adauga("FAINT", "#6c757d", "#7f8c8d", "#666666")
 # Albastru informativ
-_adauga("NEUTRAL", "#95a5a6")
+_adauga("NEUTRAL", "#95a5a6", "#808080")
+_adauga("POSITIVE", "#90ee90", "#77dd77", "#60c060")
+_adauga("DISABLED", "#d0e0d0", "#b0c0b0")
+_adauga("PANEL_2", "#f8f8f8")
+_adauga("LINE", "#c0c8d0")
 _adauga("INFO", "#3498db", "#2980b9", "#0078d4", "#005a9e", "#007bff", "#4a90e2",
         "#0056b3", "#1565c0", "#1e3a8a", "#0ea5e9", "#0284c7", "#0d6efd",
         "#084298", "#004085", "#0c5460", "#2196f3")
@@ -81,6 +85,19 @@ _adauga("WARNING_SOFT", "#fff3cd", "#fdf6e3", "#fff8e1", "#ffecb3")
 _adauga("ACCENT_DEEP", "#7c3aed", "#8e44ad", "#6a1b9a", "#4c0a9b", "#3e2c50",
         "#6610f2")
 _adauga("ACCENT_SOFT", "#f3e5f5")
+
+# ---------------------------------------------------------------------------
+# CULORI PROTEJATE — nu se inlocuiesc NICIODATA.
+#
+# Nu sunt decor, sunt cod vizual, si apar si in documentele PDF tiparite
+# (reportlab HexColor), nu doar pe ecran:
+#   #e8f4ff / #fff5e6 — alterneaza pe GRUPURI de randuri, adica arata unde se
+#                       termina fisa unui membru si incepe a altuia
+#   #dce8ff           — fundalul antetului, acelasi pe ecran si pe hartie
+# Maparea lor la un singur neutru ar sterge distinctia; maparea la tokeni ar
+# schimba aspectul documentelor deja arhivate. Decizie asumata: raman neatinse.
+# ---------------------------------------------------------------------------
+PROTEJATE = {"#e8f4ff", "#fff5e6", "#dce8ff"}
 
 TIPAR_HEX = re.compile(r"#[0-9a-fA-F]{6}\b")
 NAMESPACE = {"P": P, "GRAD": GRAD, "RADIUS": RADIUS}
@@ -127,6 +144,8 @@ def construieste_fstring(brut, valoare):
 
     def inlocuieste(m):
         h = m.group(0).lower()
+        if h in PROTEJATE:
+            return m.group(0)          # cod vizual / culoare din PDF — se pastreaza
         token = MAPARE.get(h)
         if token is None:
             necunoscute.add(h)
@@ -143,7 +162,8 @@ def construieste_fstring(brut, valoare):
         return None, f"f-string invalid: {e}"
 
     asteptat = TIPAR_HEX.sub(
-        lambda m: getattr(P, MAPARE[m.group(0).lower()]) if m.group(0).lower() in MAPARE
+        lambda m: getattr(P, MAPARE[m.group(0).lower()])
+        if (m.group(0).lower() in MAPARE and m.group(0).lower() not in PROTEJATE)
         else m.group(0), valoare)
 
     if randat != asteptat:

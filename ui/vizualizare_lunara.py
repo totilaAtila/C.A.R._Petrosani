@@ -8,6 +8,9 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QColor, QBrush
 from PyQt5.QtCore import Qt, QEvent
+
+# REDESIGN: sursa unică de stil. Doar aspect — nicio logică atinsă.
+from ui.palette import P
 from reportlab.lib.pagesizes import A4, landscape
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import mm, cm
@@ -485,8 +488,8 @@ class VizualizareLunaraWidget(QWidget):
                 current_x += w_scaled
 
             # Define colors
-            header_bg_color = HexColor("#dce8ff")
-            group_colors = [HexColor("#e8f4ff"), HexColor("#fff5e6")]
+            header_bg_color = HexColor(f"#dce8ff")
+            group_colors = [HexColor(f"#e8f4ff"), HexColor(f"#fff5e6")]
 
             # Calculate position for header
             header_row_height = 20 * mm
@@ -632,7 +635,7 @@ class VizualizareLunaraWidget(QWidget):
                 'font_name': 'Arial',
                 'font_size': 11,
                 'bold': True,
-                'bg_color': '#DCE8FF',
+                'bg_color': f'#DCE8FF',
                 'align': 'center',
                 'valign': 'vcenter',
                 'text_wrap': True
@@ -674,7 +677,7 @@ class VizualizareLunaraWidget(QWidget):
             group_format_1 = workbook.add_format({
                 'font_name': 'Arial',
                 'font_size': 10,
-                'bg_color': '#E8F4FF',
+                'bg_color': f'#E8F4FF',
                 'align': 'right',
                 'valign': 'vcenter',
                 'num_format': '0.00'
@@ -683,7 +686,7 @@ class VizualizareLunaraWidget(QWidget):
             group_format_2 = workbook.add_format({
                 'font_name': 'Arial',
                 'font_size': 10,
-                'bg_color': '#FFF5E6',
+                'bg_color': f'#FFF5E6',
                 'align': 'right',
                 'valign': 'vcenter',
                 'num_format': '0.00'
@@ -692,7 +695,7 @@ class VizualizareLunaraWidget(QWidget):
             group_format_1_text = workbook.add_format({
                 'font_name': 'Arial',
                 'font_size': 10,
-                'bg_color': '#E8F4FF',
+                'bg_color': f'#E8F4FF',
                 'align': 'right',
                 'valign': 'vcenter'
             })
@@ -700,7 +703,7 @@ class VizualizareLunaraWidget(QWidget):
             group_format_2_text = workbook.add_format({
                 'font_name': 'Arial',
                 'font_size': 10,
-                'bg_color': '#FFF5E6',
+                'bg_color': f'#FFF5E6',
                 'align': 'right',
                 'valign': 'vcenter'
             })
@@ -708,7 +711,7 @@ class VizualizareLunaraWidget(QWidget):
             group_format_1_left = workbook.add_format({
                 'font_name': 'Arial',
                 'font_size': 10,
-                'bg_color': '#E8F4FF',
+                'bg_color': f'#E8F4FF',
                 'align': 'left',
                 'valign': 'vcenter'
             })
@@ -716,7 +719,7 @@ class VizualizareLunaraWidget(QWidget):
             group_format_2_left = workbook.add_format({
                 'font_name': 'Arial',
                 'font_size': 10,
-                'bg_color': '#FFF5E6',
+                'bg_color': f'#FFF5E6',
                 'align': 'left',
                 'valign': 'vcenter'
             })
@@ -725,7 +728,7 @@ class VizualizareLunaraWidget(QWidget):
                 'font_name': 'Arial',
                 'font_size': 10,
                 'font_color': 'red',
-                'bg_color': '#E8F4FF',
+                'bg_color': f'#E8F4FF',
                 'align': 'right',
                 'valign': 'vcenter'
             })
@@ -734,7 +737,7 @@ class VizualizareLunaraWidget(QWidget):
                 'font_name': 'Arial',
                 'font_size': 10,
                 'font_color': 'red',
-                'bg_color': '#FFF5E6',
+                'bg_color': f'#FFF5E6',
                 'align': 'right',
                 'valign': 'vcenter'
             })
@@ -744,7 +747,7 @@ class VizualizareLunaraWidget(QWidget):
                 'font_name': 'Arial',
                 'font_size': 11,
                 'bold': True,
-                'bg_color': '#F0F0F0',
+                'bg_color': f'{P.PANEL_2}',
                 'align': 'right',
                 'valign': 'vcenter',
                 'num_format': '0.00'
@@ -754,7 +757,7 @@ class VizualizareLunaraWidget(QWidget):
                 'font_name': 'Arial',
                 'font_size': 11,
                 'bold': True,
-                'bg_color': '#F0F0F0',
+                'bg_color': f'{P.PANEL_2}',
                 'align': 'left',
                 'valign': 'vcenter'
             })
@@ -897,42 +900,42 @@ class VizualizareLunaraWidget(QWidget):
         """
         # Stil preluat din vizualizare_trimestriala.py pentru consistență
         self.setStyleSheet(
-            """
-            QWidget {font-family:Arial; font-size:10pt; background:#f8f8f8;}
-            QPushButton {
-                background:#90EE90; color:#000; border:1px solid #60c060;
+            f"""
+            QWidget {{font-family:Arial; font-size:10pt; background:{P.PANEL_2};}}
+            QPushButton {{
+                background:{P.POSITIVE}; color:#000; border:1px solid {P.POSITIVE};
                 border-radius:5px; padding:8px 16px; font-weight:bold;
                 margin: 5px;
-            }
-            QPushButton:hover {background:#77dd77;}
-            QPushButton:pressed {background:#60c060;}
-            QPushButton:disabled {background:#d0e0d0; color:#808080; border:1px solid #b0c0b0;}
-            QHeaderView::section {
+            }}
+            QPushButton:hover {{background:{P.POSITIVE};}}
+            QPushButton:pressed {{background:{P.POSITIVE};}}
+            QPushButton:disabled {{background:{P.DISABLED}; color:{P.NEUTRAL}; border:1px solid {P.DISABLED};}}
+            QHeaderView::section {{
                 background-color:#dce8ff; color:#333; padding:6px;
-                border:1px solid #c0c8d0; font-weight:bold;
+                border:1px solid {P.LINE}; font-weight:bold;
                 white-space: pre-wrap; /* Allow wrapping for headers */
-            }
-            QComboBox {
-                background-color:#f8f8f8; border:1px solid #b0c0b0;
+            }}
+            QComboBox {{
+                background-color:{P.PANEL_2}; border:1px solid {P.DISABLED};
                 border-radius:5px; padding:8px; font-size:10pt; margin:5px;
-            }
-            QComboBox:focus {
-                border-color:#3498db;
+            }}
+            QComboBox:focus {{
+                border-color:{P.INFO};
                 outline:none;
-            }
-            QLabel {
+            }}
+            QLabel {{
                 color:#555; margin-right:5px;
                 /* Am eliminat padding-top specific pentru a se alinia cu stilul standard */
-            }
-            QTableWidget {
-                background:#ffffff; alternate-background-color:#f0f0f0;
+            }}
+            QTableWidget {{
+                background:{P.PANEL}; alternate-background-color:{P.PANEL_2};
                 margin-top:10px;
                 /* Am eliminat gridline-color, border-bottom, etc. specifice din versiunea anterioară */
                 /* pentru a se potrivi cu stilul mai simplu din anuala/trimestriala */
-            }
-            QTableWidget::item {
+            }}
+            QTableWidget::item {{
                 padding:8px; /* Padding standard */
-            }
+            }}
             /* Am eliminat QTableWidget::item:selected specific */
             /* Am eliminat QComboBox::drop-down specific */
             /* Am eliminat QComboBox QAbstractItemView specific */
@@ -1020,7 +1023,7 @@ class VizualizareLunaraWidget(QWidget):
             if prev_nr is not None and nr_curent != prev_nr:
                 current_group = 1 - current_group
             prev_nr = nr_curent
-            bg_color = QColor("#e8f4ff") if (current_group % 2 == 0) else QColor("#fff5e6")
+            bg_color = QColor(f"#e8f4ff") if (current_group % 2 == 0) else QColor(f"#fff5e6")
             brush = QBrush(bg_color)
 
             # Populate table items and apply background color

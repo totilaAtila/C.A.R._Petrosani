@@ -18,6 +18,9 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtGui import QColor, QBrush
 from PyQt5.QtCore import Qt, QEvent
+
+# REDESIGN: sursa unică de stil. Doar aspect — nicio logică atinsă.
+from ui.palette import P
 from reportlab.lib.pagesizes import A4, landscape
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import mm, cm
@@ -194,36 +197,36 @@ class VizualizareAnualaWidget(QWidget):
         Aplică stiluri CSS pentru widget.
         """
         self.setStyleSheet(
-            """
-            QWidget {font-family:Arial; font-size:10pt; background:#f8f8f8;}
-            QPushButton {
-                background:#90EE90; color:#000; border:1px solid #60c060;
+            f"""
+            QWidget {{font-family:Arial; font-size:10pt; background:{P.PANEL_2};}}
+            QPushButton {{
+                background:{P.POSITIVE}; color:#000; border:1px solid {P.POSITIVE};
                 border-radius:5px; padding:8px 16px; font-weight:bold;
                 margin: 5px;
-            }
-            QPushButton:hover {background:#77dd77;}
-            QPushButton:pressed {background:#60c060;}
-            QPushButton:disabled {background:#d0e0d0; color:#808080; border:1px solid #b0c0b0;}
-            QHeaderView::section {background-color: #dce8ff; color:#333; padding:6px; border:1px solid #c0c8d0;
-            font-weight:bold; white-space: pre-wrap; /* Allow wrapping for headers */}
-            QComboBox {
-                background-color: #f8f8f8;
-                border: 1px solid #b0c0b0;
+            }}
+            QPushButton:hover {{background:{P.POSITIVE};}}
+            QPushButton:pressed {{background:{P.POSITIVE};}}
+            QPushButton:disabled {{background:{P.DISABLED}; color:{P.NEUTRAL}; border:1px solid {P.DISABLED};}}
+            QHeaderView::section {{background-color: #dce8ff; color:#333; padding:6px; border:1px solid {P.LINE};
+            font-weight:bold; white-space: pre-wrap; /* Allow wrapping for headers */}}
+            QComboBox {{
+                background-color: {P.PANEL_2};
+                border: 1px solid {P.DISABLED};
                 border-radius: 5px;
                 padding: 8px;
                 font-size: 10pt;
                 margin: 5px;
-            }
-            QComboBox:focus {
-                border-color: #3498db;
+            }}
+            QComboBox:focus {{
+                border-color: {P.INFO};
                 outline: none;
-            }
-            QLabel {
+            }}
+            QLabel {{
                 color: #555;
                 margin-right: 5px;
-            }
-             QTableWidget {background:#ffffff; alternate-background-color:#f0f0f0; margin-top:10px;}
-            QTableWidget::item {padding:8px;}
+            }}
+             QTableWidget {{background:{P.PANEL}; alternate-background-color:{P.PANEL_2}; margin-top:10px;}}
+            QTableWidget::item {{padding:8px;}}
             """
         )
 
@@ -340,7 +343,7 @@ class VizualizareAnualaWidget(QWidget):
             if prev_nr is not None and nr_curent != prev_nr:
                 current_group = 1 - current_group  # Switch group color
             prev_nr = nr_curent
-            bg_color = QColor("#e8f4ff") if (current_group % 2 == 0) else QColor("#fff5e6")  # Use QColor for PyQt
+            bg_color = QColor(f"#e8f4ff") if (current_group % 2 == 0) else QColor(f"#fff5e6")  # Use QColor for PyQt
             brush = QBrush(bg_color)
             for c in range(self.tabel.columnCount()):
                 it = self.tabel.item(r, c)
@@ -630,8 +633,8 @@ class VizualizareAnualaWidget(QWidget):
             progress.seteaza_valoare(30)
 
             # Define group background colors using HexColor
-            group_colors = [HexColor("#e8f4ff"), HexColor("#fff5e6")]
-            header_bg_color = HexColor("#dce8ff")
+            group_colors = [HexColor(f"#e8f4ff"), HexColor(f"#fff5e6")]
+            header_bg_color = HexColor(f"#dce8ff")
 
             # Draw header row using the modified _draw_row
             header_row_height = 20 * mm  # Define header row height
@@ -752,7 +755,7 @@ class VizualizareAnualaWidget(QWidget):
                 'font_name': 'Arial',
                 'font_size': 11,
                 'bold': True,
-                'bg_color': '#DCE8FF',
+                'bg_color': f'#DCE8FF',
                 'align': 'center',
                 'valign': 'vcenter',
                 'text_wrap': True
@@ -762,7 +765,7 @@ class VizualizareAnualaWidget(QWidget):
             group_format_1 = workbook.add_format({
                 'font_name': 'Arial',
                 'font_size': 10,
-                'bg_color': '#E8F4FF',
+                'bg_color': f'#E8F4FF',
                 'align': 'right',
                 'valign': 'vcenter',
                 'num_format': '0.00'
@@ -771,7 +774,7 @@ class VizualizareAnualaWidget(QWidget):
             group_format_2 = workbook.add_format({
                 'font_name': 'Arial',
                 'font_size': 10,
-                'bg_color': '#FFF5E6',
+                'bg_color': f'#FFF5E6',
                 'align': 'right',
                 'valign': 'vcenter',
                 'num_format': '0.00'
@@ -780,7 +783,7 @@ class VizualizareAnualaWidget(QWidget):
             group_format_1_text = workbook.add_format({
                 'font_name': 'Arial',
                 'font_size': 10,
-                'bg_color': '#E8F4FF',
+                'bg_color': f'#E8F4FF',
                 'align': 'right',
                 'valign': 'vcenter'
             })
@@ -788,7 +791,7 @@ class VizualizareAnualaWidget(QWidget):
             group_format_2_text = workbook.add_format({
                 'font_name': 'Arial',
                 'font_size': 10,
-                'bg_color': '#FFF5E6',
+                'bg_color': f'#FFF5E6',
                 'align': 'right',
                 'valign': 'vcenter'
             })
@@ -796,7 +799,7 @@ class VizualizareAnualaWidget(QWidget):
             group_format_1_left = workbook.add_format({
                 'font_name': 'Arial',
                 'font_size': 10,
-                'bg_color': '#E8F4FF',
+                'bg_color': f'#E8F4FF',
                 'align': 'left',
                 'valign': 'vcenter'
             })
@@ -804,7 +807,7 @@ class VizualizareAnualaWidget(QWidget):
             group_format_2_left = workbook.add_format({
                 'font_name': 'Arial',
                 'font_size': 10,
-                'bg_color': '#FFF5E6',
+                'bg_color': f'#FFF5E6',
                 'align': 'left',
                 'valign': 'vcenter'
             })
@@ -813,7 +816,7 @@ class VizualizareAnualaWidget(QWidget):
                 'font_name': 'Arial',
                 'font_size': 10,
                 'font_color': 'red',
-                'bg_color': '#E8F4FF',
+                'bg_color': f'#E8F4FF',
                 'align': 'right',
                 'valign': 'vcenter',
                 'num_format': '0.00'
@@ -823,7 +826,7 @@ class VizualizareAnualaWidget(QWidget):
                 'font_name': 'Arial',
                 'font_size': 10,
                 'font_color': 'red',
-                'bg_color': '#FFF5E6',
+                'bg_color': f'#FFF5E6',
                 'align': 'right',
                 'valign': 'vcenter',
                 'num_format': '0.00'
@@ -834,7 +837,7 @@ class VizualizareAnualaWidget(QWidget):
                 'font_name': 'Arial',
                 'font_size': 11,
                 'bold': True,
-                'bg_color': '#F0F0F0',
+                'bg_color': f'{P.PANEL_2}',
                 'align': 'right',
                 'valign': 'vcenter',
                 'num_format': '0.00'
@@ -844,7 +847,7 @@ class VizualizareAnualaWidget(QWidget):
                 'font_name': 'Arial',
                 'font_size': 11,
                 'bold': True,
-                'bg_color': '#F0F0F0',
+                'bg_color': f'{P.PANEL_2}',
                 'align': 'left',
                 'valign': 'vcenter'
             })
