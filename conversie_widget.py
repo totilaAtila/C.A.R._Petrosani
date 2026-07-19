@@ -1267,7 +1267,7 @@ class ConversieWidget(QWidget):
             # Generează textul de preview cu explicații UE
             preview_text = f"""PREVIEW CONVERSIE RON → EUR CONFORM REGULAMENTULUI CE 1103/97
 {'=' * 70}
-Curs folosit: 1 EUR = {self.preview_data['curs_folosit']:.6f} RON
+Curs folosit: 1 EUR = {curs_decimal:.6f} RON
 Utilizator: {self.utilizator_input.text()}
 Metodă conversie: DIRECTĂ INDIVIDUALĂ (conform art. 4 din Regulamentul CE 1103/97)
 
@@ -1306,10 +1306,10 @@ LICHIDATI:
 
 ANALIZA MATEMATICĂ CONFORM UE:
 {'─' * 35}
-  - Sumă totală monetară RON: {self.preview_data['suma_totala_ron']:,.2f}
-  - Sumă teoretică EUR (direct): {self.preview_data['suma_estimata_eur']:,.2f}
-  - Sumă componentelor EUR: {self.preview_data['suma_componente_eur']:,.2f}
-  - Diferența de rotunjire estimată: {self.preview_data['diferenta_estimata_rotunjire']:+.2f} EUR
+  - Sumă totală monetară RON: {suma_totala_monetara:,.2f}
+  - Sumă teoretică EUR (direct): {suma_estimata_eur:,.2f}
+  - Sumă componentelor EUR: {suma_componente_eur:,.2f}
+  - Diferența de rotunjire estimată: {diferenta_estimata_rotunjire:+.2f} EUR
 
 EXPLICAȚIE DIFERENȚE DE ROTUNJIRE:
 {'─' * 38}
