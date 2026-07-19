@@ -70,11 +70,11 @@ QMessageBox QPushButton:pressed {{
 
 QMessageBox QPushButton:focus {{
     outline: none;
-    border: 2px solid {P.ACCENT};
+    border: 1px solid {P.ACCENT};
 }}
 
 QMessageBox QPushButton:default {{
-    border: none;
+    border: 1px solid {P.ACCENT_DEEP};
     background: {GRAD.ACCENT};
     color: {P.WHITE};
 }}
@@ -117,7 +117,7 @@ QDialog QPushButton:pressed {{
 
 QDialog QPushButton:focus {{
     outline: none;
-    border: 2px solid {P.ACCENT};
+    border: 1px solid {P.ACCENT};
 }}
 
 QDialog QPushButton:disabled {{
