@@ -11,6 +11,9 @@ import sys
 import os
 from datetime import datetime
 
+# REDESIGN: sursa unică de stil. Doar aspect — nicio logică atinsă.
+from ui.palette import P, GRAD, RADIUS, btn_solid
+
 
 class CalculatorWidget(QWidget):
     def __init__(self, parent=None):
@@ -173,133 +176,110 @@ class CalculatorWidget(QWidget):
         main_layout.addLayout(content_layout)
 
     def _apply_styles(self):
-        self.setStyleSheet("""
-            QLabel#titleLabel {
+        self.setStyleSheet(f"""
+            QLabel#titleLabel {{
                 font-size: 16pt;
                 font-weight: bold;
-                color: #2c3e50;
+                color: {P.INK};
                 margin-bottom: 5px;
-            }
-            QLabel#timeLabel {
+            }}
+            QLabel#timeLabel {{
                 font-size: 12pt;
-                color: #7f8c8d;
+                color: {P.FAINT};
                 margin-bottom: 5px;
-            }
-            QFrame#calculatorFrame, QFrame#notesFrame {
-                border: 2px solid #3498db;
-                border-radius: 8px;
-                background-color: #ecf0f1;
+            }}
+            QFrame#calculatorFrame, QFrame#notesFrame {{
+                border: 1px solid {P.LINE};
+                border-radius: {RADIUS.LG};
+                background-color: {P.PANEL};
                 padding: 5px;
-            }
-            QLabel#notesLabel {
+            }}
+            QLabel#notesLabel {{
                 font-weight: bold;
-                color: #2c3e50;
+                color: {P.INK};
                 font-size: 12pt;
                 margin-bottom: 5px;
-            }
-            QTextEdit#notesEdit {
-                border: 1px solid #bdc3c7;
-                border-radius: 5px;
+            }}
+            QTextEdit#notesEdit {{
+                border: 1px solid {P.LINE};
+                border-radius: {RADIUS.SM};
                 padding: 8px;
                 font-family: 'Courier New', monospace;
                 font-size: 10pt;
-                background-color: #ffffff;
+                background-color: {P.PANEL};
                 min-height: 150px;
-            }
-            QPushButton#calcButton {
-                background-color: #ecf0f1;
-                border: 1px solid #bdc3c7;
-                border-radius: 5px;
+            }}
+            QTextEdit#notesEdit:focus {{
+                border: 1px solid {P.ACCENT};
+            }}
+            /* Taste numerice — neutre, ca sa nu concureze cu operatorii */
+            QPushButton#calcButton {{
+                background-color: {P.PANEL_2};
+                border: 1px solid {P.LINE};
+                border-radius: {RADIUS.SM};
                 font-size: 14pt;
                 font-weight: bold;
-                color: #2c3e50;
-            }
-            QPushButton#calcButton:hover {
-                background-color: #d5dbdb;
-                border-color: #95a5a6;
-            }
-            QPushButton#calcButton:pressed {
-                background-color: #bdc3c7;
-            }
-            QPushButton#equalsButton {
-                background-color: #3498db;
-                color: white;
-                border: 1px solid #2980b9;
+                color: {P.INK};
+            }}
+            QPushButton#calcButton:hover {{
+                background-color: {P.ACCENT_SOFT};
+                border-color: {P.ACCENT_LINE};
+            }}
+            QPushButton#calcButton:pressed {{
+                background-color: {P.LINE};
+            }}
+            /* Egal = actiunea principala a ecranului -> singurul buton verde */
+            QPushButton#equalsButton {{
+                background: {GRAD.ACCENT};
+                color: {P.WHITE};
+                border: none;
+                border-radius: {RADIUS.SM};
                 font-size: 16pt;
                 font-weight: bold;
-            }
-            QPushButton#equalsButton:hover {
-                background-color: #2980b9;
-            }
-            QPushButton#operatorButton {
-                background-color: #e74c3c;
-                color: white;
-                border: 1px solid #c0392b;
-                font-size: 14pt;
-                font-weight: bold;
-            }
-            QPushButton#operatorButton:hover {
-                background-color: #c0392b;
-            }
-            QPushButton#functionButton {
-                background-color: #f39c12;
-                color: white;
-                border: 1px solid #e67e22;
-                font-size: 12pt;
-                font-weight: bold;
-            }
-            QPushButton#functionButton:hover {
-                background-color: #e67e22;
-            }
-            QPushButton#clearButton {
-                background-color: #95a5a6;
-                color: white;
-                border: 1px solid #7f8c8d;
-                font-size: 12pt;
-                font-weight: bold;
-            }
-            QPushButton#clearButton:hover {
-                background-color: #7f8c8d;
-            }
-            QPushButton#saveButton, QPushButton#clearNotesButton {
-                background-color: #27ae60;
-                color: white;
-                border: 1px solid #229954;
-                border-radius: 5px;
+            }}
+            QPushButton#equalsButton:hover {{
+                background: {GRAD.ACCENT_HOVER};
+            }}
+            QPushButton#equalsButton:pressed {{
+                background: {P.ACCENT_DEEP};
+            }}
+            {btn_solid(P.DANGER, P.DANGER_DEEP, "QPushButton#operatorButton")}
+            QPushButton#operatorButton {{ font-size: 14pt; }}
+            {btn_solid(P.WARNING, P.WARNING_DEEP, "QPushButton#functionButton")}
+            QPushButton#functionButton {{ font-size: 12pt; }}
+            {btn_solid(P.NEUTRAL, P.NEUTRAL_DEEP, "QPushButton#clearButton")}
+            QPushButton#clearButton {{ font-size: 12pt; }}
+            {btn_solid(P.POSITIVE, P.ACCENT_DEEP, "QPushButton#saveButton")}
+            QPushButton#saveButton {{
                 padding: 8px 16px;
                 font-size: 10pt;
-                font-weight: bold;
                 min-height: 30px;
-            }
-            QPushButton#saveButton:hover, QPushButton#clearNotesButton:hover {
-                background-color: #229954;
-            }
-            QPushButton#clearNotesButton {
-                background-color: #e74c3c;
-                border-color: #c0392b;
-            }
-            QPushButton#clearNotesButton:hover {
-                background-color: #c0392b;
-            }
-            QLineEdit#historyDisplay {
-                border: 2px solid #3498db;
-                border-bottom: 1px solid #3498db;
-                border-radius: 8px 8px 0 0;
+            }}
+            {btn_solid(P.DANGER, P.DANGER_DEEP, "QPushButton#clearNotesButton")}
+            QPushButton#clearNotesButton {{
+                padding: 8px 16px;
+                font-size: 10pt;
+                min-height: 30px;
+            }}
+            QLineEdit#historyDisplay {{
+                border: 1px solid {P.LINE};
+                border-bottom: none;
+                border-radius: {RADIUS.MD} {RADIUS.MD} 0 0;
                 padding: 5px 10px;
-                background-color: #ffffff;
+                background-color: {P.PANEL_2};
                 font-size: 12px;
-                color: #7f8c8d;
-            }
-            QLineEdit#mainDisplay {
-                border: 2px solid #3498db;
-                border-top: 1px solid #3498db;
-                border-radius: 0 0 8px 8px;
+                color: {P.FAINT};
+            }}
+            QLineEdit#mainDisplay {{
+                border: 1px solid {P.LINE};
+                border-top: 1px solid {P.LINE_SOFT};
+                border-radius: 0 0 {RADIUS.MD} {RADIUS.MD};
                 padding: 10px;
-                background-color: #ffffff;
+                background-color: {P.PANEL};
                 font-size: 24px;
                 font-weight: bold;
-                color: #2c3e50;
-            }
+                color: {P.INK};
+            }}
         """)
 
     def _setup_keyboard_shortcuts(self):

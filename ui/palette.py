@@ -38,6 +38,14 @@ class P:
     DANGER        = "#c0473b"   # roșu cărămiziu (împrumuturi, ștergere)
     NEUTRAL       = "#6b7a72"   # gri-verzui (secundar)
 
+    # Variante inchise ale semanticelor — pentru :hover / :pressed pe butoane
+    # pline. Fara ele, fiecare fisier si-ar inventa propria nuanta si consistenta
+    # s-ar pierde exact acolo unde se vede cel mai tare.
+    INFO_DEEP     = "#245f96"
+    WARNING_DEEP  = "#9a6117"
+    DANGER_DEEP   = "#97372d"
+    NEUTRAL_DEEP  = "#545f59"
+
     WARNING_SOFT  = "#fbf1df"
     WARNING_LINE  = "#ecd9b3"
     DANGER_SOFT   = "#f7e9e7"
@@ -129,6 +137,28 @@ def btn_soft(accent=None):
         }}
         QPushButton:hover {{ background: #dceee4; }}
     """
+
+def btn_solid(base, deep, selector="QPushButton"):
+    """
+    Buton plin intr-o culoare semantica (operator, avertisment, stergere...).
+    Foloseste-l cu perechile din P: (P.INFO, P.INFO_DEEP), (P.DANGER, P.DANGER_DEEP),
+    (P.WARNING, P.WARNING_DEEP), (P.NEUTRAL, P.NEUTRAL_DEEP).
+
+    'selector' permite tintirea unui objectName fara a-l modifica, ex:
+        btn_solid(P.DANGER, P.DANGER_DEEP, "QPushButton#operatorButton")
+    """
+    return f"""
+        {selector} {{
+            background-color: {base};
+            color: {P.WHITE};
+            border: 1px solid {deep};
+            border-radius: {RADIUS.SM};
+            font-weight: bold;
+        }}
+        {selector}:hover   {{ background-color: {deep}; }}
+        {selector}:pressed {{ background-color: {deep}; border-color: {base}; }}
+    """
+
 
 def card(hover_accent=None):
     """Suprafață card — alb curat, bordură fină, colț consistent."""
