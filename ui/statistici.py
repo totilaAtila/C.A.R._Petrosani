@@ -9,6 +9,9 @@ from PyQt5.QtCore import Qt, QTimer, QPropertyAnimation, QEasingCurve, QRect, QS
 import sys
 import os
 
+# REDESIGN: sursa unică de stil. Doar aspect — nicio logică atinsă.
+from ui.palette import P, GRAD, RADIUS, FONT
+
 if getattr(sys, 'frozen', False):
     BASE_RESOURCE_PATH = os.path.dirname(sys.executable)
 else:
@@ -122,18 +125,17 @@ class ModernStatCard(QGroupBox):
             self.progress_bar.setAlignment(Qt.AlignCenter)
             self.progress_bar.setStyleSheet(f"""
                 QProgressBar {{
-                    border: 1px solid rgba(0, 0, 0, 50);
-                    border-radius: 9px;
-                    background-color: rgba(255, 255, 255, 0.6);
+                    border: 1px solid {P.LINE};
+                    border-radius: 8px;
+                    background-color: {P.PANEL_2};
                     text-align: center;
-                    color: #2c3e50;
+                    color: {P.MUTED};
                     font-weight: bold;
                     font-size: 11px;
                 }}
                 QProgressBar::chunk {{
-                    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                        stop:0 {self.color}, stop:1 {self._adjust_color_brightness(self.color, 30)});
-                    border-radius: 8px;
+                    background: {self.color};
+                    border-radius: 7px;
                     margin: 1px;
                 }}
             """)
@@ -180,29 +182,25 @@ class ModernStatCard(QGroupBox):
 
         self.setStyleSheet(f"""
             QGroupBox {{
-                border: 1px solid rgba(255, 255, 255, 0.7);
-                border-radius: 12px;
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 rgba(255, 255, 255, 0.5),
-                    stop:1 rgba(230, 235, 245, 0.6));
+                border: 1px solid {P.LINE};
+                border-radius: {RADIUS.LG};
+                background: {P.PANEL};
                 margin-top: 8px;
                 padding-top: 5px;
                 min-height: 110px;
                 max-height: 110px;
             }}
             QGroupBox:hover {{
-                border: 1px solid rgba{self._hex_to_rgba(self.color, 0.5)};
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 rgba(255, 255, 255, 0.6),
-                    stop:1 rgba(240, 245, 255, 0.7));
+                border: 1px solid {self.color};
+                background: {P.PANEL};
             }}
             QLabel#value {{
                 font-size: {value_font_size};
                 font-weight: bold;
                 color: {self.color};
                 padding: {label_value_padding};
-                border-radius: 6px;
-                background: rgba(255, 255, 255, 0.3);
+                border-radius: {RADIUS.SM};
+                background: {P.PANEL_2};
                 margin: 3px 5px;
             }}
             QGroupBox::title {{
@@ -385,37 +383,32 @@ class StatisticiWidget(QWidget):
 
         main_layout.addWidget(cards_container)
 
-        self.setStyleSheet("""
-            QWidget {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 rgba(235, 240, 248, 255),
-                    stop:1 rgba(220, 230, 245, 255));
-                font-family: 'Segoe UI', Arial, sans-serif;
-            }
-            QToolTip {
-                background-color: #2c3e50;
-                color: white;
-                border: 1px solid #34495e;
-                border-radius: 6px;
+        self.setStyleSheet(f"""
+            QWidget {{
+                background: {GRAD.APP_BG};
+                font-family: {FONT};
+            }}
+            QToolTip {{
+                background-color: {P.INK};
+                color: {P.WHITE};
+                border: 1px solid {P.ACCENT_DEEP};
+                border-radius: {RADIUS.SM};
                 padding: 8px;
                 font-size: 11px;
                 font-weight: normal;
-            }
+            }}
         """)
 
     def _create_header(self):
         header = QFrame()
         header.setFixedHeight(45)
-        header.setStyleSheet("""
-            QFrame {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                    stop:0 rgba(60, 125, 200, 220),
-                    stop:0.5 rgba(80, 150, 220, 230),
-                    stop:1 rgba(60, 125, 200, 220));
-                border-radius: 10px;
+        header.setStyleSheet(f"""
+            QFrame {{
+                background: {GRAD.ACCENT};
+                border-radius: {RADIUS.LG};
                 margin: 6px;
                 padding: 0 10px;
-            }
+            }}
         """)
 
         layout = QHBoxLayout(header)
