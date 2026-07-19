@@ -58,12 +58,13 @@ _adauga("INK", "#2c3e50", "#34495e", "#333333", "#37474f")
 _adauga("MUTED", "#495057")
 _adauga("FAINT", "#6c757d", "#7f8c8d", "#666666")
 # Albastru informativ
+_adauga("NEUTRAL", "#95a5a6")
 _adauga("INFO", "#3498db", "#2980b9", "#0078d4", "#005a9e", "#007bff", "#4a90e2",
         "#0056b3", "#1565c0", "#1e3a8a", "#0ea5e9", "#0284c7", "#0d6efd",
         "#084298", "#004085", "#0c5460", "#2196f3")
 # Fundaluri albastre deschise -> neutru (INVENTAR: devin PANEL_2)
 _adauga("PANEL_2", "#e8f1ff", "#cce5ff", "#e7f3ff", "#cfe2ff", "#d1ecf1",
-        "#e3f2fd", "#bbdefb", "#bee5eb", "#9ec5fe", "#e8f4f8")
+        "#e3f2fd", "#bbdefb", "#bee5eb", "#9ec5fe", "#e8f4f8", "#e8f4fd")
 # Verde pozitiv
 _adauga("POSITIVE", "#28a745", "#27ae60", "#2ecc71", "#20c997", "#229954",
         "#186a3b", "#34ce57", "#059669", "#047857", "#155724", "#2e7d32")

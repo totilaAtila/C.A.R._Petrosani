@@ -64,7 +64,7 @@ QMessageBox QPushButton:hover {{
 }}
 
 QMessageBox QPushButton:pressed {{
-    background-color: #dceee4;
+    background-color: {P.ACCENT_PRESS};
     border-color: {P.ACCENT};
 }}
 
@@ -112,7 +112,7 @@ QDialog QPushButton:hover {{
 }}
 
 QDialog QPushButton:pressed {{
-    background-color: #dceee4;
+    background-color: {P.ACCENT_PRESS};
 }}
 
 QDialog QPushButton:focus {{
@@ -197,7 +197,7 @@ QFileDialog QPushButton:hover {{
 }}
 
 QFileDialog QPushButton:pressed {{
-    background-color: #dceee4;
+    background-color: {P.ACCENT_PRESS};
 }}
 
 /* ==================== QDialogButtonBox ==================== */
@@ -217,7 +217,7 @@ QDialogButtonBox QPushButton:hover {{
 }}
 
 QDialogButtonBox QPushButton:pressed {{
-    background-color: #dceee4;
+    background-color: {P.ACCENT_PRESS};
 }}
 """
 

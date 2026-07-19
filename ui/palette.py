@@ -20,6 +20,7 @@ class P:
     ACCENT_DEEP   = "#14663f"   # verde închis (hover / gradient jos)
     ACCENT_SOFT   = "#e9f5ee"   # verde foarte deschis (fundal subtil)
     ACCENT_LINE   = "#bfe3ce"   # bordură verde discretă
+    ACCENT_PRESS  = "#dceee4"   # verde pal, starea "apăsat"
 
     # Neutrale (slate verzui) — text, fundaluri, linii
     INK           = "#152219"   # text principal (aproape negru, cald)
@@ -49,6 +50,12 @@ class P:
     WARNING_SOFT  = "#fbf1df"
     WARNING_LINE  = "#ecd9b3"
     DANGER_SOFT   = "#f7e9e7"
+
+    # Starea dezactivata — token propriu, ca sa NU se confunde cu NEUTRAL.
+    # Un buton gri activ si unul dezactivat trebuie sa arate diferit; codul vechi
+    # folosea aceeasi valoare (#95a5a6) pentru ambele.
+    DISABLED      = "#b9c6bf"
+    DISABLED_TEXT = "#eef2f0"
 
     WHITE         = "#ffffff"
 
@@ -101,7 +108,7 @@ def btn_primary():
         }}
         QPushButton:hover  {{ background: {GRAD.ACCENT_HOVER}; }}
         QPushButton:pressed{{ background: {P.ACCENT_DEEP}; }}
-        QPushButton:disabled{{ background: #b9c6bf; color: #eef2f0; }}
+        QPushButton:disabled{{ background: {P.DISABLED}; color: {P.DISABLED_TEXT}; }}
     """
 
 def btn_secondary():
@@ -117,8 +124,8 @@ def btn_secondary():
             font-size: 13px;
             font-weight: bold;
         }}
-        QPushButton:hover  {{ background: #eef2f5; color: {P.INK}; }}
-        QPushButton:pressed{{ background: #e6ebef; }}
+        QPushButton:hover  {{ background: {P.LINE_SOFT}; color: {P.INK}; }}
+        QPushButton:pressed{{ background: {P.BG}; }}
     """
 
 def btn_soft(accent=None):
@@ -135,7 +142,7 @@ def btn_soft(accent=None):
             font-size: 12px;
             font-weight: bold;
         }}
-        QPushButton:hover {{ background: #dceee4; }}
+        QPushButton:hover {{ background: {P.ACCENT_PRESS}; }}
     """
 
 def btn_solid(base, deep, selector="QPushButton"):

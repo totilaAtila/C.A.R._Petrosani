@@ -13,6 +13,10 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtGui import QIntValidator, \
     QStandardItemModel, QStandardItem
 from PyQt5.QtCore import Qt, QTimer, QTime
+
+# REDESIGN: sursa unică de stil. Doar aspect — nicio logică atinsă.
+from ui.palette import P
+
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from reportlab.pdfbase import pdfmetrics
@@ -559,7 +563,7 @@ class ListariEURWidget(QWidget):
         self.input_nr_chitante_tiparit = QLineEdit()
         self.input_nr_chitante_tiparit.setObjectName("nrChitanteInput")
         self.input_nr_chitante_tiparit.setReadOnly(True)
-        self.input_nr_chitante_tiparit.setStyleSheet("background-color: #f0f0f0;")
+        self.input_nr_chitante_tiparit.setStyleSheet(f"background-color: {P.PANEL_2};")
 
         chitante_per_pagina_label = QLabel("Chitanțe per pagină:")
         chitante_per_pagina_label.setObjectName("fieldLabel")
@@ -699,213 +703,213 @@ class ListariEURWidget(QWidget):
         self.input_an.valueChanged.connect(self._on_period_changed)
 
     def _apply_styles(self):
-        self.setStyleSheet("""
-            QLabel#titleLabel {
+        self.setStyleSheet(f"""
+            QLabel#titleLabel {{
                 font-size: 16pt;
                 font-weight: bold;
-                color: #2c3e50;
+                color: {P.INK};
                 margin-bottom: 8px;
                 padding: 8px;
-            }
-            QLabel#fieldLabel {
+            }}
+            QLabel#fieldLabel {{
                 font-size: 9pt;
                 font-weight: bold;
-                color: #34495e;
+                color: {P.INK};
                 min-width: 50px;
-            }
-            QLabel#summaryLabel {
+            }}
+            QLabel#summaryLabel {{
                 font-size: 10pt;
                 font-weight: bold;
-                color: #2c3e50;
-                background-color: #e8f4fd;
+                color: {P.INK};
+                background-color: {P.PANEL_2};
                 padding: 8px;
                 border-radius: 5px;
-                border: 1px solid #3498db;
-            }
-            QLabel#progressLabel {
+                border: 1px solid {P.INFO};
+            }}
+            QLabel#progressLabel {{
                 font-size: 9pt;
-                color: #2c3e50;
+                color: {P.INK};
                 font-weight: bold;
-            }
-            QFrame#configFrame, QFrame#previewFrame {
-                border: 2px solid #3498db;
+            }}
+            QFrame#configFrame, QFrame#previewFrame {{
+                border: 2px solid {P.INFO};
                 border-radius: 8px;
-                background-color: #f8f9fa;
+                background-color: {P.PANEL_2};
                 padding: 6px;
-            }
-            QGroupBox {
+            }}
+            QGroupBox {{
                 font-size: 9pt;
                 font-weight: bold;
-                color: #2c3e50;
-                border: 2px solid #bdc3c7;
+                color: {P.INK};
+                border: 2px solid {P.LINE};
                 border-radius: 6px;
                 margin-top: 4px;
                 padding-top: 6px;
-            }
-            QGroupBox::title {
+            }}
+            QGroupBox::title {{
                 subcontrol-origin: margin;
                 left: 10px;
                 padding: 0 8px 0 8px;
-                background-color: #f8f9fa;
-            }
-            QComboBox#lunaCombo, QSpinBox#anSpin, QSpinBox#chitantePerPaginaSpin {
-                border: 2px solid #bdc3c7;
+                background-color: {P.PANEL_2};
+            }}
+            QComboBox#lunaCombo, QSpinBox#anSpin, QSpinBox#chitantePerPaginaSpin {{
+                border: 2px solid {P.LINE};
                 border-radius: 4px;
                 padding: 4px;
                 font-size: 9pt;
                 background-color: white;
-            }
-            QComboBox#lunaCombo:focus, QSpinBox#anSpin:focus, QSpinBox#chitantePerPaginaSpin:focus {
-                border-color: #3498db;
-            }
-            QLineEdit#nrChitantaInput, QLineEdit#nrChitanteInput {
-                border: 2px solid #bdc3c7;
+            }}
+            QComboBox#lunaCombo:focus, QSpinBox#anSpin:focus, QSpinBox#chitantePerPaginaSpin:focus {{
+                border-color: {P.INFO};
+            }}
+            QLineEdit#nrChitantaInput, QLineEdit#nrChitanteInput {{
+                border: 2px solid {P.LINE};
                 border-radius: 4px;
                 padding: 4px;
                 font-size: 9pt;
                 background-color: white;
-            }
-            QLineEdit#nrChitantaInput:focus {
-                border-color: #3498db;
-            }
-            QPushButton#previewButton {
-                background-color: #f39c12;
+            }}
+            QLineEdit#nrChitantaInput:focus {{
+                border-color: {P.INFO};
+            }}
+            QPushButton#previewButton {{
+                background-color: {P.WARNING};
                 color: white;
-                border: 1px solid #e67e22;
+                border: 1px solid {P.WARNING};
                 border-radius: 6px;
                 padding: 8px;
                 font-size: 10pt;
                 font-weight: bold;
                 min-height: 12px;
-            }
-            QPushButton#previewButton:hover {
-                background-color: #e67e22;
-            }
-            QPushButton#previewButton:disabled {
-                background-color: #95a5a6;
-                border-color: #7f8c8d;
-            }
-            QPushButton#printButton {
-                background-color: #27ae60;
+            }}
+            QPushButton#previewButton:hover {{
+                background-color: {P.WARNING};
+            }}
+            QPushButton#previewButton:disabled {{
+                background-color: {P.DISABLED};
+                border-color: {P.DISABLED};
+            }}
+            QPushButton#printButton {{
+                background-color: {P.POSITIVE};
                 color: white;
-                border: 1px solid #229954;
+                border: 1px solid {P.POSITIVE};
                 border-radius: 6px;
                 padding: 8px;
                 font-size: 10pt;
                 font-weight: bold;
                 min-height: 12px;
-            }
-            QPushButton#printButton:hover {
-                background-color: #229954;
-            }
-            QPushButton#printButton:disabled {
-                background-color: #95a5a6;
-                border-color: #7f8c8d;
-            }
-            QPushButton#resetButton {
-                background-color: #95a5a6;
+            }}
+            QPushButton#printButton:hover {{
+                background-color: {P.POSITIVE};
+            }}
+            QPushButton#printButton:disabled {{
+                background-color: {P.DISABLED};
+                border-color: {P.DISABLED};
+            }}
+            QPushButton#resetButton {{
+                background-color: {P.NEUTRAL};
                 color: white;
-                border: 1px solid #7f8c8d;
+                border: 1px solid {P.FAINT};
                 border-radius: 6px;
                 padding: 6px;
                 font-size: 9pt;
                 font-weight: bold;
                 min-height: 10px;
-            }
-            QPushButton#resetButton:hover {
-                background-color: #7f8c8d;
-            }
-            QPushButton#openFileButton {
-                background-color: #3498db;
+            }}
+            QPushButton#resetButton:hover {{
+                background-color: {P.FAINT};
+            }}
+            QPushButton#openFileButton {{
+                background-color: {P.INFO};
                 color: white;
-                border: 1px solid #2980b9;
+                border: 1px solid {P.INFO};
                 border-radius: 6px;
                 padding: 6px;
                 font-size: 9pt;
                 font-weight: bold;
                 min-height: 10px;
-            }
-            QPushButton#openFileButton:hover {
-                background-color: #2980b9;
-            }
-            QPushButton#openFileButton:disabled {
-                background-color: #95a5a6;
-                border-color: #7f8c8d;
-            }
-            QPushButton#cancelButton {
-                background-color: #e74c3c;
+            }}
+            QPushButton#openFileButton:hover {{
+                background-color: {P.INFO};
+            }}
+            QPushButton#openFileButton:disabled {{
+                background-color: {P.DISABLED};
+                border-color: {P.DISABLED};
+            }}
+            QPushButton#cancelButton {{
+                background-color: {P.DANGER};
                 color: white;
-                border: 1px solid #c0392b;
+                border: 1px solid {P.DANGER};
                 border-radius: 6px;
                 padding: 6px;
                 font-size: 9pt;
                 font-weight: bold;
                 min-height: 10px;
-            }
-            QPushButton#cancelButton:hover {
-                background-color: #c0392b;
-            }
-            QPushButton#clearLogButton, QPushButton#saveLogButton {
-                background-color: #e74c3c;
+            }}
+            QPushButton#cancelButton:hover {{
+                background-color: {P.DANGER};
+            }}
+            QPushButton#clearLogButton, QPushButton#saveLogButton {{
+                background-color: {P.DANGER};
                 color: white;
-                border: 1px solid #c0392b;
+                border: 1px solid {P.DANGER};
                 border-radius: 3px;
                 padding: 2px;
                 font-size: 8pt;
                 font-weight: bold;
-            }
-            QPushButton#clearLogButton:hover, QPushButton#saveLogButton:hover {
-                background-color: #c0392b;
-            }
-            QPushButton#saveLogButton {
-                background-color: #27ae60;
-                border-color: #229954;
-            }
-            QPushButton#saveLogButton:hover {
-                background-color: #229954;
-            }
-            QTableView#dataTable {
-                border: 1px solid #bdc3c7;
+            }}
+            QPushButton#clearLogButton:hover, QPushButton#saveLogButton:hover {{
+                background-color: {P.DANGER};
+            }}
+            QPushButton#saveLogButton {{
+                background-color: {P.POSITIVE};
+                border-color: {P.POSITIVE};
+            }}
+            QPushButton#saveLogButton:hover {{
+                background-color: {P.POSITIVE};
+            }}
+            QTableView#dataTable {{
+                border: 1px solid {P.LINE};
                 border-radius: 4px;
-                background-color: #ffffff;
+                background-color: {P.PANEL};
                 font-size: 8pt;
-                gridline-color: #ecf0f1;
-                selection-background-color: #3498db;
+                gridline-color: {P.PANEL_2};
+                selection-background-color: {P.INFO};
                 selection-color: white;
-                alternate-background-color: #f8f9fa;
-            }
-            QTableView#dataTable::item {
+                alternate-background-color: {P.PANEL_2};
+            }}
+            QTableView#dataTable::item {{
                 padding: 3px;
-                border-bottom: 1px solid #ecf0f1;
-            }
-            QHeaderView::section {
-                background-color: #34495e;
+                border-bottom: 1px solid {P.PANEL_2};
+            }}
+            QHeaderView::section {{
+                background-color: {P.INK};
                 color: white;
                 padding: 3px;
-                border: 1px solid #2c3e50;
+                border: 1px solid {P.INK};
                 font-weight: bold;
                 font-size: 8pt;
-            }
-            QTextEdit#logText {
-                border: 1px solid #bdc3c7;
+            }}
+            QTextEdit#logText {{
+                border: 1px solid {P.LINE};
                 border-radius: 3px;
-                background-color: #ffffff;
+                background-color: {P.PANEL};
                 font-family: 'Courier New', monospace;
                 font-size: 9pt;
                 padding: 4px;
                 line-height: 1.3;
-            }
-            QProgressBar#progressBar {
-                border: 1px solid #bdc3c7;
+            }}
+            QProgressBar#progressBar {{
+                border: 1px solid {P.LINE};
                 border-radius: 5px;
                 text-align: center;
                 font-weight: bold;
                 font-size: 9pt;
-            }
-            QProgressBar#progressBar::chunk {
-                background-color: #f39c12;
+            }}
+            QProgressBar#progressBar::chunk {{
+                background-color: {P.WARNING};
                 border-radius: 3px;
-            }
+            }}
         """)
 
     def _log_message(self, message):
