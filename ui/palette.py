@@ -59,6 +59,36 @@ class P:
 
     WHITE         = "#ffffff"
 
+
+# ----------------------------------------------------------------------------
+# 1b. STĂRI ÎN TABEL — culori pentru TEXT, nu pentru umplere
+# ----------------------------------------------------------------------------
+class STARE:
+    """
+    Culorile cu care se scriu cifrele și cuvintele de stare direct în tabel,
+    prin `item.setForeground(QBrush(QColor(...)))`.
+
+    DE CE NU SE FOLOSESC TOKENII SEMANTICI DE MAI SUS:
+    P.DANGER, P.POSITIVE, P.INFO și P.WARNING sunt gândiți ca FUNDAL de buton,
+    cu text alb peste. Folosiți ca TEXT pe rândurile deschise ale tabelului, cad
+    sub pragul de lizibilitate. Contrast măsurat pe cele două fundaluri de grup
+    care alternează (#e8f4ff / #fff5e6) și pe selecție:
+
+        P.WARNING  chihlimbar   2.98 – 3.33   insuficient
+        P.INFO     albastru     3.87 – 4.33   sub prag
+        P.POSITIVE verde        3.87 – 4.33   sub prag
+        rosu #ff0000 actual     3.57 – 4.00   sub prag
+        variantele de mai jos   4.58 – 7.19   trec pragul AA (4.5)
+
+    Sensul rămâne același; se schimbă doar adâncimea, pentru citire pe fundal
+    deschis. NU pune `color:` pe `QTableWidget::item` — vezi nota din table().
+    """
+    NEACHITAT     = "#a32b1f"   # roșu închis  — restanță (contrast 6.42–7.19)
+    ACHITAT       = "#146b45"   # verde închis — plătit    (contrast 5.83–6.52)
+    IMPRUMUT_NOU  = "#245f96"   # albastru     — împrumut nou acordat (5.95–6.66)
+    NOU           = "#9a6117"   # chihlimbar   — marcaj "!NOU"        (4.58–5.13)
+    NEUTRU        = "#5c6b62"   # gri          — informativ, fără accent
+
 # ----------------------------------------------------------------------------
 # 2. GRADIENTURI  (folosite DISCRET — doar accent primar, titlu, elemente active)
 #    Semi-transparența grea din vechea temă a fost eliminată intenționat.
