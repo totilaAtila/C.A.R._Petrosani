@@ -208,8 +208,18 @@ class StergereMembruWidget(QWidget):
 
         header_layout.addWidget(self.lbl_data_insc, 2, 0)
         header_layout.addWidget(self.txt_data_insc, 2, 1)
-        header_layout.addWidget(self.reset_button, 2, 2)
-        header_layout.addWidget(self.buton_sterge, 2, 3)
+        # Coloana 2 ramane ingusta (ca la lichidare/adaugare) -> etichetele
+        # "Numar Fisa" si "Calitatea" stau lipite de casutele lor. Cele doua
+        # butoane merg intr-un container care se intinde pe coloanele 2-3 si
+        # sunt impinse la dreapta, ca sa NU lateasca individual coloana 2 sau 3.
+        buttons_container = QWidget()
+        buttons_hbox = QHBoxLayout(buttons_container)
+        buttons_hbox.setContentsMargins(0, 0, 0, 0)
+        buttons_hbox.setSpacing(8)
+        buttons_hbox.addStretch(1)
+        buttons_hbox.addWidget(self.reset_button)
+        buttons_hbox.addWidget(self.buton_sterge)
+        header_layout.addWidget(buttons_container, 2, 2, 1, 2)
 
         # Setăm extinderea coloanelor
         header_layout.setColumnStretch(1, 2)
