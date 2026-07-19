@@ -420,7 +420,6 @@ class StatisticiWidget(QWidget):
             font-weight: bold;
             color: white;
             background: transparent;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
             padding: 3px 0px;
         """)
 
@@ -430,7 +429,6 @@ class StatisticiWidget(QWidget):
             color: white;
             font-weight: bold;
             background: transparent;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
             padding: 4px 0px;
         """)
         self.datetime_label.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
@@ -442,7 +440,6 @@ class StatisticiWidget(QWidget):
             color: white;
             font-weight: bold;
             background: transparent;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.6);
             padding: 4px 0px;
         """)
         self.reference_month_label.setAlignment(Qt.AlignCenter | Qt.AlignVCenter)

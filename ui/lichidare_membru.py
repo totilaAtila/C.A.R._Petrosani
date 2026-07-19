@@ -455,7 +455,6 @@ class LichidareMembruWidget(QWidget):
             }
             QLineEdit:focus {
                 border-color: #4a90e2;
-                box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
             }
             QLineEdit:read-only {
                 background-color: #f8f9fa;
@@ -500,12 +499,10 @@ class LichidareMembruWidget(QWidget):
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 #ff7b7b, stop:1 #ff6b6b);
                 border-color: #dc3545;
-                transform: translateY(-1px);
             }
             QPushButton#reset_button:pressed {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 #ee5a52, stop:1 #e74c3c);
-                transform: translateY(0px);
             }
 
             QPushButton#buton_lichideaza {
@@ -523,12 +520,10 @@ class LichidareMembruWidget(QWidget):
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 #ffcd39, stop:1 #ffc107);
                 border-color: #e0a800;
-                transform: translateY(-1px);
             }
             QPushButton#buton_lichideaza:pressed {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 #e0a800, stop:1 #d39e00);
-                transform: translateY(0px);
             }
             QPushButton#buton_lichideaza:disabled {
                 background-color: #6c757d; 

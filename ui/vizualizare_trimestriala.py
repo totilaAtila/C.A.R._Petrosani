@@ -207,7 +207,7 @@ class VizualizareTrimestrialaWidget(QWidget):
             QPushButton:disabled {background:#d0e0d0; color:#808080; border:1px solid #b0c0b0;}\
             QHeaderView::section {background-color:#dce8ff; color:#333; padding:6px; border:1px solid #c0c8d0; font-weight:bold;}\
             QComboBox {background-color:#f8f8f8; border:1px solid #b0c0b0; border-radius:5px; padding:8px; font-size:10pt; margin:5px;}\
-            QComboBox:focus {border-color:#3498db; box-shadow:0 0 0 2px rgba(52,152,219,0.25); outline:none;}\
+            QComboBox:focus {border-color:#3498db; outline:none;}\
             QLabel {color:#555; margin-right:5px;}\
             QTableWidget {background:#ffffff; alternate-background-color:#f0f0f0; margin-top:10px;}\
             QTableWidget::item {padding:8px;}"""

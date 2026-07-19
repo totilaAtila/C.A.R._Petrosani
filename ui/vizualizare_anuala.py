@@ -216,7 +216,6 @@ class VizualizareAnualaWidget(QWidget):
             }
             QComboBox:focus {
                 border-color: #3498db;
-                box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.25);
                 outline: none;
             }
             QLabel {

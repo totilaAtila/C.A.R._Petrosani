@@ -241,7 +241,6 @@ class TranzactieDialog(QDialog):
             }
             QLineEdit:focus {
                 border-color: #4a90e2;
-                box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
             }
             QPushButton {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
@@ -1163,7 +1162,6 @@ class SumeLunareWidget(QWidget):
             }
             QLineEdit:focus {
                 border-color: #4a90e2;
-                box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
             }
             QLineEdit:read-only {
                 background-color: #f8f9fa;
@@ -1208,12 +1206,10 @@ class SumeLunareWidget(QWidget):
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 #ff7b7b, stop:1 #ff6b6b);
                 border-color: #dc3545;
-                transform: translateY(-1px);
             }
             QPushButton#reset_button:pressed {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 #ee5a52, stop:1 #e74c3c);
-                transform: translateY(0px);
             }
 
             QPushButton#buton_modifica {
@@ -1230,7 +1226,6 @@ class SumeLunareWidget(QWidget):
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 #ffcd39, stop:1 #ffc107);
                 border-color: #e0a800;
-                transform: translateY(-1px);
             }
             QPushButton#buton_modifica:disabled {
                 background-color: #6c757d; 
@@ -1252,7 +1247,6 @@ class SumeLunareWidget(QWidget):
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 #20c9e0, stop:1 #17a2b8);
                 border-color: #138496;
-                transform: translateY(-1px);
             }
             QPushButton#buton_dobanda:disabled {
                 background-color: #6c757d; 

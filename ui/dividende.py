@@ -169,7 +169,7 @@ class DividendeWidget(QWidget):
                 background-color: #ffffff; border: 1px solid #b0c0b0;
                 border-radius: 5px; padding: 4px; margin: 2px;
             }
-             QLineEdit:focus, QComboBox:focus {border-color: #3498db; box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.25); outline: none;}
+             QLineEdit:focus, QComboBox:focus {border-color: #3498db; outline: none;}
 
             QPushButton {
                 background:#90EE90; color:#000; border:1px solid #60c060;

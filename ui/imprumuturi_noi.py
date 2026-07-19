@@ -366,7 +366,6 @@ class ImprumuturiNoiWidget(QWidget):
             }
             QTableWidget::item:hover {
                 background-color: #e8f4f8;
-                cursor: pointer;
             }
             QTableWidget::item:alternate {
                 background-color: #f8f9fa;

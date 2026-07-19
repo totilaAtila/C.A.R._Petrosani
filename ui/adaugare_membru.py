@@ -530,7 +530,6 @@ class AdaugareMembruWidget(QWidget):
             } 
             QFrame#header_frame QLineEdit:focus {
                 border-color: #4a90e2;
-                box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
             }
             QFrame#header_frame QLineEdit:disabled { 
                 background-color: #f8f9fa; color: #6c757d;

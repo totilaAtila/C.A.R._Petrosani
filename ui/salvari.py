@@ -307,7 +307,6 @@ class OperatiuniSalvareWidget(QWidget):
             }
             QPushButton#backupButton:hover {
                 background-color: #229954;
-                transform: translateY(-2px);
             }
             QPushButton#restoreButton {
                 background-color: #3498db;

@@ -467,7 +467,6 @@ class StergereMembruWidget(QWidget):
             }
             QLineEdit:focus {
                 border-color: #4a90e2;
-                box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
             }
             QLineEdit:read-only {
                 background-color: #f8f9fa;
@@ -514,12 +513,10 @@ class StergereMembruWidget(QWidget):
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 #ff7b7b, stop:1 #ff6b6b);
                 border-color: #dc3545;
-                transform: translateY(-1px);
             }
             QPushButton#reset_button:pressed {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 #ee5a52, stop:1 #e74c3c);
-                transform: translateY(0px);
             }
 
             QPushButton#delete_button {
@@ -537,12 +534,10 @@ class StergereMembruWidget(QWidget):
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 #e74c3c, stop:1 #dc3545);
                 border-color: #921925;
-                transform: translateY(-1px);
             }
             QPushButton#delete_button:pressed {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 #a71e2a, stop:1 #8b1921);
-                transform: translateY(0px);
             }
             QPushButton#delete_button:disabled {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
