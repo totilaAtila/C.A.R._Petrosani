@@ -552,12 +552,10 @@ class AdaugareMembruWidget(QWidget):
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 #ff7b7b, stop:1 #ff6b6b);
                 border-color: #dc3545;
-                transform: translateY(-1px);
             }
             QPushButton#reset_button:pressed {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 #ee5a52, stop:1 #e74c3c);
-                transform: translateY(0px);
             }
         """
 
@@ -652,12 +650,10 @@ class AdaugareMembruWidget(QWidget):
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 #34ce57, stop:1 #28a745);
                 border-color: #20c997;
-                transform: translateY(-1px);
             }
             QPushButton:pressed {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 #20c997, stop:1 #28a745);
-                transform: translateY(0px);
             }
         """)
         self.save_button.clicked.connect(self._save_data)

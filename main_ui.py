@@ -20,6 +20,8 @@ from PyQt5.QtCore import (
 )
 
 # --- Importuri statice pentru modulele de bază ---
+# REDESIGN: sursa unică de stil. Doar aspect — nicio logică atinsă.
+from ui.palette import P
 from ui.statistici import StatisticiWidget
 from ui.adaugare_membru import AdaugareMembruWidget
 from ui.listari import ListariWidget
@@ -572,9 +574,27 @@ class ThemeManager:
                 "submenu_border": "rgba(170, 170, 170, 180)",
                 "submenu_text": "#2C2C2C",
                 "background": "stop:0 rgba(238, 238, 238, 250), stop:1 rgba(236, 236, 236, 230)"
-            }
+            },
             # ===== LOCUL PENTRU TEME ADIȚIONALE =====
             # Structura păstrată pentru adăugarea ușoară de noi teme
+            {
+                # REDESIGN "Glass Verde Rafinat" — singura temă construită din
+                # ui/palette.py, deci singura care rămâne în pas cu ecranele
+                # restilizate. Suprafețe plate (Qt nu randează blur oricum),
+                # un singur accent verde: elementul activ.
+                "name": "🌿 Glass Verde Rafinat",
+                "menu_gradient": (f"stop:0 {P.PANEL}, stop:1 {P.PANEL}",
+                                  f"stop:0 {P.ACCENT_SOFT}, stop:1 {P.ACCENT_SOFT}"),
+                "menu_active": (f"stop:0 #24996a, stop:1 {P.ACCENT_DEEP}", P.ACCENT_DEEP),
+                "menu_border": P.LINE,
+                "menu_text": P.INK,
+                "submenu_gradient": (f"stop:0 {P.PANEL_2}, stop:1 {P.PANEL_2}",
+                                     f"stop:0 {P.ACCENT_SOFT}, stop:1 {P.ACCENT_SOFT}"),
+                "submenu_active": (f"stop:0 #24996a, stop:1 {P.ACCENT_DEEP}", P.ACCENT_DEEP),
+                "submenu_border": P.LINE,
+                "submenu_text": P.MUTED,
+                "background": f"stop:0 #eef2f5, stop:1 #e6ebef"
+            }
         ]
 
         # Încarcă setările
@@ -824,7 +844,6 @@ class ModernButton(QPushButton):
                     color: white;
                     text-align: left;
                     font-weight: bold;
-                    backdrop-filter: blur(10px);
                 }}
             """)
         else:
@@ -840,18 +859,14 @@ class ModernButton(QPushButton):
                     color: {theme['menu_text']};
                     text-align: left;
                     font-weight: normal;
-                    backdrop-filter: blur(5px);
                 }}
                 QPushButton:hover {{
                     background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                         {theme['menu_gradient'][1]});
-                    transform: scale(1.02);
-                    backdrop-filter: blur(8px);
                 }}
                 QPushButton:pressed {{
                     background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                         {theme['menu_active'][0]});
-                    transform: scale(0.98);
                 }}
             """)
 
@@ -914,7 +929,6 @@ class ModernSubmenuButton(QPushButton):
                     padding: 6px 12px;
                     font-size: 10pt;
                     font-weight: bold;
-                    backdrop-filter: blur(10px);
                 }}
             """)
         else:
@@ -929,18 +943,14 @@ class ModernSubmenuButton(QPushButton):
                     padding: 6px 12px;
                     font-size: 10pt;
                     font-weight: normal;
-                    backdrop-filter: blur(5px);
                 }}
                 QPushButton:hover {{
                     background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                         {theme['submenu_gradient'][1]});
-                    transform: translateY(-1px);
-                    backdrop-filter: blur(8px);
                 }}
                 QPushButton:pressed {{
                     background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                         {theme['submenu_active'][0]});
-                    transform: translateY(0px);
                 }}
             """)
 
@@ -964,7 +974,6 @@ class CalculatorWindow(QMainWindow):
             QMainWindow {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 rgba(236, 240, 241, 240), stop:1 rgba(189, 195, 199, 220));
-                backdrop-filter: blur(10px);
             }
         """)
 
@@ -1130,7 +1139,6 @@ class CARApp(QMainWindow):
                             color: rgba(52, 73, 94, 150);
                             text-align: left;
                             font-weight: normal;
-                            backdrop-filter: blur(5px);
                         }}
                         QPushButton:disabled {{
                             background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
@@ -1197,7 +1205,7 @@ class CARApp(QMainWindow):
     def _setup_menu_container(self):
         """Configurează container-ul de meniu cu toggle RON/EUR integrat"""
         self.menu_container.setStyleSheet(
-            "border: 2px solid black; border-radius: 5px; background-color: rgba(240, 240, 240, 200); backdrop-filter: blur(10px);")
+            "border: 2px solid black; border-radius: 5px; background-color: rgba(240, 240, 240, 200);")
         menu_layout = QVBoxLayout(self.menu_container)
         menu_layout.setSpacing(2)
         menu_layout.setContentsMargins(10, 10, 10, 10)
@@ -1272,7 +1280,7 @@ class CARApp(QMainWindow):
     def _setup_content_container(self):
         """Configurează container-ul de conținut"""
         self.content_container.setStyleSheet(
-            "border: 2px solid black; border-radius: 5px; background-color: rgba(255, 255, 255, 200); backdrop-filter: blur(10px);")
+            "border: 2px solid black; border-radius: 5px; background-color: rgba(255, 255, 255, 200);")
         content_layout = QVBoxLayout(self.content_container)
 
         # Submenu bar
@@ -1286,7 +1294,7 @@ class CARApp(QMainWindow):
         # Content area
         self.content_area = QStackedWidget()
         self.content_area.setStyleSheet(
-            "border: none; background-color: rgba(248, 248, 248, 200); backdrop-filter: blur(5px);")
+            "border: none; background-color: rgba(248, 248, 248, 200);")
         content_layout.addWidget(self.content_area)
 
     def _load_initial_stats_widget(self):
@@ -1306,7 +1314,6 @@ class CARApp(QMainWindow):
             QMainWindow {{
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     {theme['background']});
-                backdrop-filter: blur(15px);
             }}
         """)
 
@@ -1532,12 +1539,10 @@ class CARApp(QMainWindow):
                 padding: 6px 12px;
                 font-size: 10pt;
                 font-weight: bold;
-                backdrop-filter: blur(10px);
             }
             QPushButton:hover {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 rgba(236, 112, 99, 200), stop:1 rgba(203, 67, 53, 220));
-                backdrop-filter: blur(8px);
             }
         """)
         iesire_btn.clicked.connect(self.revino_la_statistici)
