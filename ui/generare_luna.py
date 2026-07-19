@@ -26,6 +26,9 @@ from utils import afiseaza_warning, afiseaza_eroare, afiseaza_info, afiseaza_int
 from permisiuni import poate_scrie, MESAJ_READONLY  # gardian scriere post-conversie RON
 import json
 
+# Paleta unica de stil (redesign "Glass Verde"). Doar culori/tokeni, fara logica.
+from ui.palette import P, GRAD, RADIUS, FONT
+
 
 # Import utilitare
 try:
@@ -88,15 +91,15 @@ class NealocateDialog(QDialog):
         super().__init__(parent)
         self.setWindowTitle("Numere de Fișă Nealocate")
         self.setMinimumSize(450, 550)
-        self.setStyleSheet("""
-            QDialog { background-color: #eef2f7; }
-            QLabel { font-size: 10pt; padding-bottom: 5px; }
-            QListWidget { border: 1px solid #cccccc; border-radius: 3px; background-color: white; font-size: 10pt; }
-            QListWidget::item { padding: 4px; }
-            QListWidget::item:selected { background-color: #d0e0f0; color: black; }
-            QPushButton { padding: 6px 12px; border-radius: 4px; background-color: #e0e0e0;
-                          border: 1px solid #adadad; font-weight: bold; min-width: 80px; }
-            QPushButton:hover { background-color: #d0d0d0; }
+        self.setStyleSheet(f"""
+            QDialog {{ background-color: {P.PANEL_2}; }}
+            QLabel {{ font-size: 10pt; padding-bottom: 5px; color: {P.INK}; }}
+            QListWidget {{ border: 1px solid {P.LINE}; border-radius: {RADIUS.SM}; background-color: {P.PANEL}; font-size: 10pt; color: {P.INK}; }}
+            QListWidget::item {{ padding: 4px; }}
+            QListWidget::item:selected {{ background-color: {P.ACCENT_SOFT}; color: {P.INK}; }}
+            QPushButton {{ padding: 6px 12px; border-radius: {RADIUS.SM}; background-color: {P.PANEL_2};
+                          border: 1px solid {P.LINE}; font-weight: bold; min-width: 80px; color: {P.INK}; }}
+            QPushButton:hover {{ background-color: {P.LINE_SOFT}; }}
         """)
         layout = QVBoxLayout(self)
         info_text = (f"Intervalul numerelor de fișă verificate: <b>{min_fisa} - {max_fisa}</b><br>"
@@ -357,40 +360,41 @@ class GenerareLunaNouaWidget(QWidget):
 
     def _apply_styles(self):
         """Aplică stiluri CSS și setează objectName-uri pentru stilizare."""
-        self.setStyleSheet("""
-            /* ... (CSS complet aici, inclusiv stilul pentru #btnDeleteSelectedMonth) ... */
-            QWidget { background-color: #f0f4f8; font-family: Arial, sans-serif; font-size: 10pt; }
-            QLabel { color: #333333; padding-bottom: 1px; }
-            QLabel#lblCurrentPeriod, QLabel#lblNextPeriod, QLabel#lblCurrentRate { font-weight: bold; }
-            QTextEdit#txtStatusLog { background-color: #ffffff; border: 1px solid #cccccc; border-radius: 4px; padding: 6px;
-                                     font-family: Consolas, monospace; font-size: 9pt; color: #333; }
-            QComboBox#cmbMonthSelector { border: 1px solid #cccccc; border-radius: 4px; padding: 5px; min-height: 24px; background-color: white; }
-            QComboBox#cmbMonthSelector::drop-down { border: none; }
-            /* QComboBox#cmbMonthSelector::down-arrow { image: url(down_arrow.png); width: 14px; height: 14px; } */
-            QComboBox#cmbMonthSelector:disabled { background-color: #f0f0f0; color: #888888; }
-            QPushButton { padding: 6px 12px; border-radius: 4px; min-height: 30px; font-weight: bold;
-                          border: 1px solid #adadad; background-color: #e0e0e0; color: #333; }
-            QPushButton:hover { background-color: #d0d0d0; }
-            QPushButton:pressed { background-color: #c0c0c0; }
-            QPushButton:!enabled { background-color: #e0e0e0; border-color: #c0c0c0; color: #888888; }
-            QPushButton#generate_button { background-color: #28a745; color: white; border-color: #1e7e34; }
-            QPushButton#generate_button:hover { background-color: #218838; }
-            QPushButton#generate_button:pressed { background-color: #1e7e34; }
-            QPushButton#modify_rate_button { background-color: #ffc107; color: black; border-color: #d39e00; }
-            QPushButton#modify_rate_button:hover { background-color: #e0a800; }
-            QPushButton#modify_rate_button:pressed { background-color: #d39e00; }
-            QPushButton#btnDeleteSelectedMonth { background-color: #dc3545; color: white; border-color: #bd2130; }
-            QPushButton#btnDeleteSelectedMonth:hover { background-color: #c82333; }
-            QPushButton#btnDeleteSelectedMonth:pressed { background-color: #bd2130; }
-            QPushButton#btnDeleteSelectedMonth:!enabled { background-color: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+        self.setStyleSheet(f"""
+            /* Re-tematizat pe paleta unica (ui.palette). Roluri butoane pastrate:
+               generate=ACCENT, modify_rate=WARNING, delete=DANGER, extra=NEUTRAL,
+               generic=secundar (PANEL_2/LINE). */
+            QWidget {{ background-color: {GRAD.APP_BG}; font-family: {FONT}; font-size: 10pt; }}
+            QLabel {{ color: {P.INK}; padding-bottom: 1px; }}
+            QLabel#lblCurrentPeriod, QLabel#lblNextPeriod, QLabel#lblCurrentRate {{ font-weight: bold; }}
+            QTextEdit#txtStatusLog {{ background-color: {P.PANEL}; border: 1px solid {P.LINE}; border-radius: {RADIUS.SM}; padding: 6px;
+                                     font-family: Consolas, monospace; font-size: 9pt; color: {P.INK}; }}
+            QComboBox#cmbMonthSelector {{ border: 1px solid {P.LINE}; border-radius: {RADIUS.SM}; padding: 5px; min-height: 24px; background-color: {P.PANEL_2}; color: {P.INK}; }}
+            QComboBox#cmbMonthSelector::drop-down {{ border: none; }}
+            QComboBox#cmbMonthSelector:disabled {{ background-color: {P.DISABLED}; color: {P.DISABLED_TEXT}; }}
+            QPushButton {{ padding: 6px 12px; border-radius: {RADIUS.SM}; min-height: 30px; font-weight: bold;
+                          border: 1px solid {P.LINE}; background-color: {P.PANEL_2}; color: {P.INK}; }}
+            QPushButton:hover {{ background-color: {P.LINE_SOFT}; }}
+            QPushButton:pressed {{ background-color: {P.BG}; }}
+            QPushButton:!enabled {{ background-color: {P.DISABLED}; border-color: {P.DISABLED}; color: {P.DISABLED_TEXT}; }}
+            QPushButton#generate_button {{ background-color: {P.ACCENT}; color: {P.WHITE}; border-color: {P.ACCENT_DEEP}; }}
+            QPushButton#generate_button:hover {{ background-color: {P.ACCENT_DEEP}; }}
+            QPushButton#generate_button:pressed {{ background-color: {P.ACCENT_DEEP}; }}
+            QPushButton#modify_rate_button {{ background-color: {P.WARNING}; color: {P.WHITE}; border-color: {P.WARNING_DEEP}; }}
+            QPushButton#modify_rate_button:hover {{ background-color: {P.WARNING_DEEP}; }}
+            QPushButton#modify_rate_button:pressed {{ background-color: {P.WARNING_DEEP}; }}
+            QPushButton#btnDeleteSelectedMonth {{ background-color: {P.DANGER}; color: {P.WHITE}; border-color: {P.DANGER_DEEP}; }}
+            QPushButton#btnDeleteSelectedMonth:hover {{ background-color: {P.DANGER_DEEP}; }}
+            QPushButton#btnDeleteSelectedMonth:pressed {{ background-color: {P.DANGER_DEEP}; }}
+            QPushButton#btnDeleteSelectedMonth:!enabled {{ background-color: {P.DISABLED}; border-color: {P.DISABLED}; color: {P.DISABLED_TEXT}; }}
             QPushButton#btn_update_inactivi, QPushButton#btn_afiseaza_inactivi, QPushButton#btn_afiseaza_activi,
-            QPushButton#btn_export_log, QPushButton#btn_clear_log {
-                background-color: #6c757d; color: white; border-color: #5a6268; padding: 4px 8px;
+            QPushButton#btn_export_log, QPushButton#btn_clear_log {{
+                background-color: {P.NEUTRAL}; color: {P.WHITE}; border-color: {P.NEUTRAL_DEEP}; padding: 4px 8px;
                 font-size: 9pt; min-height: 28px; font-weight: normal;
-            }
+            }}
             QPushButton#btn_update_inactivi:hover, QPushButton#btn_afiseaza_inactivi:hover, QPushButton#btn_afiseaza_activi:hover,
-            QPushButton#btn_export_log:hover, QPushButton#btn_clear_log:hover { background-color: #5a6268; }
-        """)  # Adăugați stilurile lipsă dacă e necesar
+            QPushButton#btn_export_log:hover, QPushButton#btn_clear_log:hover {{ background-color: {P.NEUTRAL_DEEP}; }}
+        """)
         # Setăm objectName aici, folosite de CSS și potențial de findChild
         self.generate_button.setObjectName("generate_button")
         self.modify_rate_button.setObjectName("modify_rate_button")
