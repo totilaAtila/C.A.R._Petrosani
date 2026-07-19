@@ -209,14 +209,14 @@ class AdaugareMembruWidget(QWidget):
 
         header_layout.addWidget(QLabel("Nume Prenume:"), 0, 0)
         header_layout.addWidget(self.nume_input, 0, 1)
-        header_layout.addWidget(QLabel("Adresă:"), 0, 2)
-        header_layout.addWidget(self.adresa_input, 0, 3)
-        header_layout.addWidget(QLabel("Calitate:"), 1, 0)
-        header_layout.addWidget(self.calitate_input, 1, 1)
+        header_layout.addWidget(QLabel("Număr fișă:"), 0, 2)
+        header_layout.addWidget(self.nr_fisa_input, 0, 3)
+        header_layout.addWidget(QLabel("Adresă:"), 1, 0)
+        header_layout.addWidget(self.adresa_input, 1, 1)
         header_layout.addWidget(QLabel("Data înscrierii:"), 1, 2)
         header_layout.addWidget(self.data_input, 1, 3)
-        header_layout.addWidget(QLabel("Număr fișă:"), 2, 0)
-        header_layout.addWidget(self.nr_fisa_input, 2, 1)
+        header_layout.addWidget(QLabel("Calitate:"), 2, 0)
+        header_layout.addWidget(self.calitate_input, 2, 1)
         # Spacer pentru a împinge butonul la dreapta
         header_layout.addItem(
             QtWidgets.QSpacerItem(20, 20, QSizePolicy.Expanding, QSizePolicy.Minimum), 2, 2
@@ -224,7 +224,7 @@ class AdaugareMembruWidget(QWidget):
         header_layout.addWidget(self.reset_button, 2, 3)
 
         header_layout.setColumnStretch(1, 2)
-        header_layout.setColumnStretch(3, 2)
+        header_layout.setColumnStretch(3, 1)
 
         main_layout.addWidget(self.header_frame)
 

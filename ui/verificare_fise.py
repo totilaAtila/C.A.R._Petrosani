@@ -154,17 +154,17 @@ class VerificareFiseWidget(QWidget):
 
         # MODIFICARE 3: Rocada între Calitatea și Data înscrierii
         # Noul layout:
-        # Rândul 0: Nume Prenume + Data înscrierii
+        # Rândul 0: Nume Prenume + Număr Fișă
         self.header_layout.addWidget(self.lbl_nume, 0, 0)
         self.header_layout.addWidget(self.txt_nume, 0, 1)
-        self.header_layout.addWidget(self.lbl_data_insc, 0, 2)
-        self.header_layout.addWidget(self.txt_data_insc, 0, 3)
+        self.header_layout.addWidget(self.lbl_nr_fisa, 0, 2)
+        self.header_layout.addWidget(self.txt_nr_fisa, 0, 3)
 
-        # Rândul 1: Adresa + Număr Fișă
+        # Rândul 1: Adresa + Data înscrierii
         self.header_layout.addWidget(self.lbl_adresa, 1, 0)
         self.header_layout.addWidget(self.txt_adresa, 1, 1)
-        self.header_layout.addWidget(self.lbl_nr_fisa, 1, 2)
-        self.header_layout.addWidget(self.txt_nr_fisa, 1, 3)
+        self.header_layout.addWidget(self.lbl_data_insc, 1, 2)
+        self.header_layout.addWidget(self.txt_data_insc, 1, 3)
 
         # Rândul 2: Calitatea + Golește formular (fără eticheta suplimentară)
         self.header_layout.addWidget(self.lbl_calitate, 2, 0)

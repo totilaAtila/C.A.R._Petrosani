@@ -203,15 +203,13 @@ class StergereMembruWidget(QWidget):
 
         header_layout.addWidget(self.lbl_adresa, 1, 0)
         header_layout.addWidget(self.txt_adresa, 1, 1)
-        header_layout.addWidget(self.lbl_calitate, 1, 2)
-        header_layout.addWidget(self.txt_calitate, 1, 3)
+        header_layout.addWidget(self.lbl_data_insc, 1, 2)
+        header_layout.addWidget(self.txt_data_insc, 1, 3)
 
-        header_layout.addWidget(self.lbl_data_insc, 2, 0)
-        header_layout.addWidget(self.txt_data_insc, 2, 1)
-        # Coloana 2 ramane ingusta (ca la lichidare/adaugare) -> etichetele
-        # "Numar Fisa" si "Calitatea" stau lipite de casutele lor. Cele doua
-        # butoane merg intr-un container care se intinde pe coloanele 2-3 si
-        # sunt impinse la dreapta, ca sa NU lateasca individual coloana 2 sau 3.
+        header_layout.addWidget(self.lbl_calitate, 2, 0)
+        header_layout.addWidget(self.txt_calitate, 2, 1)
+        # Randul 2 dreapta: cele doua butoane intr-un layout care se intinde pe
+        # coloanele 2-3, impinse la dreapta (fara QWidget container -> fara gri).
         buttons_hbox = QHBoxLayout()  # layout direct (fara QWidget container -> fara fundal gri)
         buttons_hbox.setContentsMargins(0, 0, 0, 0)
         buttons_hbox.setSpacing(8)
@@ -220,9 +218,10 @@ class StergereMembruWidget(QWidget):
         buttons_hbox.addWidget(self.buton_sterge)
         header_layout.addLayout(buttons_hbox, 2, 2, 1, 2)
 
-        # Setăm extinderea coloanelor
+        # Setăm extinderea coloanelor: stanga mai lata, dreapta mai ingusta
+        # (Nr Fisa / Data = continut scurt), la fel la toate ecranele de membru.
         header_layout.setColumnStretch(1, 2)
-        header_layout.setColumnStretch(3, 2)
+        header_layout.setColumnStretch(3, 1)
 
         self.main_layout.addWidget(self.header_frame)
 

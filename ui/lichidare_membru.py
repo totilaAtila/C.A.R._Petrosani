@@ -204,10 +204,10 @@ class LichidareMembruWidget(QWidget):
         header_layout.addWidget(self.txt_nr_fisa, 0, 3)
         header_layout.addWidget(self.lbl_adresa, 1, 0)
         header_layout.addWidget(self.txt_adresa, 1, 1)
-        header_layout.addWidget(self.lbl_calitate, 1, 2)
-        header_layout.addWidget(self.txt_calitate, 1, 3)
-        header_layout.addWidget(self.lbl_data_insc, 2, 0)
-        header_layout.addWidget(self.txt_data_insc, 2, 1)
+        header_layout.addWidget(self.lbl_data_insc, 1, 2)
+        header_layout.addWidget(self.txt_data_insc, 1, 3)
+        header_layout.addWidget(self.lbl_calitate, 2, 0)
+        header_layout.addWidget(self.txt_calitate, 2, 1)
         # Spacer pentru a împinge butonul la dreapta
         header_layout.addItem(
             QtWidgets.QSpacerItem(20, 20, QSizePolicy.Expanding, QSizePolicy.Minimum), 2, 2
@@ -215,7 +215,7 @@ class LichidareMembruWidget(QWidget):
         header_layout.addWidget(self.reset_button, 2, 3)
 
         header_layout.setColumnStretch(1, 2)
-        header_layout.setColumnStretch(3, 2)
+        header_layout.setColumnStretch(3, 1)
         self.main_layout.addWidget(self.header_frame)
 
         self._update_completer_flag = True
