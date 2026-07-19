@@ -341,7 +341,7 @@ class VizualizareTrimestrialaWidget(QWidget):
                 if prev_nr is not None:
                     group += 1
                 prev_nr = nr_curent
-            bg_color = f"#e8f4ff" if (group % 2 == 0) else f"#fff5e6"
+            bg_color = "#e8f4ff" if (group % 2 == 0) else "#fff5e6"
             brush = QBrush(QColor(bg_color))
             for c in range(self.tabel.columnCount()):
                 it = self.tabel.item(r, c)
@@ -618,8 +618,8 @@ class VizualizareTrimestrialaWidget(QWidget):
             progress.seteaza_text("Se desenează antetul tabelului...")
 
             # Define group background colors using HexColor
-            group_colors = [HexColor(f"#e8f4ff"), HexColor(f"#fff5e6")]
-            header_bg_color = HexColor(f"#dce8ff")
+            group_colors = [HexColor("#e8f4ff"), HexColor("#fff5e6")]
+            header_bg_color = HexColor("#dce8ff")
 
             # Draw header row
             # Use the original headers list with newlines and increased row height
@@ -750,7 +750,7 @@ class VizualizareTrimestrialaWidget(QWidget):
                 'font_name': 'Arial',
                 'font_size': 11,
                 'bold': True,
-                'bg_color': f'#DCE8FF',
+                'bg_color': '#DCE8FF',
                 'align': 'center',
                 'valign': 'vcenter',
                 'text_wrap': True
@@ -760,7 +760,7 @@ class VizualizareTrimestrialaWidget(QWidget):
             group_format_1 = workbook.add_format({
                 'font_name': 'Arial',
                 'font_size': 10,
-                'bg_color': f'#E8F4FF',
+                'bg_color': '#E8F4FF',
                 'align': 'right',
                 'valign': 'vcenter',
                 'num_format': '0.00'
@@ -769,7 +769,7 @@ class VizualizareTrimestrialaWidget(QWidget):
             group_format_2 = workbook.add_format({
                 'font_name': 'Arial',
                 'font_size': 10,
-                'bg_color': f'#FFF5E6',
+                'bg_color': '#FFF5E6',
                 'align': 'right',
                 'valign': 'vcenter',
                 'num_format': '0.00'
@@ -778,7 +778,7 @@ class VizualizareTrimestrialaWidget(QWidget):
             group_format_1_text = workbook.add_format({
                 'font_name': 'Arial',
                 'font_size': 10,
-                'bg_color': f'#E8F4FF',
+                'bg_color': '#E8F4FF',
                 'align': 'right',
                 'valign': 'vcenter'
             })
@@ -786,7 +786,7 @@ class VizualizareTrimestrialaWidget(QWidget):
             group_format_2_text = workbook.add_format({
                 'font_name': 'Arial',
                 'font_size': 10,
-                'bg_color': f'#FFF5E6',
+                'bg_color': '#FFF5E6',
                 'align': 'right',
                 'valign': 'vcenter'
             })
@@ -794,7 +794,7 @@ class VizualizareTrimestrialaWidget(QWidget):
             group_format_1_left = workbook.add_format({
                 'font_name': 'Arial',
                 'font_size': 10,
-                'bg_color': f'#E8F4FF',
+                'bg_color': '#E8F4FF',
                 'align': 'left',
                 'valign': 'vcenter'
             })
@@ -802,7 +802,7 @@ class VizualizareTrimestrialaWidget(QWidget):
             group_format_2_left = workbook.add_format({
                 'font_name': 'Arial',
                 'font_size': 10,
-                'bg_color': f'#FFF5E6',
+                'bg_color': '#FFF5E6',
                 'align': 'left',
                 'valign': 'vcenter'
             })
@@ -811,7 +811,7 @@ class VizualizareTrimestrialaWidget(QWidget):
                 'font_name': 'Arial',
                 'font_size': 10,
                 'font_color': 'red',
-                'bg_color': f'#E8F4FF',
+                'bg_color': '#E8F4FF',
                 'align': 'right',
                 'valign': 'vcenter'
             })
@@ -820,7 +820,7 @@ class VizualizareTrimestrialaWidget(QWidget):
                 'font_name': 'Arial',
                 'font_size': 10,
                 'font_color': 'red',
-                'bg_color': f'#FFF5E6',
+                'bg_color': '#FFF5E6',
                 'align': 'right',
                 'valign': 'vcenter'
             })

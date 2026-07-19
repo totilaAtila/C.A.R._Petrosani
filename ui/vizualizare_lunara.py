@@ -488,8 +488,8 @@ class VizualizareLunaraWidget(QWidget):
                 current_x += w_scaled
 
             # Define colors
-            header_bg_color = HexColor(f"#dce8ff")
-            group_colors = [HexColor(f"#e8f4ff"), HexColor(f"#fff5e6")]
+            header_bg_color = HexColor("#dce8ff")
+            group_colors = [HexColor("#e8f4ff"), HexColor("#fff5e6")]
 
             # Calculate position for header
             header_row_height = 20 * mm
@@ -635,7 +635,7 @@ class VizualizareLunaraWidget(QWidget):
                 'font_name': 'Arial',
                 'font_size': 11,
                 'bold': True,
-                'bg_color': f'#DCE8FF',
+                'bg_color': '#DCE8FF',
                 'align': 'center',
                 'valign': 'vcenter',
                 'text_wrap': True
@@ -677,7 +677,7 @@ class VizualizareLunaraWidget(QWidget):
             group_format_1 = workbook.add_format({
                 'font_name': 'Arial',
                 'font_size': 10,
-                'bg_color': f'#E8F4FF',
+                'bg_color': '#E8F4FF',
                 'align': 'right',
                 'valign': 'vcenter',
                 'num_format': '0.00'
@@ -686,7 +686,7 @@ class VizualizareLunaraWidget(QWidget):
             group_format_2 = workbook.add_format({
                 'font_name': 'Arial',
                 'font_size': 10,
-                'bg_color': f'#FFF5E6',
+                'bg_color': '#FFF5E6',
                 'align': 'right',
                 'valign': 'vcenter',
                 'num_format': '0.00'
@@ -695,7 +695,7 @@ class VizualizareLunaraWidget(QWidget):
             group_format_1_text = workbook.add_format({
                 'font_name': 'Arial',
                 'font_size': 10,
-                'bg_color': f'#E8F4FF',
+                'bg_color': '#E8F4FF',
                 'align': 'right',
                 'valign': 'vcenter'
             })
@@ -703,7 +703,7 @@ class VizualizareLunaraWidget(QWidget):
             group_format_2_text = workbook.add_format({
                 'font_name': 'Arial',
                 'font_size': 10,
-                'bg_color': f'#FFF5E6',
+                'bg_color': '#FFF5E6',
                 'align': 'right',
                 'valign': 'vcenter'
             })
@@ -711,7 +711,7 @@ class VizualizareLunaraWidget(QWidget):
             group_format_1_left = workbook.add_format({
                 'font_name': 'Arial',
                 'font_size': 10,
-                'bg_color': f'#E8F4FF',
+                'bg_color': '#E8F4FF',
                 'align': 'left',
                 'valign': 'vcenter'
             })
@@ -719,7 +719,7 @@ class VizualizareLunaraWidget(QWidget):
             group_format_2_left = workbook.add_format({
                 'font_name': 'Arial',
                 'font_size': 10,
-                'bg_color': f'#FFF5E6',
+                'bg_color': '#FFF5E6',
                 'align': 'left',
                 'valign': 'vcenter'
             })
@@ -728,7 +728,7 @@ class VizualizareLunaraWidget(QWidget):
                 'font_name': 'Arial',
                 'font_size': 10,
                 'font_color': 'red',
-                'bg_color': f'#E8F4FF',
+                'bg_color': '#E8F4FF',
                 'align': 'right',
                 'valign': 'vcenter'
             })
@@ -737,7 +737,7 @@ class VizualizareLunaraWidget(QWidget):
                 'font_name': 'Arial',
                 'font_size': 10,
                 'font_color': 'red',
-                'bg_color': f'#FFF5E6',
+                'bg_color': '#FFF5E6',
                 'align': 'right',
                 'valign': 'vcenter'
             })
@@ -1023,7 +1023,7 @@ class VizualizareLunaraWidget(QWidget):
             if prev_nr is not None and nr_curent != prev_nr:
                 current_group = 1 - current_group
             prev_nr = nr_curent
-            bg_color = QColor(f"#e8f4ff") if (current_group % 2 == 0) else QColor(f"#fff5e6")
+            bg_color = QColor("#e8f4ff") if (current_group % 2 == 0) else QColor("#fff5e6")
             brush = QBrush(bg_color)
 
             # Populate table items and apply background color
