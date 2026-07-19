@@ -631,7 +631,6 @@ CARpetrosani/
 ├── ui/                              # Module interfață utilizator
 │   ├── statistici.py                # Dashboard statistici
 │   ├── adaugare_membru.py           # Widget adăugare membri noi
-│   ├── adauga_membru.py             # Logică adăugare membri (modul auxiliar)
 │   ├── actualizare_membru.py        # Widget actualizare date membri
 │   ├── modificare_membru.py         # Logică modificare membri (modul auxiliar)
 │   ├── sume_lunare.py               # Introducere plăți lunare

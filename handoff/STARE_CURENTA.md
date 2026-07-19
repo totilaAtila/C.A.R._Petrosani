@@ -21,7 +21,7 @@ Criteriu obiectiv: **zero culori hex literale rămase în fișier.**
 | `ui/calculator.py` | |
 | `ui/despre.py` | 86 de literali migrați automat. Ghidul restructurat ca acordeón |
 | `ui/actualizare_membru.py` | |
-| `ui/adauga_membru.py` | |
+| ~~`ui/adauga_membru.py`~~ | **ȘTERS** ulterior (cod mort orfan) |
 | `ui/modificare_membru.py` | |
 | `ui/imprumuturi_noi.py` | |
 | `ui/listari.py` | |

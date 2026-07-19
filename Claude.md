@@ -469,7 +469,7 @@ pytest -m "security" -v
 1. `car_dbf_converter_widget.py` (+1 conexiune)
 2. `conversie_widget.py` (+11 conexiuni - toate operațiile de validare)
 3. `ui/actualizare_membru.py` (+3 conexiuni)
-4. `ui/adauga_membru.py` (+2 conexiuni)
+4. ~~`ui/adauga_membru.py`~~ (+2 conexiuni) — *fișier șters ulterior (cod mort orfan)*
 5. `ui/adaugare_membru.py` (+5 conexiuni)
 6. `ui/afisare_membri_lichidati.py` (+3 conexiuni)
 7. `ui/dividende.py` (+7 conexiuni)

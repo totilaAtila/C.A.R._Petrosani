@@ -78,7 +78,7 @@ Legenda risc:
 | 17 | salvari.py | 3 | 🟡 | Backup DB — NU atinge logica de salvare, doar butoanele. |
 | 18 | optimizare_index.py | 2 | 🟡 | Idem, doar aspect. |
 | 19 | actualizare_membru.py | 3 | 🟢 | 3 frame-uri cu `border:1px solid black` → `P.LINE`. Trivial. |
-| 20 | adauga_membru.py | 2 | 🟢 | Butoane albastre → primary/secondary. |
+| 20 | ~~adauga_membru.py~~ | — | — | **ȘTERS** (cod mort orfan, neimportat nicăieri). |
 | 21 | modificare_membru.py | 2 | 🟢 | Idem. |
 | 22 | despre.py | ~90 | 🟢 | **Volum mare dar risc zero** — doar text informativ/label-uri. Majoritatea sunt `color: #xxx` pe QLabel. Batch mecanic. Lasă-l spre final. |
 | 23 | car_dbf_converter_widget.py | 2 | 🟢 | Utilitar conversie DBF. Paleta completă albastru/verde/roșu/portocaliu → tokens. |

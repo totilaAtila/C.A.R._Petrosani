@@ -97,7 +97,7 @@ Ordine recomandată (cele mai vizibile întâi):
 2. `ui/vizualizare_lunara.py` — tabel (`table()`, rând TOTAL cu `P.ACCENT_SOFT`)
 3. `ui/dividende.py`
 4. `ui/vizualizare_*.py` (trimestrială, anuală)
-5. dialoguri (`dialog_styles.py`, `adauga_membru.py`, `actualizare_membru.py`, …)
+5. dialoguri (`dialog_styles.py`, `actualizare_membru.py`, …)
 6. `ui/listari*.py`
 
 Pentru fiecare fișier, tiparul de înlocuire:
