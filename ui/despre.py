@@ -1827,7 +1827,8 @@ class DespreWidget(QDialog):
         <ul style='margin: 8px 0 0 20px; line-height: 1.8;'>
             <li><b>CHITANTE.db:</b> Numerotare secvențială chitanțe generate</li>
             <li><b>config_dobanda.json:</b> Rată dobândă configurabilă extern</li>
-            <li><b>conversion_config.json:</b> Status conversie și curs aplicat</li>
+            <li><b>conversie_config.json:</b> Cursul RON/EUR și directorul bazelor de date</li>
+            <li><b>dual_currency.json:</b> Status conversie (cheia <i>conversie_aplicata</i>)</li>
         </ul>
         """
         db_label = QLabel(db_info)
