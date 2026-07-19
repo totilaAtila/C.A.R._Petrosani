@@ -180,7 +180,23 @@ def card(hover_accent=None):
     """
 
 def table():
-    """Tabel financiar — dens, lizibil, cifre la dreapta prin delegat/align în cod."""
+    """
+    Tabel financiar — dens, lizibil, cifre la dreapta prin delegat/align în cod.
+
+    ATENȚIE, REGULĂ VERIFICATĂ EXPERIMENTAL:
+    NU pune niciodată `color:` pe `QTableWidget::item`. O astfel de regulă
+    ANULEAZĂ `item.setForeground(...)` pus din cod, iar aplicația folosește
+    exact acest mecanism ca să scrie cu roșu 'NEACHITAT' în vizualizările
+    lunare/trimestriale/anuale — semnalul după care se vede dintr-o privire
+    cine nu și-a plătit rata sau cotizația.
+
+    Măsurat prin randare efectivă, numărând pixelii roșii:
+        fără stylesheet                  116 px roșii   textul e roșu
+        color: pe QTableWidget::item       0 px roșii   ROȘUL DISPARE
+        această fabrică (color pe widget) 103 px roșii  textul e roșu
+
+    De aceea `color:` e setat aici pe QTableWidget, nu pe ::item.
+    """
     return f"""
         QTableWidget, QTableView {{
             background: {P.PANEL};
