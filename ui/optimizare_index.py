@@ -24,6 +24,9 @@ from PyQt5.QtCore import Qt, QTimer, QTime, QThread, pyqtSignal
 # Gardian scriere: blocheaza modificarile pe RON dupa conversie (doar-citire).
 from permisiuni import poate_scrie, MESAJ_READONLY
 
+# Paleta unica de stil (redesign "Glass Verde"). Doar culori/tokeni, fara logica.
+from ui.palette import P, RADIUS
+
 
 class DatabaseIndexer(QThread):
     """Thread pentru operațiuni de indexare în background"""
@@ -474,202 +477,214 @@ class OptimizareIndexWidget(QWidget):
         self.dir_input.textChanged.connect(self._on_directory_changed)
 
     def _apply_styles(self):
-        self.setStyleSheet("""
-            QLabel#titleLabel {
+        # Re-tematizare pe paleta unica (verde). Geometria (padding/font/min)
+        # ramane cea din varianta veche; se schimba doar culorile -> tokeni.
+        self.setStyleSheet(f"""
+            QLabel#titleLabel {{
                 font-size: 14pt;
                 font-weight: bold;
-                color: #2c3e50;
+                color: {P.INK};
                 margin-bottom: 5px;
                 padding: 5px;
-            }
-            QLabel#infoLabel {
+            }}
+            QLabel#infoLabel {{
                 font-size: 9pt;
-                color: #7f8c8d;
+                color: {P.FAINT};
                 font-style: italic;
                 padding: 4px;
-            }
-            QLabel#progressLabel {
+            }}
+            QLabel#progressLabel {{
                 font-size: 9pt;
-                color: #2c3e50;
+                color: {P.INK};
                 font-weight: bold;
-            }
-            QGroupBox {
+            }}
+            QGroupBox {{
                 font-size: 9pt;
                 font-weight: bold;
-                color: #2c3e50;
-                border: 2px solid #bdc3c7;
-                border-radius: 6px;
+                color: {P.INK};
+                background-color: {P.PANEL};
+                border: 1px solid {P.LINE};
+                border-radius: {RADIUS.MD};
                 margin-top: 4px;
                 padding-top: 6px;
-            }
-            QGroupBox::title {
+            }}
+            QGroupBox::title {{
                 subcontrol-origin: margin;
                 left: 10px;
                 padding: 0 8px 0 8px;
-                background-color: #f8f9fa;
-            }
-            QLineEdit#dirInput {
-                border: 2px solid #bdc3c7;
-                border-radius: 4px;
+                background-color: {P.PANEL_2};
+                color: {P.MUTED};
+            }}
+            QLineEdit#dirInput {{
+                border: 1px solid {P.LINE};
+                border-radius: {RADIUS.SM};
                 padding: 6px;
                 font-size: 9pt;
-                background-color: white;
-            }
-            QLineEdit#dirInput:focus {
-                border-color: #3498db;
-            }
-            QListWidget#fileList {
-                border: 1px solid #bdc3c7;
-                border-radius: 4px;
-                background-color: #ffffff;
+                background-color: {P.PANEL_2};
+                color: {P.INK};
+            }}
+            QLineEdit#dirInput:focus {{
+                border-color: {P.ACCENT};
+            }}
+            QListWidget#fileList {{
+                border: 1px solid {P.LINE};
+                border-radius: {RADIUS.SM};
+                background-color: {P.PANEL};
                 font-size: 9pt;
-                selection-background-color: #3498db;
-                selection-color: white;
-                alternate-background-color: #f8f9fa;
-            }
-            QListWidget#fileList::item {
+                selection-background-color: {P.ACCENT};
+                selection-color: {P.WHITE};
+                alternate-background-color: {P.PANEL_2};
+                color: {P.INK};
+            }}
+            QListWidget#fileList::item {{
                 padding: 4px;
-                border-bottom: 1px solid #ecf0f1;
-            }
-            QListWidget#fileList::item:selected {
-                background-color: #3498db;
-                color: white;
-            }
-            QPushButton#browseButton {
-                background-color: #95a5a6;
-                color: white;
-                border: 1px solid #7f8c8d;
-                border-radius: 4px;
+                border-bottom: 1px solid {P.LINE_SOFT};
+            }}
+            QListWidget#fileList::item:selected {{
+                background-color: {P.ACCENT};
+                color: {P.WHITE};
+            }}
+            QPushButton#browseButton {{
+                background-color: {P.NEUTRAL};
+                color: {P.WHITE};
+                border: 1px solid {P.NEUTRAL_DEEP};
+                border-radius: {RADIUS.SM};
                 padding: 6px 12px;
                 font-size: 9pt;
                 font-weight: bold;
                 min-width: 80px;
-            }
-            QPushButton#browseButton:hover {
-                background-color: #7f8c8d;
-            }
-            QPushButton#refreshButton {
-                background-color: #3498db;
-                color: white;
-                border: 1px solid #2980b9;
-                border-radius: 4px;
+            }}
+            QPushButton#browseButton:hover {{
+                background-color: {P.NEUTRAL_DEEP};
+            }}
+            QPushButton#refreshButton {{
+                background-color: {P.INFO};
+                color: {P.WHITE};
+                border: 1px solid {P.INFO_DEEP};
+                border-radius: {RADIUS.SM};
                 padding: 6px;
                 font-size: 9pt;
                 font-weight: bold;
-            }
-            QPushButton#refreshButton:hover {
-                background-color: #2980b9;
-            }
-            QPushButton#optimizeButton {
-                background-color: #27ae60;
-                color: white;
-                border: 1px solid #229954;
-                border-radius: 6px;
+            }}
+            QPushButton#refreshButton:hover {{
+                background-color: {P.INFO_DEEP};
+            }}
+            QPushButton#optimizeButton {{
+                background-color: {P.ACCENT};
+                color: {P.WHITE};
+                border: 1px solid {P.ACCENT_DEEP};
+                border-radius: {RADIUS.MD};
                 padding: 10px;
                 font-size: 10pt;
                 font-weight: bold;
                 min-height: 15px;
-            }
-            QPushButton#optimizeButton:hover {
-                background-color: #229954;
-            }
-            QPushButton#optimizeButton:disabled {
-                background-color: #95a5a6;
-                border-color: #7f8c8d;
-            }
-            QPushButton#listButton {
-                background-color: #f39c12;
-                color: white;
-                border: 1px solid #e67e22;
-                border-radius: 6px;
+            }}
+            QPushButton#optimizeButton:hover {{
+                background-color: {P.ACCENT_DEEP};
+            }}
+            QPushButton#optimizeButton:disabled {{
+                background-color: {P.DISABLED};
+                border-color: {P.DISABLED};
+                color: {P.DISABLED_TEXT};
+            }}
+            QPushButton#listButton {{
+                background-color: {P.WARNING};
+                color: {P.WHITE};
+                border: 1px solid {P.WARNING_DEEP};
+                border-radius: {RADIUS.MD};
                 padding: 10px;
                 font-size: 10pt;
                 font-weight: bold;
                 min-height: 15px;
-            }
-            QPushButton#listButton:hover {
-                background-color: #e67e22;
-            }
-            QPushButton#listButton:disabled {
-                background-color: #95a5a6;
-                border-color: #7f8c8d;
-            }
-            QPushButton#maintenanceButton {
-                background-color: #9b59b6;
-                color: white;
-                border: 1px solid #8e44ad;
-                border-radius: 6px;
+            }}
+            QPushButton#listButton:hover {{
+                background-color: {P.WARNING_DEEP};
+            }}
+            QPushButton#listButton:disabled {{
+                background-color: {P.DISABLED};
+                border-color: {P.DISABLED};
+                color: {P.DISABLED_TEXT};
+            }}
+            QPushButton#maintenanceButton {{
+                background-color: {P.NEUTRAL};
+                color: {P.WHITE};
+                border: 1px solid {P.NEUTRAL_DEEP};
+                border-radius: {RADIUS.MD};
                 padding: 10px;
                 font-size: 10pt;
                 font-weight: bold;
                 min-height: 15px;
-            }
-            QPushButton#maintenanceButton:hover {
-                background-color: #8e44ad;
-            }
-            QPushButton#maintenanceButton:disabled {
-                background-color: #95a5a6;
-                border-color: #7f8c8d;
-            }
-            QPushButton#cancelButton {
-                background-color: #e74c3c;
-                color: white;
-                border: 1px solid #c0392b;
-                border-radius: 6px;
+            }}
+            QPushButton#maintenanceButton:hover {{
+                background-color: {P.NEUTRAL_DEEP};
+            }}
+            QPushButton#maintenanceButton:disabled {{
+                background-color: {P.DISABLED};
+                border-color: {P.DISABLED};
+                color: {P.DISABLED_TEXT};
+            }}
+            QPushButton#cancelButton {{
+                background-color: {P.DANGER};
+                color: {P.WHITE};
+                border: 1px solid {P.DANGER_DEEP};
+                border-radius: {RADIUS.MD};
                 padding: 6px;
                 font-size: 9pt;
                 font-weight: bold;
                 min-height: 10px;
-            }
-            QPushButton#cancelButton:hover {
-                background-color: #c0392b;
-            }
-            QPushButton#clearLogButton, QPushButton#saveLogButton {
-                background-color: #e74c3c;
-                color: white;
-                border: 1px solid #c0392b;
-                border-radius: 3px;
+            }}
+            QPushButton#cancelButton:hover {{
+                background-color: {P.DANGER_DEEP};
+            }}
+            QPushButton#clearLogButton, QPushButton#saveLogButton {{
+                background-color: {P.DANGER};
+                color: {P.WHITE};
+                border: 1px solid {P.DANGER_DEEP};
+                border-radius: {RADIUS.SM};
                 padding: 2px;
                 font-size: 8pt;
                 font-weight: bold;
-            }
-            QPushButton#clearLogButton:hover, QPushButton#saveLogButton:hover {
-                background-color: #c0392b;
-            }
-            QPushButton#saveLogButton {
-                background-color: #27ae60;
-                border-color: #229954;
-            }
-            QPushButton#saveLogButton:hover {
-                background-color: #229954;
-            }
-            QTextEdit#logText {
-                border: 1px solid #bdc3c7;
-                border-radius: 3px;
-                background-color: #ffffff;
+            }}
+            QPushButton#clearLogButton:hover, QPushButton#saveLogButton:hover {{
+                background-color: {P.DANGER_DEEP};
+            }}
+            QPushButton#saveLogButton {{
+                background-color: {P.ACCENT};
+                border-color: {P.ACCENT_DEEP};
+            }}
+            QPushButton#saveLogButton:hover {{
+                background-color: {P.ACCENT_DEEP};
+            }}
+            QTextEdit#logText {{
+                border: 1px solid {P.LINE};
+                border-radius: {RADIUS.SM};
+                background-color: {P.PANEL};
                 font-family: 'Courier New', monospace;
                 font-size: 9pt;
                 padding: 4px;
                 line-height: 1.3;
-            }
-            QProgressBar#progressBar {
-                border: 1px solid #bdc3c7;
-                border-radius: 5px;
+                color: {P.INK};
+            }}
+            QProgressBar#progressBar {{
+                border: 1px solid {P.LINE};
+                border-radius: {RADIUS.SM};
                 text-align: center;
                 font-weight: bold;
                 font-size: 9pt;
-            }
-            QProgressBar#progressBar::chunk {
-                background-color: #27ae60;
-                border-radius: 3px;
-            }
-            QSplitter::handle {
-                background-color: #bdc3c7;
+                background-color: {P.PANEL_2};
+                color: {P.INK};
+            }}
+            QProgressBar#progressBar::chunk {{
+                background-color: {P.ACCENT};
+                border-radius: {RADIUS.SM};
+            }}
+            QSplitter::handle {{
+                background-color: {P.LINE};
                 width: 3px;
-            }
-            QSplitter::handle:hover {
-                background-color: #3498db;
-            }
+            }}
+            QSplitter::handle:hover {{
+                background-color: {P.ACCENT};
+            }}
         """)
 
     def _log_message(self, message):
