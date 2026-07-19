@@ -16,6 +16,9 @@ import glob
 from utils import afiseaza_warning, afiseaza_eroare, afiseaza_info, afiseaza_intrebare
 from dialog_styles import get_dialog_stylesheet
 
+# Gardian scriere: blocheaza modificarile pe RON dupa conversie (doar-citire).
+from permisiuni import poate_scrie, MESAJ_READONLY
+
 # Paleta unica de stil (redesign "Glass Verde"). Doar culori/tokeni, fara logica.
 from ui.palette import P, RADIUS
 
@@ -594,6 +597,12 @@ class OperatiuniSalvareWidget(QWidget):
 
     def _delete_year(self):
         """Șterge toate datele dintr-un an specificat"""
+        # Gardian scriere: in modul RON post-conversie stergerea e interzisa
+        # (arhiva RON e inghetata); modificarile se fac doar pe EUR.
+        if not poate_scrie():
+            afiseaza_warning(MESAJ_READONLY, parent=self)
+            return
+
         from PyQt5.QtWidgets import QInputDialog
 
         year, ok = QInputDialog.getInt(
@@ -646,7 +655,7 @@ class OperatiuniSalvareWidget(QWidget):
                 return
 
             # Conectăm la baza de date și ștergem
-            conn = sqlite3.connect(depcred_path)
+            conn = sqlite3.connect(depcred_path, timeout=30.0)
             cursor = conn.cursor()
 
             cursor.execute("DELETE FROM DEPCRED WHERE anul = ?", (year,))
@@ -693,7 +702,7 @@ class OperatiuniSalvareWidget(QWidget):
             progress_dialog.setLabelText(f"Verificare {filename}...")
 
             try:
-                conn = sqlite3.connect(db_file)
+                conn = sqlite3.connect(db_file, timeout=30.0)
                 cursor = conn.cursor()
                 cursor.execute("PRAGMA integrity_check")
                 result = cursor.fetchone()[0]

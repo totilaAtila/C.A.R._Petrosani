@@ -10,6 +10,9 @@ from decimal import Decimal, ROUND_HALF_UP
 # Paleta unica de stil (redesign "Glass Verde"). Doar culori/tokeni, fara logica.
 from ui.palette import P, RADIUS, FONT, table
 
+# Gardian scriere: blocheaza modificarile pe RON dupa conversie (doar-citire).
+from permisiuni import poate_scrie, MESAJ_READONLY
+
 
 class MembriLichidatiWidget(QWidget):
     """Widget pentru afișarea membrilor cu date incomplete (lipsesc din luna anterioară ultimei luni procesate)."""
@@ -332,6 +335,12 @@ class MembriLichidatiWidget(QWidget):
 
     def sterge_selectati(self):
         """Sterge membrii selectati din tabel din toate bazele de date relevante."""
+        # Gardian scriere: in modul RON post-conversie stergerea e interzisa
+        # (arhiva RON e inghetata); modificarile se fac doar pe EUR.
+        if not poate_scrie():
+            QMessageBox.warning(self, "Mod doar-citire", MESAJ_READONLY)
+            return
+
         randuri_selectate = self.tabel.selectionModel().selectedRows()
 
         if not randuri_selectate:
