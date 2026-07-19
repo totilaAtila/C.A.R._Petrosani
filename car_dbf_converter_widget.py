@@ -864,7 +864,7 @@ class CARDBFConverterWidget(QWidget):
         steps_layout.setSpacing(5)
 
         # Pas 1
-        self.step1_btn = QPushButton("① Verifică Fișierele")
+        self.step1_btn = QPushButton("1 - Verifică Fișierele")
         self.step1_btn.setObjectName("step1Button")
         self.step1_btn.clicked.connect(self.step1_verify)
         steps_layout.addWidget(self.step1_btn, 0, 0)
@@ -874,7 +874,7 @@ class CARDBFConverterWidget(QWidget):
         steps_layout.addWidget(self.step1_status, 0, 1)
 
         # Pas 2
-        self.step2_btn = QPushButton("② Creează Amprenta")
+        self.step2_btn = QPushButton("2 - Creează Amprenta")
         self.step2_btn.setObjectName("step2Button")
         self.step2_btn.clicked.connect(self.step2_fingerprint)
         self.step2_btn.setEnabled(False)
@@ -885,7 +885,7 @@ class CARDBFConverterWidget(QWidget):
         steps_layout.addWidget(self.step2_status, 1, 1)
 
         # Pas 3
-        self.step3_btn = QPushButton("③ Convertește în DBF")
+        self.step3_btn = QPushButton("3 - Convertește în DBF")
         self.step3_btn.setObjectName("step3Button")
         self.step3_btn.clicked.connect(self.step3_convert)
         self.step3_btn.setEnabled(False)
