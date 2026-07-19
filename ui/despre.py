@@ -366,7 +366,7 @@ MANUAL_STRUCTURE = {
                 "comportament": [
                     "Toggle currency INACTIV (doar RON vizibil)",
                     "Toate modulele funcționează normal cu RON",
-                    "Baze originale: DEPCRED.db, MEMBRII.db, activi.db, INACTIVI.db, LICHIDATI.db",
+                    "Baze originale: DEPCRED.db, MEMBRII.db, ACTIVI.db, INACTIVI.db, LICHIDATI.db",
                     "Butonul Conversie ACTIV și vizibil în meniu"
                 ]
             },
@@ -391,7 +391,7 @@ MANUAL_STRUCTURE = {
                 "4. Clonare fizică toate cele 5 baze de date cu verificare",
                 "5. Conversie DEPCRED.db: toate sumele RON→EUR cu rotunjire ROUND_HALF_UP",
                 "6. Conversie MEMBRII.db: cotizații standard RON→EUR",
-                "7. Conversie activi.db: solduri, dividende, beneficii RON→EUR",
+                "7. Conversie ACTIVI.db: solduri, dividende, beneficii RON→EUR",
                 "8. Clonare directă INACTIVI.db și LICHIDATI.db (fără conversie)",
                 "9. Validare matematică finală: suma_totală_EUR = suma_totală_RON / curs",
                 "10. Salvare configurație conversie cu timestamp și curs aplicat"
@@ -1878,7 +1878,7 @@ class DespreWidget(QDialog):
         <ul style='margin: 8px 0 0 20px; line-height: 1.8;'>
             <li><b>DEPCRED.db / DEPCREDEUR.db:</b> Tranzacții lunare - împrumuturi, rate, cotizații, solduri</li>
             <li><b>MEMBRII.db / MEMBRIIEUR.db:</b> Date identificare membri și cotizații standard</li>
-            <li><b>activi.db / activiEUR.db:</b> Membri activi cu solduri depuneri, dividende, beneficii</li>
+            <li><b>ACTIVI.db / activiEUR.db:</b> Membri activi cu solduri depuneri, dividende, beneficii</li>
             <li><b>INACTIVI.db / INACTIVIEUR.db:</b> Membri inactivi și număr luni fără plată</li>
             <li><b>LICHIDATI.db / LICHIDATIEUR.db:</b> Istoric lichidări cu date finalizare</li>
         </ul>

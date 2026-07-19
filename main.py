@@ -69,6 +69,12 @@ def setup_early_database_patching():
                             if (base_path / eur_db).exists():
                                 setattr(module, attr_name, new_value)
                                 print(f"PATCHED: {module.__name__}.{attr_name} -> {eur_db}")
+                            else:
+                                # Fara else, o lipsa/diferenta de caz a fisierului EUR
+                                # ar sari patch-ul in tacere, lasand modulul pe baza RON
+                                # in mod EUR. Anuntam (ca la main_ui.py).
+                                print(f"WARNING: fisierul EUR '{eur_db}' lipseste sau are alt caz "
+                                      f"-> {module.__name__}.{attr_name} RAMANE pe RON!")
                             break
 
     # Hook pentru interceptarea import-urilor
@@ -86,6 +92,89 @@ def setup_early_database_patching():
 
     builtins.__import__ = patched_import
     return patched_import, original_import
+
+
+# ---------------------------------------------------------------------------
+# NORMALIZARE CASING FISIERE BAZA 'activi' (tool defensiv la pornire)
+# ---------------------------------------------------------------------------
+# Forma canonica: RON = "ACTIVI.db" (toate constantele DB_ACTIVI o folosesc,
+# la fel sursa conversiei), EUR = "activiEUR.db" (creata de conversie_widget.py
+# si asteptata de maparea EUR din setup_early_database_patching).
+#
+# 'activi' e SINGURA baza care rupe simetria de casing RON->EUR, deci singura
+# expusa la fisiere cu caz gresit (backup restaurat, mutare cross-OS). Pe
+# Windows (FS case-insensitive) cazul nu conteaza functional, dar pe un FS
+# case-sensitive un caz gresit ar face patch-ul EUR sa fie sarit silentios
+# (ramura exists() din setup_early_database_patching) -> date rutate in baza
+# gresita. Tool pur defensiv, rulat INAINTE de patch si de orice sqlite3.connect.
+_BAZE_CANONICE = ("ACTIVI.db", "activiEUR.db")
+
+
+def _redenumeste_caz(base_path, src_nume, canon):
+    """Redenumeste un fisier la forma canonica de caz, in doua trepte (sigur pe
+    Windows, unde o redenumire care difera DOAR prin caz poate fi ignorata)."""
+    src = os.path.join(base_path, src_nume)
+    dst = os.path.join(base_path, canon)
+    tmp = os.path.join(base_path, canon + ".casingtmp")
+    try:
+        os.rename(src, tmp)
+        os.rename(tmp, dst)
+        print(f"[casing] Normalizat numele bazei: '{src_nume}' -> '{canon}'")
+    except OSError as e:
+        # fisier blocat / alt proces -> NU opri pornirea; incearca sa refaci starea
+        print(f"[casing] Nu pot normaliza '{src_nume}' -> '{canon}': {e}")
+        try:
+            if os.path.exists(tmp) and not os.path.exists(dst):
+                os.rename(tmp, src)
+        except OSError:
+            pass
+
+
+def _anunta_casing_ambigu(canon, gresite):
+    """Doua fisiere DISTINCTE cu acelasi nume in cazuri diferite (posibil doar pe
+    FS case-sensitive). Nu unificam automat date financiare -> anuntam userul si
+    NU atingem nimic (motivul cerut pentru acord)."""
+    mesaj = (
+        f"In directorul aplicatiei exista simultan doua variante ale bazei de date "
+        f"'{canon}', scrise cu litere diferite:\n\n"
+        f"   • {canon}  (forma corecta)\n"
+        + "".join(f"   • {g}\n" for g in gresite)
+        + f"\nNu le pot unifica automat, fiindca as putea pierde date financiare. "
+        f"Va rugam sa pastrati manual fisierul corect ('{canon}'), sa il stergeti "
+        f"sau mutati pe celalalt, apoi sa reporniti aplicatia."
+    )
+    try:
+        from PyQt5.QtWidgets import QMessageBox
+        QMessageBox.warning(None, "Fisiere baza de date cu litere diferite", mesaj)
+    except Exception:
+        print(f"[casing] AMBIGUU: {mesaj}")
+
+
+def normalizeaza_casing_baze(base_path):
+    """Aduce numele fisierelor 'activi' la forma canonica (vezi nota de mai sus).
+    Nu creeaza fisiere, nu suprascrie, nu atinge tabelul (ACTIVI) sau SQL."""
+    try:
+        intrari = os.listdir(base_path)
+    except OSError as e:
+        print(f"[casing] Nu pot lista directorul '{base_path}': {e}")
+        return
+
+    pe_lower = {}
+    for nume in intrari:
+        pe_lower.setdefault(nume.lower(), []).append(nume)
+
+    for canon in _BAZE_CANONICE:
+        variante = pe_lower.get(canon.lower(), [])
+        if not variante:
+            continue  # fisierul nu exista (pre-conversie / instalare curata) -> skip
+        gresite = [v for v in variante if v != canon]
+        if not gresite:
+            continue  # deja in forma canonica
+        if canon in variante:
+            # ambele forme exista ca fisiere distincte (doar pe FS case-sensitive)
+            _anunta_casing_ambigu(canon, gresite)
+            continue  # NU atinge nimic (risc pierdere date)
+        _redenumeste_caz(base_path, gresite[0], canon)  # o singura varianta, caz gresit
 
 
 def main():
@@ -145,6 +234,13 @@ def main():
             pass
 
     _QMB.__init__ = _qmb_styled_init
+
+    # Normalizeaza cazul numelui fisierelor 'activi' (ACTIVI.db / activiEUR.db)
+    # INAINTE de patch-ul DB si de orice sqlite3.connect (fisierul sa nu fie
+    # tinut deschis chiar de aplicatie). Tool defensiv - vezi normalizeaza_casing_baze.
+    _casing_base = (os.path.dirname(sys.executable) if getattr(sys, 'frozen', False)
+                    else os.path.dirname(os.path.abspath(__file__)))
+    normalizeaza_casing_baze(_casing_base)
 
     # ===== INTEGRARE SECURITATE: Verificări la pornire =====
     # 1. Curățare baze de date expuse din crash-uri anterioare
