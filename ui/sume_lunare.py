@@ -925,12 +925,19 @@ class SumeLunareWidget(QWidget):
             "Situație Depuneri", None, None, None
         )
 
+        # setSpacing(2): coloanele financiare (listele cu scroll) se impacheteaza
+        # strans, ca la adaugare_membru. Fara asta, layout-urile foloseau spacing-ul
+        # implicit al stilului (~6-11px) -> gap mai mare intre liste (eroarea de
+        # proiectare semnalata). Marginile raman 0.
         self.loan_columns_layout = QHBoxLayout()
         self.loan_columns_layout.setContentsMargins(0, 0, 0, 0)
+        self.loan_columns_layout.setSpacing(2)
         self.date_columns_layout = QHBoxLayout()
         self.date_columns_layout.setContentsMargins(0, 0, 0, 0)
+        self.date_columns_layout.setSpacing(2)
         self.deposit_columns_layout = QHBoxLayout()
         self.deposit_columns_layout.setContentsMargins(0, 0, 0, 0)
+        self.deposit_columns_layout.setSpacing(2)
 
         self.loan_section.layout().addLayout(self.loan_columns_layout)
         self.date_section.layout().addLayout(self.date_columns_layout)
