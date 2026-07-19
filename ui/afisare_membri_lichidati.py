@@ -7,6 +7,9 @@ from PyQt5.QtCore import Qt
 import sqlite3
 from decimal import Decimal, ROUND_HALF_UP
 
+# Paleta unica de stil (redesign "Glass Verde"). Doar culori/tokeni, fara logica.
+from ui.palette import P, RADIUS, FONT, table
+
 
 class MembriLichidatiWidget(QWidget):
     """Widget pentru afișarea membrilor cu date incomplete (lipsesc din luna anterioară ultimei luni procesate)."""
@@ -23,61 +26,45 @@ class MembriLichidatiWidget(QWidget):
     def init_ui(self):
         self.setWindowTitle("Membri cu Date Incomplete")
         self.setGeometry(100, 100, 850, 550)  # Dimensiune initiala ajustata
-        self.setStyleSheet("""
-            QWidget {
-                background-color: #f0f8ff; /* AliceBlue */
-                font-family: Segoe UI, Arial, sans-serif;
-            }
-            QLabel#titleLabel {
+        # Re-tematizare pe paleta unica (verde). Tabelul foloseste fabrica table();
+        # butonul de stergere definitiva devine rosu (DANGER) — conventia de
+        # "stergere = rosu" din restul aplicatiei (inainte era portocaliu).
+        self.setStyleSheet(f"""
+            QWidget {{
+                background-color: {P.BG};
+                font-family: {FONT};
+            }}
+            QLabel#titleLabel {{
                 font-size: 18px;
                 font-weight: bold;
-                color: #005a9e; /* Dark blue */
+                color: {P.ACCENT_DEEP};
                 padding: 10px;
-                border-bottom: 1px solid #d0d0d0;
-                text-align: center; /* Aliniere text titlu */
-            }
-            QLabel#infoLabel {
+                border-bottom: 1px solid {P.LINE};
+            }}
+            QLabel#infoLabel {{
                 font-size: 10pt;
-                color: #555; /* Gri inchis */
+                color: {P.MUTED};
                 padding: 5px 10px;
                 font-style: italic;
-                text-align: center; /* Aliniere text info */
-            }
-            QTableWidget {
-                border: 1px solid #d0d0d0;
-                gridline-color: #e0e0e0;
-                alternate-background-color: #e7f2ff; /* Light blue alternating */
-                selection-background-color: #a6d8ff; /* Blue selection */
-                selection-color: black;
-                font-size: 11pt; /* Marime font tabel */
-            }
-            QHeaderView::section {
-                background-color: #0078d4; /* Standard blue */
-                color: white;
-                padding: 6px;
-                font-weight: bold;
-                border: 1px solid #005a9e;
-            }
-            QPushButton#deleteButton {
-                background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                               stop: 0 #ffaa00, stop: 1 #ff8c00); /* Orange gradient */
-                border: 1px solid #e67e22; /* Darker orange border */
-                color: white;
+            }}
+            QPushButton#deleteButton {{
+                background-color: {P.DANGER};
+                border: 1px solid {P.DANGER_DEEP};
+                color: {P.WHITE};
                 padding: 10px 20px;
-                border-radius: 5px;
+                border-radius: {RADIUS.SM};
                 font-weight: bold;
                 font-size: 11pt;
                 min-width: 200px; /* Latime minima buton */
-            }
-            QPushButton#deleteButton:hover {
-                background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                               stop: 0 #ffc14d, stop: 1 #ffa500); /* Lighter orange gradient on hover */
-                border: 1px solid #d35400;
-            }
-            QPushButton#deleteButton:pressed {
-                background-color: #d35400; /* Dark orange when pressed */
-                border: 1px solid #a04000;
-            }
+            }}
+            QPushButton#deleteButton:hover {{
+                background-color: {P.DANGER_DEEP};
+                border: 1px solid {P.DANGER_DEEP};
+            }}
+            QPushButton#deleteButton:pressed {{
+                background-color: {P.DANGER_DEEP};
+                border: 1px solid {P.DANGER};
+            }}
         """)
 
         main_layout = QVBoxLayout(self)
@@ -99,6 +86,7 @@ class MembriLichidatiWidget(QWidget):
 
         # --- Tabel Membri ---
         self.tabel = QTableWidget()
+        self.tabel.setStyleSheet(table())  # stil tabel din paleta unica
         self.tabel.setColumnCount(6)
         # Numele coloanelor modificate conform noii cerințe
         self.tabel.setHorizontalHeaderLabels([
