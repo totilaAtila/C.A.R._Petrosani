@@ -599,26 +599,38 @@ class ThemeManager:
         # Încarcă setările
         self.load_settings()
 
+    def _default_theme_index(self):
+        """Indexul temei implicite = '🌿 Glass Verde Rafinat' (singura construită
+        din ui/palette.py, deci singura care ține pasul cu ecranele restilizate).
+        Căutare după nume, ca să rămână corectă dacă ordinea temelor se schimbă;
+        fallback pe ultima temă, apoi 0."""
+        for i, t in enumerate(self.themes):
+            if "Rafinat" in t.get("name", ""):
+                return i
+        return len(self.themes) - 1 if self.themes else 0
+
     def load_settings(self):
         """Încarcă setările din fișierul JSON"""
+        default_idx = self._default_theme_index()
         try:
             if os.path.exists(self.settings_file):
                 with open(self.settings_file, 'r', encoding='utf-8') as f:
                     settings = json.load(f)
-                    self.current_theme = settings.get('current_theme', 0)
+                    self.current_theme = settings.get('current_theme', default_idx)
 
                     # Validează tema încărcată
                     if self.current_theme < 0 or self.current_theme >= len(self.themes):
-                        self.current_theme = 0
+                        self.current_theme = default_idx
                         self.save_settings()
 
                     print(f"🎨 Tema încărcată: '{self.get_theme_name()}'")
             else:
                 print("🎨 Prima pornire - folosesc tema implicită")
+                self.current_theme = default_idx
                 self.save_settings()
         except Exception as e:
             print(f"⚠️ Eroare la încărcarea setărilor: {e}. Folosesc tema implicită.")
-            self.current_theme = 0
+            self.current_theme = default_idx
             self.save_settings()
 
     def save_settings(self):
