@@ -615,7 +615,7 @@ class DividendeWidget(QWidget):
                      INSERT INTO ACTIVI (NR_FISA, NUM_PREN, DEP_SOLD, DIVIDEND)
                      VALUES (?, ?, ?, ?)
                  """, (
-                nr_fisa, num_pren, dep_sold_dec_dec, dividend_B))  # Păstrăm Decimal pentru precizie
+                nr_fisa, num_pren, str(dep_sold_dec_dec), str(dividend_B)))  # str(Decimal): sqlite nu leaga Decimal (regresie 6e92575)
 
                 # Adauga rand in tabelul UI
                 self.tabel_dividende.insertRow(r)
