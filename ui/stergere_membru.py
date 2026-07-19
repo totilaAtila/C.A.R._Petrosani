@@ -27,6 +27,9 @@ DB_INACTIVI = os.path.join(BASE_RESOURCE_PATH, "INACTIVI.db")
 DB_CHITANTE = os.path.join(BASE_RESOURCE_PATH, "CHITANTE.db")
 DB_LICHIDATI = os.path.join(BASE_RESOURCE_PATH, "LICHIDATI.db")
 
+# Gardian scriere: blocheaza modificarile pe RON dupa conversie (doar-citire).
+from permisiuni import poate_scrie, MESAJ_READONLY
+
 # --- Importuri Utilitare ---
 try:
     from ui.validari import afiseaza_eroare, CustomDialogYesNo, afiseaza_info, afiseaza_warning
@@ -936,6 +939,9 @@ class StergereMembruWidget(QWidget):
     # --- Metode pentru Ștergere Membru ---
     def _confirm_and_delete_member(self):
         """ Afișează dialogul de confirmare și inițiază ștergerea dacă se confirmă. """
+        if not poate_scrie():
+            afiseaza_warning(MESAJ_READONLY, parent=self)
+            return
         if self._loaded_nr_fisa is None:
             afiseaza_warning("Nu este selectat niciun membru pentru ștergere.", parent=self)
             return

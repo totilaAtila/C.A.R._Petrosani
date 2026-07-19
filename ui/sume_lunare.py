@@ -25,6 +25,7 @@ from PyQt5.QtWidgets import (
 )
 
 from utils import afiseaza_warning, afiseaza_eroare, afiseaza_info, afiseaza_intrebare
+from permisiuni import poate_scrie, MESAJ_READONLY  # gardian scriere post-conversie RON
 
 # --- Import Utils pentru Threading ---
 try:
@@ -536,6 +537,10 @@ class TranzactieDialog(QDialog):
         """Actualizează tranzacția și declanșează recalcularea."""
         log_prefix = f"Update {self._loaded_nr_fisa}/{luna:02d}-{anul}"
         logging.info(f"{log_prefix}: Procesare...")
+
+        if not poate_scrie():
+            afiseaza_warning(MESAJ_READONLY, parent=self)
+            return
 
         new_dobanda = data_tranzactie['dobanda']
         new_impr_deb = data_tranzactie['impr_deb']
@@ -2591,6 +2596,10 @@ class SumeLunareWidget(QWidget):
         """Actualizează tranzacția și declanșează recalcularea."""
         log_prefix = f"Update {self._loaded_nr_fisa}/{luna:02d}-{anul}"
         logging.info(f"{log_prefix}: Procesare...")
+
+        if not poate_scrie():
+            afiseaza_warning(MESAJ_READONLY, parent=self)
+            return
 
         new_dobanda = data_tranzactie['dobanda']
         new_impr_deb = data_tranzactie['impr_deb']

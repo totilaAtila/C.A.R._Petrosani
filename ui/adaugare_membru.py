@@ -18,6 +18,9 @@ from PyQt5.QtGui import QFont
 # REDESIGN: sursa unică de stil (ui/palette.py). Doar aspect — nicio logică atinsă.
 from ui.palette import P, GRAD, RADIUS, FONT, btn_primary, btn_solid
 
+# Gardian scriere: blocheaza modificarile pe RON dupa conversie (doar-citire).
+from permisiuni import poate_scrie, MESAJ_READONLY
+
 # Importăm funcțiile din validari.py
 try:
     from ui.validari import (
@@ -984,6 +987,10 @@ class AdaugareMembruWidget(QWidget):
     def _save_data(self):
         """Validează datele și le salvează în baza de date."""
         logging.info("Încercare de salvare date...")
+
+        if not poate_scrie():
+            afiseaza_warning(MESAJ_READONLY, parent=self)
+            return
 
         # Verificăm dacă suntem în modul de adăugare sau modificare
         is_update = self._loaded_nr_fisa is not None

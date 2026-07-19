@@ -21,6 +21,9 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import Qt, QTimer, QTime, QThread, pyqtSignal
 
+# Gardian scriere: blocheaza modificarile pe RON dupa conversie (doar-citire).
+from permisiuni import poate_scrie, MESAJ_READONLY
+
 
 class DatabaseIndexer(QThread):
     """Thread pentru operațiuni de indexare în background"""
@@ -830,6 +833,9 @@ class OptimizareIndexWidget(QWidget):
 
     def _start_operation(self, operation, databases):
         """Pornește o operație în background"""
+        if not poate_scrie():
+            self._show_warning("Mod doar-citire", MESAJ_READONLY)
+            return
         if self.indexer_thread and self.indexer_thread.isRunning():
             self._show_warning("Operație în Curs", "O operație este deja în desfășurare!")
             return

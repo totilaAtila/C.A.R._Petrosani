@@ -14,6 +14,7 @@ from PyQt5.QtCore import Qt, QLocale
 from PyQt5.QtGui import QBrush, QColor, QCursor, QDoubleValidator
 import xlsxwriter
 from utils import afiseaza_info, ProgressDialog
+from permisiuni import poate_scrie, MESAJ_READONLY  # gardian scriere post-conversie RON
 
 # Determina calea catre resurse (baze de date) la rulare
 if getattr(sys, 'frozen', False):
@@ -260,6 +261,9 @@ class DividendeWidget(QWidget):
 
     def _clear_activi(self):
         """Golește baza de date ACTIVI.db."""
+        if not poate_scrie():
+            QMessageBox.warning(self, "Mod doar-citire", MESAJ_READONLY)
+            return
         reply = QMessageBox.question(
             self, "Confirmare",
             "Sunteți sigur că doriți să ștergeți datele calculate anterior (din tabel și baza de date 'Activi')?",
@@ -458,6 +462,9 @@ class DividendeWidget(QWidget):
         calculează dividendul conform formulei B=(P/Stotal)*Smembru
         și populează baza de date ACTIVI și tabelul UI.
         """
+        if not poate_scrie():
+            QMessageBox.warning(self, "Mod doar-citire", MESAJ_READONLY)
+            return
         if self.an_selectat is None:
             QMessageBox.warning(self, "An Invalid", "Selectați un an valid mai întâi.")
             return
@@ -701,6 +708,9 @@ class DividendeWidget(QWidget):
     # --- Metoda de transfer actualizată (va transfera DIVIDENDUL) ---
     def _transfera_dividend(self):
         """Actualizează înregistrările din DEPCRED.db cu dividendul calculat."""
+        if not poate_scrie():
+            QMessageBox.warning(self, "Mod doar-citire", MESAJ_READONLY)
+            return
         if not self.membri_cu_dividend:  # Am schimbat numele listei interne
             QMessageBox.warning(self, "Lipsă Date",
                                 "Nu există membri cu dividend calculat pentru transfer.")

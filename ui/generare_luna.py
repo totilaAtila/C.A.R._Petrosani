@@ -23,6 +23,7 @@ from PyQt5.QtCore import Qt, QTimer, QMetaObject, Q_ARG, QObject, pyqtSignal
 from typing import Optional, Callable
 from pathlib import Path
 from utils import afiseaza_warning, afiseaza_eroare, afiseaza_info, afiseaza_intrebare
+from permisiuni import poate_scrie, MESAJ_READONLY  # gardian scriere post-conversie RON
 import json
 
 
@@ -439,6 +440,9 @@ class GenerareLunaNouaWidget(QWidget):
     # !!! NOU: Handler pentru butonul de ștergere (varianta sigură) !!!
     def _handle_delete_last_month(self):
         """Gestionează acțiunea de ștergere a ULTIMEI luni generate."""
+        if not poate_scrie():
+            afiseaza_warning(MESAJ_READONLY, parent=self)
+            return
         if self._is_running:
             afiseaza_warning("Un proces este deja în curs. Așteptați finalizarea.", self)
             return
@@ -529,6 +533,9 @@ class GenerareLunaNouaWidget(QWidget):
     # (Rămâne similar, dar trebuie să gestioneze _target_year corect)
     def _handle_generate_selected_month(self):
         """Gestionează acțiunea de generare a lunii selectate."""
+        if not poate_scrie():
+            afiseaza_warning(MESAJ_READONLY, parent=self)
+            return
         if self._is_running:
             afiseaza_warning("Un proces de generare este deja în curs.", self)
             return

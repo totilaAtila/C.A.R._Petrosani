@@ -27,6 +27,9 @@ DB_INACTIVI = os.path.join(BASE_RESOURCE_PATH, "INACTIVI.db")
 DB_CHITANTE = os.path.join(BASE_RESOURCE_PATH, "CHITANTE.db")
 DB_LICHIDATI = os.path.join(BASE_RESOURCE_PATH, "LICHIDATI.db")
 
+# Gardian scriere: blocheaza modificarile pe RON dupa conversie (doar-citire).
+from permisiuni import poate_scrie, MESAJ_READONLY
+
 # Importăm DOAR funcțiile de validare/dialog necesare
 try:
     from ui.validari import afiseaza_eroare, CustomDialogYesNo, afiseaza_info
@@ -1003,6 +1006,9 @@ class LichidareMembruWidget(QWidget):
 
     def _perform_lichidare(self):
         """ Logica executată la apăsarea butonului 'Lichidează Membrul'. """
+        if not poate_scrie():
+            QMessageBox.warning(self, "Mod doar-citire", MESAJ_READONLY)
+            return
         if self._loaded_nr_fisa is None:
             afiseaza_eroare("Nu este selectat niciun membru pentru lichidare.", parent=self)
             return
