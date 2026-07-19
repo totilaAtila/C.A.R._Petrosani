@@ -14,6 +14,9 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt, QPropertyAnimation, QEasingCurve
 from PyQt5.QtGui import QFont
 
+# REDESIGN: sursa unică de stil. Doar aspect — nicio logică atinsă.
+from ui.palette import P
+
 # --- Configurare Cale Resurse ---
 try:
     if getattr(sys, 'frozen', False):
@@ -531,22 +534,22 @@ class AccordionSection(QWidget):
         # Header clickable
         self.header = QPushButton(f"▶  {title}")
         self.header.setFont(QFont("Segoe UI", 11, QFont.Bold))
-        self.header.setStyleSheet("""
-            QPushButton {
-                background: #f8f9fa;
-                border: 1px solid #dee2e6;
+        self.header.setStyleSheet(f"""
+            QPushButton {{
+                background: {P.PANEL_2};
+                border: 1px solid {P.LINE};
                 border-radius: 6px;
                 padding: 12px 16px;
                 text-align: left;
-                color: #2c3e50;
-            }
-            QPushButton:hover {
-                background: #e9ecef;
-                border-color: #adb5bd;
-            }
-            QPushButton:pressed {
-                background: #dee2e6;
-            }
+                color: {P.INK};
+            }}
+            QPushButton:hover {{
+                background: {P.PANEL_2};
+                border-color: {P.LINE};
+            }}
+            QPushButton:pressed {{
+                background: {P.LINE};
+            }}
         """)
         self.header.setCursor(Qt.PointingHandCursor)
         self.header.clicked.connect(self.toggle)
@@ -554,14 +557,14 @@ class AccordionSection(QWidget):
 
         # Container pentru conținut
         self.content_container = QFrame()
-        self.content_container.setStyleSheet("""
-            QFrame {
+        self.content_container.setStyleSheet(f"""
+            QFrame {{
                 background: white;
-                border: 1px solid #dee2e6;
+                border: 1px solid {P.LINE};
                 border-top: none;
                 border-radius: 0 0 6px 6px;
                 padding: 16px;
-            }
+            }}
         """)
         content_layout = QVBoxLayout(self.content_container)
         content_layout.setContentsMargins(16, 16, 16, 16)
@@ -625,13 +628,13 @@ class DespreWidget(QDialog):
 
         # Header compact profesional
         header_frame = QFrame()
-        header_frame.setStyleSheet("""
-            QFrame {
+        header_frame.setStyleSheet(f"""
+            QFrame {{
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                    stop:0 #2c3e50, stop:1 #3498db);
+                    stop:0 {P.INK}, stop:1 {P.INFO});
                 border-radius: 8px;
                 padding: 16px;
-            }
+            }}
         """)
 
         header_layout = QHBoxLayout(header_frame)
@@ -646,7 +649,7 @@ class DespreWidget(QDialog):
         # Versiune
         version_label = QLabel(f"Versiunea {CURRENT_VERSION}")
         version_label.setFont(QFont("Segoe UI", 12, QFont.Bold))
-        version_label.setStyleSheet("color: #ecf0f1;")
+        version_label.setStyleSheet(f"color: {P.PANEL_2};")
         header_layout.addWidget(version_label)
 
         header_layout.addStretch()
@@ -683,12 +686,12 @@ class DespreWidget(QDialog):
         # Scroll area pentru conținut
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
-        scroll.setStyleSheet("""
-            QScrollArea {
-                border: 1px solid #dee2e6;
+        scroll.setStyleSheet(f"""
+            QScrollArea {{
+                border: 1px solid {P.LINE};
                 border-radius: 6px;
                 background: white;
-            }
+            }}
         """)
 
         self.content_widget = QWidget()
@@ -702,18 +705,18 @@ class DespreWidget(QDialog):
         # Buton închidere
         close_btn = QPushButton("Închide")
         close_btn.setFont(QFont("Segoe UI", 10))
-        close_btn.setStyleSheet("""
-            QPushButton {
-                background: #3498db;
+        close_btn.setStyleSheet(f"""
+            QPushButton {{
+                background: {P.INFO};
                 color: white;
                 border: none;
                 border-radius: 6px;
                 padding: 10px 24px;
                 font-weight: bold;
-            }
-            QPushButton:hover {
-                background: #2980b9;
-            }
+            }}
+            QPushButton:hover {{
+                background: {P.INFO};
+            }}
         """)
         close_btn.clicked.connect(self.close)
         close_btn.setMaximumWidth(150)
@@ -730,22 +733,22 @@ class DespreWidget(QDialog):
         """Creează buton tab modern"""
         btn = QPushButton(text)
         btn.setFont(QFont("Segoe UI", 10, QFont.Bold))
-        btn.setStyleSheet("""
-            QPushButton {
-                background: #f8f9fa;
-                border: 1px solid #dee2e6;
+        btn.setStyleSheet(f"""
+            QPushButton {{
+                background: {P.PANEL_2};
+                border: 1px solid {P.LINE};
                 border-radius: 6px;
                 padding: 10px 20px;
-                color: #495057;
-            }
-            QPushButton:hover {
-                background: #e9ecef;
-            }
-            QPushButton:checked {
-                background: #3498db;
+                color: {P.MUTED};
+            }}
+            QPushButton:hover {{
+                background: {P.PANEL_2};
+            }}
+            QPushButton:checked {{
+                background: {P.INFO};
                 color: white;
-                border-color: #2980b9;
-            }
+                border-color: {P.INFO};
+            }}
         """)
         btn.setCheckable(True)
         btn.setCursor(Qt.PointingHandCursor)
@@ -790,7 +793,7 @@ class DespreWidget(QDialog):
             "Ghid complet pentru utilizarea aplicației, destinat utilizatorilor care nu au cunoștințe de programare."
         )
         intro_label.setWordWrap(True)
-        intro_label.setStyleSheet("padding: 10px; background: #d4edda; border-radius: 6px; color: #155724;")
+        intro_label.setStyleSheet(f"padding: 10px; background: {P.ACCENT_SOFT}; border-radius: 6px; color: {P.POSITIVE};")
         self.content_layout.addWidget(intro_label)
 
         # Secțiunea 1: Introducere
@@ -802,7 +805,7 @@ class DespreWidget(QDialog):
             "Aplicația vă permite să gestionați membri, plăți lunare, împrumuturi, dividende și să generați rapoarte și chitanțe PDF."
         )
         intro_text.setWordWrap(True)
-        intro_text.setStyleSheet("color: #495057; padding: 8px;")
+        intro_text.setStyleSheet(f"color: {P.MUTED}; padding: 8px;")
         intro_layout.addWidget(intro_text)
         self.content_layout.addWidget(intro_frame)
 
@@ -861,7 +864,7 @@ class DespreWidget(QDialog):
         operations_label = QLabel(operations_html)
         operations_label.setWordWrap(True)
         operations_label.setTextFormat(Qt.RichText)
-        operations_label.setStyleSheet("color: #495057;")
+        operations_label.setStyleSheet(f"color: {P.MUTED};")
         operations_layout.addWidget(operations_label)
         self.content_layout.addWidget(operations_frame)
 
@@ -893,7 +896,7 @@ class DespreWidget(QDialog):
         currency_label = QLabel(currency_html)
         currency_label.setWordWrap(True)
         currency_label.setTextFormat(Qt.RichText)
-        currency_label.setStyleSheet("color: #495057;")
+        currency_label.setStyleSheet(f"color: {P.MUTED};")
         currency_layout.addWidget(currency_label)
 
         # Notă de avertizare
@@ -902,12 +905,12 @@ class DespreWidget(QDialog):
             "Asigurați-vă că aveți un backup complet înainte de a continua."
         )
         warning_label.setWordWrap(True)
-        warning_label.setStyleSheet("""
-            color: #721c24;
-            background: #f8d7da;
+        warning_label.setStyleSheet(f"""
+            color: {P.DANGER};
+            background: {P.DANGER_SOFT};
             padding: 10px;
             border-radius: 4px;
-            border-left: 4px solid #dc3545;
+            border-left: 4px solid {P.DANGER};
             margin-top: 10px;
         """)
         currency_layout.addWidget(warning_label)
@@ -945,7 +948,7 @@ class DespreWidget(QDialog):
         backup_label = QLabel(backup_html)
         backup_label.setWordWrap(True)
         backup_label.setTextFormat(Qt.RichText)
-        backup_label.setStyleSheet("color: #495057;")
+        backup_label.setStyleSheet(f"color: {P.MUTED};")
         backup_layout.addWidget(backup_label)
         self.content_layout.addWidget(backup_frame)
 
@@ -984,33 +987,33 @@ class DespreWidget(QDialog):
         troubleshooting_label = QLabel(troubleshooting_html)
         troubleshooting_label.setWordWrap(True)
         troubleshooting_label.setTextFormat(Qt.RichText)
-        troubleshooting_label.setStyleSheet("color: #495057;")
+        troubleshooting_label.setStyleSheet(f"color: {P.MUTED};")
         troubleshooting_layout.addWidget(troubleshooting_label)
         self.content_layout.addWidget(troubleshooting_frame)
 
         # Contact și Suport
         support_frame = QFrame()
-        support_frame.setStyleSheet("""
-            QFrame {
-                background: #cfe2ff;
-                border: 1px solid #9ec5fe;
+        support_frame.setStyleSheet(f"""
+            QFrame {{
+                background: {P.PANEL_2};
+                border: 1px solid {P.PANEL_2};
                 border-radius: 6px;
                 padding: 12px;
                 margin: 8px 0;
-            }
+            }}
         """)
         support_layout = QVBoxLayout(support_frame)
 
         support_label = QLabel(
             "<b>Suport și Documentație:</b><br>"
             "Pentru întrebări sau probleme, consultați <b>Manual Tehnic</b> sau accesați repository-ul GitHub:<br>"
-            "<a href='https://github.com/totilaAtila/C.A.R._Petrosani' style='color: #0d6efd;'>"
+            f"<a href='https://github.com/totilaAtila/C.A.R._Petrosani' style='color: {P.INFO};'>"
             "https://github.com/totilaAtila/C.A.R._Petrosani</a>"
         )
         support_label.setWordWrap(True)
         support_label.setTextFormat(Qt.RichText)
         support_label.setOpenExternalLinks(True)
-        support_label.setStyleSheet("color: #084298; font-size: 10pt;")
+        support_label.setStyleSheet(f"color: {P.INFO}; font-size: 10pt;")
         support_layout.addWidget(support_label)
         self.content_layout.addWidget(support_frame)
 
@@ -1019,20 +1022,20 @@ class DespreWidget(QDialog):
     def _create_section_frame(self, title):
         """Creează un frame pentru o secțiune cu titlu"""
         frame = QFrame()
-        frame.setStyleSheet("""
-            QFrame {
+        frame.setStyleSheet(f"""
+            QFrame {{
                 background: white;
-                border: 1px solid #dee2e6;
+                border: 1px solid {P.LINE};
                 border-radius: 8px;
                 padding: 16px;
                 margin: 8px 0;
-            }
+            }}
         """)
         layout = QVBoxLayout(frame)
 
         title_label = QLabel(f"<b>{title}</b>")
         title_label.setFont(QFont("Segoe UI", 11, QFont.Bold))
-        title_label.setStyleSheet("color: #2c3e50; margin-bottom: 8px;")
+        title_label.setStyleSheet(f"color: {P.INK}; margin-bottom: 8px;")
         layout.addWidget(title_label)
 
         return frame
@@ -1044,71 +1047,71 @@ class DespreWidget(QDialog):
             "Lista completă a combinațiilor de taste pentru acces rapid la funcționalități."
         )
         intro_label.setWordWrap(True)
-        intro_label.setStyleSheet("padding: 10px; background: #fff3cd; border-radius: 6px; color: #856404;")
+        intro_label.setStyleSheet(f"padding: 10px; background: {P.WARNING_SOFT}; border-radius: 6px; color: {P.WARNING};")
         self.content_layout.addWidget(intro_label)
 
         # Secțiunea Meniu Principal
         main_menu_frame = QFrame()
-        main_menu_frame.setStyleSheet("""
-            QFrame {
+        main_menu_frame.setStyleSheet(f"""
+            QFrame {{
                 background: white;
-                border: 1px solid #dee2e6;
+                border: 1px solid {P.LINE};
                 border-radius: 8px;
                 padding: 16px;
                 margin: 8px 0;
-            }
+            }}
         """)
         main_menu_layout = QVBoxLayout(main_menu_frame)
 
         main_menu_title = QLabel("<b>Scurtături Meniu Principal</b>")
         main_menu_title.setFont(QFont("Segoe UI", 11, QFont.Bold))
-        main_menu_title.setStyleSheet("color: #2c3e50;")
+        main_menu_title.setStyleSheet(f"color: {P.INK};")
         main_menu_layout.addWidget(main_menu_title)
 
-        shortcuts_main = """
+        shortcuts_main = f"""
         <table style='width: 100%; border-collapse: collapse; margin: 10px 0;'>
-            <tr style='background: #f8f9fa;'>
-                <th style='padding: 10px; text-align: left; border-bottom: 2px solid #dee2e6; width: 30%;'>Scurtătură</th>
-                <th style='padding: 10px; text-align: left; border-bottom: 2px solid #dee2e6;'>Funcționalitate</th>
+            <tr style='background: {P.PANEL_2};'>
+                <th style='padding: 10px; text-align: left; border-bottom: 2px solid {P.LINE}; width: 30%;'>Scurtătură</th>
+                <th style='padding: 10px; text-align: left; border-bottom: 2px solid {P.LINE};'>Funcționalitate</th>
             </tr>
             <tr>
-                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: #e9ecef; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Alt+A</kbd></td>
+                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: {P.PANEL_2}; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Alt+A</kbd></td>
                 <td style='padding: 8px; border-bottom: 1px solid #eee;'>Deschide meniul <b>Actualizări</b></td>
             </tr>
-            <tr style='background: #f8f9fa;'>
-                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: #e9ecef; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Alt+V</kbd></td>
+            <tr style='background: {P.PANEL_2};'>
+                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: {P.PANEL_2}; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Alt+V</kbd></td>
                 <td style='padding: 8px; border-bottom: 1px solid #eee;'>Deschide meniul <b>Vizualizări</b></td>
             </tr>
             <tr>
-                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: #e9ecef; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Alt+L</kbd></td>
+                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: {P.PANEL_2}; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Alt+L</kbd></td>
                 <td style='padding: 8px; border-bottom: 1px solid #eee;'>Deschide <b>Listări</b> chitanțe</td>
             </tr>
-            <tr style='background: #f8f9fa;'>
-                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: #e9ecef; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Alt+S</kbd></td>
+            <tr style='background: {P.PANEL_2};'>
+                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: {P.PANEL_2}; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Alt+S</kbd></td>
                 <td style='padding: 8px; border-bottom: 1px solid #eee;'>Deschide meniul <b>Salvări</b></td>
             </tr>
             <tr>
-                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: #e9ecef; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Alt+I</kbd></td>
+                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: {P.PANEL_2}; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Alt+I</kbd></td>
                 <td style='padding: 8px; border-bottom: 1px solid #eee;'>Deschide <b>Împrumuturi Noi</b></td>
             </tr>
-            <tr style='background: #f8f9fa;'>
-                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: #e9ecef; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Alt+G</kbd></td>
+            <tr style='background: {P.PANEL_2};'>
+                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: {P.PANEL_2}; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Alt+G</kbd></td>
                 <td style='padding: 8px; border-bottom: 1px solid #eee;'>Deschide <b>Generare lună</b></td>
             </tr>
             <tr>
-                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: #e9ecef; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Alt+O</kbd></td>
+                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: {P.PANEL_2}; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Alt+O</kbd></td>
                 <td style='padding: 8px; border-bottom: 1px solid #eee;'>Deschide <b>Optimizare baze</b></td>
             </tr>
-            <tr style='background: #f8f9fa;'>
-                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: #e9ecef; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Alt+T</kbd></td>
+            <tr style='background: {P.PANEL_2};'>
+                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: {P.PANEL_2}; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Alt+T</kbd></td>
                 <td style='padding: 8px; border-bottom: 1px solid #eee;'>Deschide <b>Selector temă</b></td>
             </tr>
             <tr>
-                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: #e9ecef; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Alt+R</kbd></td>
+                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: {P.PANEL_2}; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Alt+R</kbd></td>
                 <td style='padding: 8px; border-bottom: 1px solid #eee;'>Deschide <b>Versiune</b> (acest dialog)</td>
             </tr>
-            <tr style='background: #f8f9fa;'>
-                <td style='padding: 8px;'><kbd style='background: #e9ecef; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Alt+Q</kbd></td>
+            <tr style='background: {P.PANEL_2};'>
+                <td style='padding: 8px;'><kbd style='background: {P.PANEL_2}; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Alt+Q</kbd></td>
                 <td style='padding: 8px;'>Închide aplicația (<b>Ieșire</b>)</td>
             </tr>
         </table>
@@ -1116,49 +1119,49 @@ class DespreWidget(QDialog):
         shortcuts_label = QLabel(shortcuts_main)
         shortcuts_label.setWordWrap(True)
         shortcuts_label.setTextFormat(Qt.RichText)
-        shortcuts_label.setStyleSheet("color: #495057;")
+        shortcuts_label.setStyleSheet(f"color: {P.MUTED};")
         main_menu_layout.addWidget(shortcuts_label)
 
         self.content_layout.addWidget(main_menu_frame)
 
         # Secțiunea Scurtături Avansate
         advanced_frame = QFrame()
-        advanced_frame.setStyleSheet("""
-            QFrame {
+        advanced_frame.setStyleSheet(f"""
+            QFrame {{
                 background: white;
-                border: 1px solid #dee2e6;
+                border: 1px solid {P.LINE};
                 border-radius: 8px;
                 padding: 16px;
                 margin: 8px 0;
-            }
+            }}
         """)
         advanced_layout = QVBoxLayout(advanced_frame)
 
         advanced_title = QLabel("<b>Scurtături Avansate</b>")
         advanced_title.setFont(QFont("Segoe UI", 11, QFont.Bold))
-        advanced_title.setStyleSheet("color: #2c3e50;")
+        advanced_title.setStyleSheet(f"color: {P.INK};")
         advanced_layout.addWidget(advanced_title)
 
-        shortcuts_advanced = """
+        shortcuts_advanced = f"""
         <table style='width: 100%; border-collapse: collapse; margin: 10px 0;'>
-            <tr style='background: #f8f9fa;'>
-                <th style='padding: 10px; text-align: left; border-bottom: 2px solid #dee2e6; width: 30%;'>Scurtătură</th>
-                <th style='padding: 10px; text-align: left; border-bottom: 2px solid #dee2e6;'>Funcționalitate</th>
+            <tr style='background: {P.PANEL_2};'>
+                <th style='padding: 10px; text-align: left; border-bottom: 2px solid {P.LINE}; width: 30%;'>Scurtătură</th>
+                <th style='padding: 10px; text-align: left; border-bottom: 2px solid {P.LINE};'>Funcționalitate</th>
             </tr>
             <tr>
-                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: #e9ecef; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Ctrl+Alt+C</kbd></td>
+                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: {P.PANEL_2}; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Ctrl+Alt+C</kbd></td>
                 <td style='padding: 8px; border-bottom: 1px solid #eee;'>Deschide <b>Calculator</b> independent</td>
             </tr>
-            <tr style='background: #f8f9fa;'>
-                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: #e9ecef; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Ctrl+Alt+D</kbd></td>
+            <tr style='background: {P.PANEL_2};'>
+                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: {P.PANEL_2}; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Ctrl+Alt+D</kbd></td>
                 <td style='padding: 8px; border-bottom: 1px solid #eee;'>Deschide <b>CAR DBF Converter</b></td>
             </tr>
             <tr>
-                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: #e9ecef; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Ctrl+Alt+R</kbd></td>
+                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: {P.PANEL_2}; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Ctrl+Alt+R</kbd></td>
                 <td style='padding: 8px; border-bottom: 1px solid #eee;'>Deschide <b>Conversie RON→EUR</b></td>
             </tr>
-            <tr style='background: #f8f9fa;'>
-                <td style='padding: 8px;'><kbd style='background: #e9ecef; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>F12</kbd></td>
+            <tr style='background: {P.PANEL_2};'>
+                <td style='padding: 8px;'><kbd style='background: {P.PANEL_2}; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>F12</kbd></td>
                 <td style='padding: 8px;'>Comută rapid către <b>Împrumuturi Noi</b> (dacă fereastră deja deschisă)</td>
             </tr>
         </table>
@@ -1166,45 +1169,45 @@ class DespreWidget(QDialog):
         shortcuts_advanced_label = QLabel(shortcuts_advanced)
         shortcuts_advanced_label.setWordWrap(True)
         shortcuts_advanced_label.setTextFormat(Qt.RichText)
-        shortcuts_advanced_label.setStyleSheet("color: #495057;")
+        shortcuts_advanced_label.setStyleSheet(f"color: {P.MUTED};")
         advanced_layout.addWidget(shortcuts_advanced_label)
 
         self.content_layout.addWidget(advanced_frame)
 
         # Secțiunea Modul Sume Lunare
         sume_frame = QFrame()
-        sume_frame.setStyleSheet("""
-            QFrame {
+        sume_frame.setStyleSheet(f"""
+            QFrame {{
                 background: white;
-                border: 1px solid #dee2e6;
+                border: 1px solid {P.LINE};
                 border-radius: 8px;
                 padding: 16px;
                 margin: 8px 0;
-            }
+            }}
         """)
         sume_layout = QVBoxLayout(sume_frame)
 
         sume_title = QLabel("<b>Scurtături Modul Sume Lunare</b>")
         sume_title.setFont(QFont("Segoe UI", 11, QFont.Bold))
-        sume_title.setStyleSheet("color: #2c3e50;")
+        sume_title.setStyleSheet(f"color: {P.INK};")
         sume_layout.addWidget(sume_title)
 
-        shortcuts_sume = """
+        shortcuts_sume = f"""
         <table style='width: 100%; border-collapse: collapse; margin: 10px 0;'>
-            <tr style='background: #f8f9fa;'>
-                <th style='padding: 10px; text-align: left; border-bottom: 2px solid #dee2e6; width: 30%;'>Scurtătură</th>
-                <th style='padding: 10px; text-align: left; border-bottom: 2px solid #dee2e6;'>Funcționalitate</th>
+            <tr style='background: {P.PANEL_2};'>
+                <th style='padding: 10px; text-align: left; border-bottom: 2px solid {P.LINE}; width: 30%;'>Scurtătură</th>
+                <th style='padding: 10px; text-align: left; border-bottom: 2px solid {P.LINE};'>Funcționalitate</th>
             </tr>
             <tr>
-                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: #e9ecef; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Escape</kbd></td>
+                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: {P.PANEL_2}; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Escape</kbd></td>
                 <td style='padding: 8px; border-bottom: 1px solid #eee;'><b>Reset/Anulare</b> - Golește formularul și istoricul</td>
             </tr>
-            <tr style='background: #f8f9fa;'>
-                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: #e9ecef; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>F1</kbd></td>
+            <tr style='background: {P.PANEL_2};'>
+                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: {P.PANEL_2}; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>F1</kbd></td>
                 <td style='padding: 8px; border-bottom: 1px solid #eee;'><b>Modifică Tranzacție</b> - Deschide dialog pentru modificarea ultimei luni înregistrate</td>
             </tr>
             <tr>
-                <td style='padding: 8px;'><kbd style='background: #e9ecef; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>F5</kbd></td>
+                <td style='padding: 8px;'><kbd style='background: {P.PANEL_2}; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>F5</kbd></td>
                 <td style='padding: 8px;'><b>Calculează Dobândă la Zi</b> - Pentru achitare anticipată împrumut</td>
             </tr>
         </table>
@@ -1212,61 +1215,61 @@ class DespreWidget(QDialog):
         shortcuts_sume_label = QLabel(shortcuts_sume)
         shortcuts_sume_label.setWordWrap(True)
         shortcuts_sume_label.setTextFormat(Qt.RichText)
-        shortcuts_sume_label.setStyleSheet("color: #495057;")
+        shortcuts_sume_label.setStyleSheet(f"color: {P.MUTED};")
         sume_layout.addWidget(shortcuts_sume_label)
 
         self.content_layout.addWidget(sume_frame)
 
         # Secțiunea Calculator
         calc_frame = QFrame()
-        calc_frame.setStyleSheet("""
-            QFrame {
+        calc_frame.setStyleSheet(f"""
+            QFrame {{
                 background: white;
-                border: 1px solid #dee2e6;
+                border: 1px solid {P.LINE};
                 border-radius: 8px;
                 padding: 16px;
                 margin: 8px 0;
-            }
+            }}
         """)
         calc_layout = QVBoxLayout(calc_frame)
 
         calc_title = QLabel("<b>Scurtături Calculator</b>")
         calc_title.setFont(QFont("Segoe UI", 11, QFont.Bold))
-        calc_title.setStyleSheet("color: #2c3e50;")
+        calc_title.setStyleSheet(f"color: {P.INK};")
         calc_layout.addWidget(calc_title)
 
-        shortcuts_calc = """
+        shortcuts_calc = f"""
         <table style='width: 100%; border-collapse: collapse; margin: 10px 0;'>
-            <tr style='background: #f8f9fa;'>
-                <th style='padding: 10px; text-align: left; border-bottom: 2px solid #dee2e6; width: 30%;'>Scurtătură</th>
-                <th style='padding: 10px; text-align: left; border-bottom: 2px solid #dee2e6;'>Funcționalitate</th>
+            <tr style='background: {P.PANEL_2};'>
+                <th style='padding: 10px; text-align: left; border-bottom: 2px solid {P.LINE}; width: 30%;'>Scurtătură</th>
+                <th style='padding: 10px; text-align: left; border-bottom: 2px solid {P.LINE};'>Funcționalitate</th>
             </tr>
             <tr>
-                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: #e9ecef; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>0-9, .</kbd></td>
+                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: {P.PANEL_2}; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>0-9, .</kbd></td>
                 <td style='padding: 8px; border-bottom: 1px solid #eee;'>Introducere <b>cifre și punct zecimal</b></td>
             </tr>
-            <tr style='background: #f8f9fa;'>
-                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: #e9ecef; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>+, -, *, /</kbd></td>
+            <tr style='background: {P.PANEL_2};'>
+                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: {P.PANEL_2}; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>+, -, *, /</kbd></td>
                 <td style='padding: 8px; border-bottom: 1px solid #eee;'>Introducere <b>operatori matematici</b></td>
             </tr>
             <tr>
-                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: #e9ecef; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Enter / =</kbd></td>
+                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: {P.PANEL_2}; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Enter / =</kbd></td>
                 <td style='padding: 8px; border-bottom: 1px solid #eee;'><b>Calculează rezultatul</b></td>
             </tr>
-            <tr style='background: #f8f9fa;'>
-                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: #e9ecef; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Escape / C</kbd></td>
+            <tr style='background: {P.PANEL_2};'>
+                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: {P.PANEL_2}; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Escape / C</kbd></td>
                 <td style='padding: 8px; border-bottom: 1px solid #eee;'><b>Clear</b> - Șterge tot conținutul</td>
             </tr>
             <tr>
-                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: #e9ecef; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Backspace</kbd></td>
+                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: {P.PANEL_2}; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Backspace</kbd></td>
                 <td style='padding: 8px; border-bottom: 1px solid #eee;'><b>Șterge ultimul caracter</b></td>
             </tr>
-            <tr style='background: #f8f9fa;'>
-                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: #e9ecef; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Delete</kbd></td>
+            <tr style='background: {P.PANEL_2};'>
+                <td style='padding: 8px; border-bottom: 1px solid #eee;'><kbd style='background: {P.PANEL_2}; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>Delete</kbd></td>
                 <td style='padding: 8px; border-bottom: 1px solid #eee;'><b>Clear Entry</b> - Șterge intrarea curentă</td>
             </tr>
             <tr>
-                <td style='padding: 8px;'><kbd style='background: #e9ecef; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>%</kbd></td>
+                <td style='padding: 8px;'><kbd style='background: {P.PANEL_2}; padding: 4px 8px; border-radius: 3px; font-family: monospace; font-size: 11pt;'>%</kbd></td>
                 <td style='padding: 8px;'><b>Calcul procent</b></td>
             </tr>
         </table>
@@ -1274,21 +1277,21 @@ class DespreWidget(QDialog):
         shortcuts_calc_label = QLabel(shortcuts_calc)
         shortcuts_calc_label.setWordWrap(True)
         shortcuts_calc_label.setTextFormat(Qt.RichText)
-        shortcuts_calc_label.setStyleSheet("color: #495057;")
+        shortcuts_calc_label.setStyleSheet(f"color: {P.MUTED};")
         calc_layout.addWidget(shortcuts_calc_label)
 
         self.content_layout.addWidget(calc_frame)
 
         # Notă finală
         note_frame = QFrame()
-        note_frame.setStyleSheet("""
-            QFrame {
-                background: #d1ecf1;
-                border: 1px solid #bee5eb;
+        note_frame.setStyleSheet(f"""
+            QFrame {{
+                background: {P.PANEL_2};
+                border: 1px solid {P.PANEL_2};
                 border-radius: 6px;
                 padding: 12px;
                 margin: 8px 0;
-            }
+            }}
         """)
         note_layout = QVBoxLayout(note_frame)
 
@@ -1300,7 +1303,7 @@ class DespreWidget(QDialog):
         )
         note_label.setWordWrap(True)
         note_label.setTextFormat(Qt.RichText)
-        note_label.setStyleSheet("color: #0c5460; font-size: 9pt;")
+        note_label.setStyleSheet(f"color: {P.INFO}; font-size: 9pt;")
         note_layout.addWidget(note_label)
 
         self.content_layout.addWidget(note_frame)
@@ -1315,7 +1318,7 @@ class DespreWidget(QDialog):
             "Click pe orice secțiune pentru a vedea detaliile."
         )
         intro_label.setWordWrap(True)
-        intro_label.setStyleSheet("padding: 10px; background: #e3f2fd; border-radius: 6px; color: #1565c0;")
+        intro_label.setStyleSheet(f"padding: 10px; background: {P.PANEL_2}; border-radius: 6px; color: {P.INFO};")
         self.content_layout.addWidget(intro_label)
 
         # Creează secțiuni acordeon pentru fiecare meniu
@@ -1337,34 +1340,34 @@ class DespreWidget(QDialog):
         if 'descriere' in menu_data:
             desc_label = QLabel(f"<b>Descriere:</b> {menu_data['descriere']}")
             desc_label.setWordWrap(True)
-            desc_label.setStyleSheet("color: #495057; padding: 8px; background: #f8f9fa; border-radius: 4px;")
+            desc_label.setStyleSheet(f"color: {P.MUTED}; padding: 8px; background: {P.PANEL_2}; border-radius: 4px;")
             layout.addWidget(desc_label)
 
         # Submeniuri (dacă există)
         if 'submeniuri' in menu_data:
             for submenu_name, submenu_data in menu_data['submeniuri'].items():
                 submenu_frame = QFrame()
-                submenu_frame.setStyleSheet("""
-                    QFrame {
+                submenu_frame.setStyleSheet(f"""
+                    QFrame {{
                         background: white;
-                        border-left: 3px solid #3498db;
+                        border-left: 3px solid {P.INFO};
                         padding: 12px;
                         margin: 4px 0;
-                    }
+                    }}
                 """)
                 submenu_layout = QVBoxLayout(submenu_frame)
 
                 # Titlu submeniu
                 title = QLabel(f"<b>{submenu_name}</b>")
                 title.setFont(QFont("Segoe UI", 10, QFont.Bold))
-                title.setStyleSheet("color: #2c3e50;")
+                title.setStyleSheet(f"color: {P.INK};")
                 submenu_layout.addWidget(title)
 
                 # Descriere submeniu
                 if 'descriere' in submenu_data:
                     desc = QLabel(submenu_data['descriere'])
                     desc.setWordWrap(True)
-                    desc.setStyleSheet("color: #6c757d; margin-left: 10px;")
+                    desc.setStyleSheet(f"color: {P.FAINT}; margin-left: 10px;")
                     submenu_layout.addWidget(desc)
 
                 # Funcționalități
@@ -1376,19 +1379,19 @@ class DespreWidget(QDialog):
                     func_label = QLabel(func_text)
                     func_label.setWordWrap(True)
                     func_label.setTextFormat(Qt.RichText)
-                    func_label.setStyleSheet("color: #495057; margin-left: 10px;")
+                    func_label.setStyleSheet(f"color: {P.MUTED}; margin-left: 10px;")
                     submenu_layout.addWidget(func_label)
 
                 # Note
                 if 'note' in submenu_data:
                     note_label = QLabel(f"<b>Notă:</b> {submenu_data['note']}")
                     note_label.setWordWrap(True)
-                    note_label.setStyleSheet("""
-                        color: #856404;
-                        background: #fff3cd;
+                    note_label.setStyleSheet(f"""
+                        color: {P.WARNING};
+                        background: {P.WARNING_SOFT};
                         padding: 8px;
                         border-radius: 4px;
-                        border-left: 3px solid #ffc107;
+                        border-left: 3px solid {P.WARNING};
                         margin: 8px 0 0 10px;
                     """)
                     submenu_layout.addWidget(note_label)
@@ -1404,33 +1407,33 @@ class DespreWidget(QDialog):
             func_label = QLabel(func_text)
             func_label.setWordWrap(True)
             func_label.setTextFormat(Qt.RichText)
-            func_label.setStyleSheet("color: #495057; padding: 8px;")
+            func_label.setStyleSheet(f"color: {P.MUTED}; padding: 8px;")
             layout.addWidget(func_label)
 
         # Stări sistem (pentru Conversie)
         if 'stari_sistem' in menu_data:
             for stare_name, stare_data in menu_data['stari_sistem'].items():
                 stare_frame = QFrame()
-                stare_frame.setStyleSheet("""
-                    QFrame {
-                        background: #f8f9fa;
-                        border: 2px solid #dee2e6;
+                stare_frame.setStyleSheet(f"""
+                    QFrame {{
+                        background: {P.PANEL_2};
+                        border: 2px solid {P.LINE};
                         border-radius: 6px;
                         padding: 12px;
                         margin: 8px 0;
-                    }
+                    }}
                 """)
                 stare_layout = QVBoxLayout(stare_frame)
 
                 stare_title = QLabel(f"<b>{stare_name}</b>")
                 stare_title.setFont(QFont("Segoe UI", 10, QFont.Bold))
-                stare_title.setStyleSheet("color: #0056b3;")
+                stare_title.setStyleSheet(f"color: {P.INFO};")
                 stare_layout.addWidget(stare_title)
 
                 if 'descriere' in stare_data:
                     stare_desc = QLabel(stare_data['descriere'])
                     stare_desc.setWordWrap(True)
-                    stare_desc.setStyleSheet("color: #6c757d; margin-left: 10px;")
+                    stare_desc.setStyleSheet(f"color: {P.FAINT}; margin-left: 10px;")
                     stare_layout.addWidget(stare_desc)
 
                 if 'comportament' in stare_data:
@@ -1441,7 +1444,7 @@ class DespreWidget(QDialog):
                     comp_label = QLabel(comp_text)
                     comp_label.setWordWrap(True)
                     comp_label.setTextFormat(Qt.RichText)
-                    comp_label.setStyleSheet("color: #495057; margin-left: 10px;")
+                    comp_label.setStyleSheet(f"color: {P.MUTED}; margin-left: 10px;")
                     stare_layout.addWidget(comp_label)
 
                 layout.addWidget(stare_frame)
@@ -1450,26 +1453,26 @@ class DespreWidget(QDialog):
         if 'proces_conversie' in menu_data:
             proces_data = menu_data['proces_conversie']
             proces_frame = QFrame()
-            proces_frame.setStyleSheet("""
-                QFrame {
+            proces_frame.setStyleSheet(f"""
+                QFrame {{
                     background: white;
-                    border: 2px solid #28a745;
+                    border: 2px solid {P.POSITIVE};
                     border-radius: 6px;
                     padding: 12px;
                     margin: 8px 0;
-                }
+                }}
             """)
             proces_layout = QVBoxLayout(proces_frame)
 
             proces_title = QLabel("<b>Procesul de Conversie Automată</b>")
             proces_title.setFont(QFont("Segoe UI", 10, QFont.Bold))
-            proces_title.setStyleSheet("color: #155724;")
+            proces_title.setStyleSheet(f"color: {P.POSITIVE};")
             proces_layout.addWidget(proces_title)
 
             if 'descriere' in proces_data:
                 proces_desc = QLabel(proces_data['descriere'])
                 proces_desc.setWordWrap(True)
-                proces_desc.setStyleSheet("color: #6c757d; margin-left: 10px;")
+                proces_desc.setStyleSheet(f"color: {P.FAINT}; margin-left: 10px;")
                 proces_layout.addWidget(proces_desc)
 
             if 'etape' in proces_data:
@@ -1480,12 +1483,12 @@ class DespreWidget(QDialog):
                 etape_label = QLabel(etape_text)
                 etape_label.setWordWrap(True)
                 etape_label.setTextFormat(Qt.RichText)
-                etape_label.setStyleSheet("color: #495057; margin-left: 10px;")
+                etape_label.setStyleSheet(f"color: {P.MUTED}; margin-left: 10px;")
                 proces_layout.addWidget(etape_label)
 
             if 'validari_ue' in proces_data:
                 val_title = QLabel("<b>Validări Conformitate UE:</b>")
-                val_title.setStyleSheet("color: #004085; margin: 8px 0 4px 10px;")
+                val_title.setStyleSheet(f"color: {P.INFO}; margin: 8px 0 4px 10px;")
                 proces_layout.addWidget(val_title)
 
                 val_text = "<ul style='margin: 5px 0 5px 20px;'>"
@@ -1495,7 +1498,7 @@ class DespreWidget(QDialog):
                 val_label = QLabel(val_text)
                 val_label.setWordWrap(True)
                 val_label.setTextFormat(Qt.RichText)
-                val_label.setStyleSheet("color: #004085; margin-left: 10px;")
+                val_label.setStyleSheet(f"color: {P.INFO}; margin-left: 10px;")
                 proces_layout.addWidget(val_label)
 
             layout.addWidget(proces_frame)
@@ -1504,26 +1507,26 @@ class DespreWidget(QDialog):
         if 'monkey_patching' in menu_data:
             mp_data = menu_data['monkey_patching']
             mp_frame = QFrame()
-            mp_frame.setStyleSheet("""
-                QFrame {
+            mp_frame.setStyleSheet(f"""
+                QFrame {{
                     background: white;
-                    border: 2px solid #6610f2;
+                    border: 2px solid {P.ACCENT_DEEP};
                     border-radius: 6px;
                     padding: 12px;
                     margin: 8px 0;
-                }
+                }}
             """)
             mp_layout = QVBoxLayout(mp_frame)
 
             mp_title = QLabel("<b>Sistem Monkey Patching</b>")
             mp_title.setFont(QFont("Segoe UI", 10, QFont.Bold))
-            mp_title.setStyleSheet("color: #4c0a9b;")
+            mp_title.setStyleSheet(f"color: {P.ACCENT_DEEP};")
             mp_layout.addWidget(mp_title)
 
             if 'descriere' in mp_data:
                 mp_desc = QLabel(mp_data['descriere'])
                 mp_desc.setWordWrap(True)
-                mp_desc.setStyleSheet("color: #6c757d; margin-left: 10px;")
+                mp_desc.setStyleSheet(f"color: {P.FAINT}; margin-left: 10px;")
                 mp_layout.addWidget(mp_desc)
 
             if 'mecanism' in mp_data:
@@ -1534,12 +1537,12 @@ class DespreWidget(QDialog):
                 mec_label = QLabel(mec_text)
                 mec_label.setWordWrap(True)
                 mec_label.setTextFormat(Qt.RichText)
-                mec_label.setStyleSheet("color: #495057; margin-left: 10px;")
+                mec_label.setStyleSheet(f"color: {P.MUTED}; margin-left: 10px;")
                 mp_layout.addWidget(mec_label)
 
             if 'avantaje' in mp_data:
                 av_title = QLabel("<b>Avantaje:</b>")
-                av_title.setStyleSheet("color: #155724; margin: 8px 0 4px 10px;")
+                av_title.setStyleSheet(f"color: {P.POSITIVE}; margin: 8px 0 4px 10px;")
                 mp_layout.addWidget(av_title)
 
                 av_text = "<ul style='margin: 5px 0 5px 20px;'>"
@@ -1549,7 +1552,7 @@ class DespreWidget(QDialog):
                 av_label = QLabel(av_text)
                 av_label.setWordWrap(True)
                 av_label.setTextFormat(Qt.RichText)
-                av_label.setStyleSheet("color: #155724; margin-left: 10px;")
+                av_label.setStyleSheet(f"color: {P.POSITIVE}; margin-left: 10px;")
                 mp_layout.addWidget(av_label)
 
             layout.addWidget(mp_frame)
@@ -1559,19 +1562,19 @@ class DespreWidget(QDialog):
             for cat_name, cat_themes in menu_data['categorii'].items():
                 cat_label = QLabel(f"<b>{cat_name}:</b> {', '.join(cat_themes)}")
                 cat_label.setWordWrap(True)
-                cat_label.setStyleSheet("color: #495057; padding: 6px; margin-left: 10px;")
+                cat_label.setStyleSheet(f"color: {P.MUTED}; padding: 6px; margin-left: 10px;")
                 layout.addWidget(cat_label)
 
         # Note finale
         if 'note' in menu_data:
             note_label = QLabel(f"<b>Important:</b> {menu_data['note']}")
             note_label.setWordWrap(True)
-            note_label.setStyleSheet("""
-                color: #721c24;
-                background: #f8d7da;
+            note_label.setStyleSheet(f"""
+                color: {P.DANGER};
+                background: {P.DANGER_SOFT};
                 padding: 10px;
                 border-radius: 4px;
-                border-left: 4px solid #dc3545;
+                border-left: 4px solid {P.DANGER};
                 margin-top: 10px;
             """)
             layout.addWidget(note_label)
@@ -1585,7 +1588,7 @@ class DespreWidget(QDialog):
             util_label = QLabel(util_text)
             util_label.setWordWrap(True)
             util_label.setTextFormat(Qt.RichText)
-            util_label.setStyleSheet("color: #495057; padding: 8px; background: #e7f3ff; border-radius: 4px;")
+            util_label.setStyleSheet(f"color: {P.MUTED}; padding: 8px; background: {P.PANEL_2}; border-radius: 4px;")
             layout.addWidget(util_label)
 
         # Secțiuni (pentru Versiune)
@@ -1597,7 +1600,7 @@ class DespreWidget(QDialog):
             sect_label = QLabel(sect_text)
             sect_label.setWordWrap(True)
             sect_label.setTextFormat(Qt.RichText)
-            sect_label.setStyleSheet("color: #495057; padding: 8px;")
+            sect_label.setStyleSheet(f"color: {P.MUTED}; padding: 8px;")
             layout.addWidget(sect_label)
 
         return widget
@@ -1609,43 +1612,43 @@ class DespreWidget(QDialog):
             "Evoluția aplicației CAR Petroșani de la prima versiune BETA la versiunea finală."
         )
         intro_label.setWordWrap(True)
-        intro_label.setStyleSheet("padding: 10px; background: #e8f5e9; border-radius: 6px; color: #2e7d32;")
+        intro_label.setStyleSheet(f"padding: 10px; background: {P.ACCENT_SOFT}; border-radius: 6px; color: {P.POSITIVE};")
         self.content_layout.addWidget(intro_label)
 
         for version, changes in reversed(list(CHANGELOG.items())):
             version_frame = QFrame()
 
             if version == "FINALA":
-                version_frame.setStyleSheet("""
-                    QFrame {
+                version_frame.setStyleSheet(f"""
+                    QFrame {{
                         background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                            stop:0 #fff8e1, stop:1 #ffecb3);
-                        border: 2px solid #ff9800;
+                            stop:0 {P.WARNING_SOFT}, stop:1 {P.WARNING_SOFT});
+                        border: 2px solid {P.WARNING};
                         border-radius: 8px;
                         padding: 16px;
                         margin: 8px 0;
-                    }
+                    }}
                 """)
             elif version == CURRENT_VERSION:
-                version_frame.setStyleSheet("""
-                    QFrame {
+                version_frame.setStyleSheet(f"""
+                    QFrame {{
                         background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                            stop:0 #e3f2fd, stop:1 #bbdefb);
-                        border: 2px solid #2196f3;
+                            stop:0 {P.PANEL_2}, stop:1 {P.PANEL_2});
+                        border: 2px solid {P.INFO};
                         border-radius: 8px;
                         padding: 16px;
                         margin: 8px 0;
-                    }
+                    }}
                 """)
             else:
-                version_frame.setStyleSheet("""
-                    QFrame {
+                version_frame.setStyleSheet(f"""
+                    QFrame {{
                         background: white;
-                        border: 1px solid #dee2e6;
+                        border: 1px solid {P.LINE};
                         border-radius: 8px;
                         padding: 16px;
                         margin: 8px 0;
-                    }
+                    }}
                 """)
 
             version_layout = QVBoxLayout(version_frame)
@@ -1654,15 +1657,15 @@ class DespreWidget(QDialog):
             if version == "FINALA":
                 version_label = QLabel(f"<b>{version}</b>")
                 version_label.setFont(QFont("Segoe UI", 12, QFont.Bold))
-                version_label.setStyleSheet("color: #e65100;")
+                version_label.setStyleSheet(f"color: {P.WARNING};")
             elif version == CURRENT_VERSION:
                 version_label = QLabel(f"<b>Versiunea {version}</b> - CURENT")
                 version_label.setFont(QFont("Segoe UI", 11, QFont.Bold))
-                version_label.setStyleSheet("color: #1565c0;")
+                version_label.setStyleSheet(f"color: {P.INFO};")
             else:
                 version_label = QLabel(f"<b>Versiunea {version}</b>")
                 version_label.setFont(QFont("Segoe UI", 10, QFont.Bold))
-                version_label.setStyleSheet("color: #37474f;")
+                version_label.setStyleSheet(f"color: {P.INK};")
 
             version_layout.addWidget(version_label)
 
@@ -1675,7 +1678,7 @@ class DespreWidget(QDialog):
             changes_label = QLabel(changes_text)
             changes_label.setWordWrap(True)
             changes_label.setTextFormat(Qt.RichText)
-            changes_label.setStyleSheet("color: #495057; font-size: 9pt;")
+            changes_label.setStyleSheet(f"color: {P.MUTED}; font-size: 9pt;")
             version_layout.addWidget(changes_label)
 
             self.content_layout.addWidget(version_frame)
@@ -1689,25 +1692,25 @@ class DespreWidget(QDialog):
             "Detalii despre arhitectura și tehnologiile utilizate în aplicația CAR Petroșani."
         )
         intro_label.setWordWrap(True)
-        intro_label.setStyleSheet("padding: 10px; background: #f3e5f5; border-radius: 6px; color: #6a1b9a;")
+        intro_label.setStyleSheet(f"padding: 10px; background: {P.ACCENT_SOFT}; border-radius: 6px; color: {P.ACCENT_DEEP};")
         self.content_layout.addWidget(intro_label)
 
         # Informații generale
         general_frame = QFrame()
-        general_frame.setStyleSheet("""
-            QFrame {
+        general_frame.setStyleSheet(f"""
+            QFrame {{
                 background: white;
-                border: 1px solid #dee2e6;
+                border: 1px solid {P.LINE};
                 border-radius: 8px;
                 padding: 16px;
                 margin: 8px 0;
-            }
+            }}
         """)
         general_layout = QVBoxLayout(general_frame)
 
         general_title = QLabel("<b>Tehnologii Utilizate</b>")
         general_title.setFont(QFont("Segoe UI", 11, QFont.Bold))
-        general_title.setStyleSheet("color: #2c3e50;")
+        general_title.setStyleSheet(f"color: {P.INK};")
         general_layout.addWidget(general_title)
 
         tech_info = """
@@ -1723,39 +1726,39 @@ class DespreWidget(QDialog):
         tech_label = QLabel(tech_info)
         tech_label.setWordWrap(True)
         tech_label.setTextFormat(Qt.RichText)
-        tech_label.setStyleSheet("color: #495057;")
+        tech_label.setStyleSheet(f"color: {P.MUTED};")
         general_layout.addWidget(tech_label)
 
         # Link GitHub
         github_label = QLabel(
             "<b>Repository GitHub:</b><br>"
-            "<a href='https://github.com/totilaAtila/C.A.R._Petrosani' style='color: #2980b9;'>"
+            f"<a href='https://github.com/totilaAtila/C.A.R._Petrosani' style='color: {P.INFO};'>"
             "https://github.com/totilaAtila/C.A.R._Petrosani</a>"
         )
         github_label.setWordWrap(True)
         github_label.setTextFormat(Qt.RichText)
         github_label.setOpenExternalLinks(True)
-        github_label.setStyleSheet("padding: 10px; background: #e8f4f8; border-radius: 6px; color: #495057; margin-top: 10px;")
+        github_label.setStyleSheet(f"padding: 10px; background: {P.PANEL_2}; border-radius: 6px; color: {P.MUTED}; margin-top: 10px;")
         general_layout.addWidget(github_label)
 
         self.content_layout.addWidget(general_frame)
 
         # Arhitectură dual-currency
         dual_frame = QFrame()
-        dual_frame.setStyleSheet("""
-            QFrame {
+        dual_frame.setStyleSheet(f"""
+            QFrame {{
                 background: white;
-                border: 1px solid #dee2e6;
+                border: 1px solid {P.LINE};
                 border-radius: 8px;
                 padding: 16px;
                 margin: 8px 0;
-            }
+            }}
         """)
         dual_layout = QVBoxLayout(dual_frame)
 
         dual_title = QLabel("<b>Arhitectură Dual-Currency (RON/EUR)</b>")
         dual_title.setFont(QFont("Segoe UI", 11, QFont.Bold))
-        dual_title.setStyleSheet("color: #2c3e50;")
+        dual_title.setStyleSheet(f"color: {P.INK};")
         dual_layout.addWidget(dual_title)
 
         dual_info = """
@@ -1787,27 +1790,27 @@ class DespreWidget(QDialog):
         dual_label = QLabel(dual_info)
         dual_label.setWordWrap(True)
         dual_label.setTextFormat(Qt.RichText)
-        dual_label.setStyleSheet("color: #495057;")
+        dual_label.setStyleSheet(f"color: {P.MUTED};")
         dual_layout.addWidget(dual_label)
 
         self.content_layout.addWidget(dual_frame)
 
         # Baze de date
         db_frame = QFrame()
-        db_frame.setStyleSheet("""
-            QFrame {
+        db_frame.setStyleSheet(f"""
+            QFrame {{
                 background: white;
-                border: 1px solid #dee2e6;
+                border: 1px solid {P.LINE};
                 border-radius: 8px;
                 padding: 16px;
                 margin: 8px 0;
-            }
+            }}
         """)
         db_layout = QVBoxLayout(db_frame)
 
         db_title = QLabel("<b>Structură Baze de Date</b>")
         db_title.setFont(QFont("Segoe UI", 11, QFont.Bold))
-        db_title.setStyleSheet("color: #2c3e50;")
+        db_title.setStyleSheet(f"color: {P.INK};")
         db_layout.addWidget(db_title)
 
         db_info = """
@@ -1830,7 +1833,7 @@ class DespreWidget(QDialog):
         db_label = QLabel(db_info)
         db_label.setWordWrap(True)
         db_label.setTextFormat(Qt.RichText)
-        db_label.setStyleSheet("color: #495057;")
+        db_label.setStyleSheet(f"color: {P.MUTED};")
         db_layout.addWidget(db_label)
 
         self.content_layout.addWidget(db_frame)
