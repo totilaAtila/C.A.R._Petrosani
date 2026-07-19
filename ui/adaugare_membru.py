@@ -15,6 +15,9 @@ from PyQt5.QtWidgets import (
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QFont
 
+# REDESIGN: sursa unică de stil (ui/palette.py). Doar aspect — nicio logică atinsă.
+from ui.palette import P, GRAD, RADIUS, FONT, btn_primary, btn_solid
+
 # Importăm funcțiile din validari.py
 try:
     from ui.validari import (
@@ -245,31 +248,29 @@ class AdaugareMembruWidget(QWidget):
         loan_section_layout.setContentsMargins(8, 8, 8, 8)
         loan_section_layout.setSpacing(6)
         loan_section.setStyleSheet(
-            """
-            QFrame {
-                border: 3px solid #e74c3c;
-                border-radius: 12px;
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #fff5f5, stop:1 #ffebee);
-            }
+            f"""
+            QFrame {{
+                border: 1px solid {P.DANGER};
+                border-radius: {RADIUS.LG};
+                background: {P.DANGER_SOFT};
+            }}
             """
         )
 
         lbl_imprumuturi = QLabel("Situație Împrumuturi")
         lbl_imprumuturi.setAlignment(Qt.AlignCenter)
         lbl_imprumuturi.setStyleSheet(
-            """
-            QLabel {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #ffcdd2, stop:1 #ef9a9a);
-                border: 2px solid #e74c3c;
-                border-radius: 8px;
+            f"""
+            QLabel {{
+                background: {P.DANGER};
+                border: 1px solid {P.DANGER_DEEP};
+                border-radius: {RADIUS.SM};
                 padding: 8px 15px;
                 font-weight: bold;
                 font-size: 11pt;
-                color: #2c3e50;
+                color: {P.WHITE};
                 margin-bottom: 6px;
-            }
+            }}
             """
         )
         loan_section_layout.addWidget(lbl_imprumuturi)
@@ -296,13 +297,12 @@ class AdaugareMembruWidget(QWidget):
         date_section_layout.setContentsMargins(8, 8, 8, 8)
         date_section_layout.setSpacing(6)
         date_section.setStyleSheet(
-            """
-            QFrame {
-                border: 3px solid #6c757d;
-                border-radius: 12px;
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #f8f9fa, stop:1 #e9ecef);
-            }
+            f"""
+            QFrame {{
+                border: 1px solid {P.LINE};
+                border-radius: {RADIUS.LG};
+                background: {P.PANEL_2};
+            }}
             """
         )
 
@@ -310,18 +310,17 @@ class AdaugareMembruWidget(QWidget):
         lbl_data.setAlignment(Qt.AlignCenter)
         lbl_data.setFixedHeight(lbl_imprumuturi.sizeHint().height())
         lbl_data.setStyleSheet(
-            """
-            QLabel {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #dee2e6, stop:1 #adb5bd);
-                border: 2px solid #6c757d;
-                border-radius: 8px;
+            f"""
+            QLabel {{
+                background: {P.NEUTRAL};
+                border: 1px solid {P.NEUTRAL_DEEP};
+                border-radius: {RADIUS.SM};
                 padding: 8px 15px;
                 font-weight: bold;
                 font-size: 11pt;
-                color: #2c3e50;
+                color: {P.WHITE};
                 margin-bottom: 6px;
-            }
+            }}
             """
         )
         date_section_layout.addWidget(lbl_data)
@@ -340,31 +339,29 @@ class AdaugareMembruWidget(QWidget):
         deposit_section_layout.setContentsMargins(8, 8, 8, 8)
         deposit_section_layout.setSpacing(6)
         deposit_section.setStyleSheet(
-            """
-            QFrame {
-                border: 3px solid #28a745;
-                border-radius: 12px;
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #f8fff8, stop:1 #e8f5e8);
-            }
+            f"""
+            QFrame {{
+                border: 1px solid {P.ACCENT_LINE};
+                border-radius: {RADIUS.LG};
+                background: {P.ACCENT_SOFT};
+            }}
             """
         )
 
         lbl_depuneri = QLabel("Situație Depuneri")
         lbl_depuneri.setAlignment(Qt.AlignCenter)
         lbl_depuneri.setStyleSheet(
-            """
-            QLabel {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #d4edda, stop:1 #a3d977);
-                border: 2px solid #28a745;
-                border-radius: 8px;
+            f"""
+            QLabel {{
+                background: {P.ACCENT};
+                border: 1px solid {P.ACCENT_DEEP};
+                border-radius: {RADIUS.SM};
                 padding: 8px 15px;
                 font-weight: bold;
                 font-size: 11pt;
-                color: #2c3e50;
+                color: {P.WHITE};
                 margin-bottom: 6px;
-            }
+            }}
             """
         )
         deposit_section_layout.addWidget(lbl_depuneri)
@@ -424,21 +421,21 @@ class AdaugareMembruWidget(QWidget):
         if not font.exactMatch(): font = QFont("Courier New", 10)
         text_edit.setFont(font)
 
-        text_edit.setStyleSheet("""
-            QTextEdit { 
-                border: 2px solid #adb5bd; border-top: none; 
-                border-radius: 0px; border-bottom-left-radius: 8px; 
-                border-bottom-right-radius: 8px; padding: 6px; 
-                background-color: #ffffff; color: #495057; 
-                selection-background-color: #b3d1ff;
-            }
-            QTextEdit:read-only { 
-                background-color: #f8f9fa; color: #6c757d; 
-            }
-            QTextEdit:focus {
-                border-color: #4a90e2;
-                background-color: #fafbfc;
-            }
+        text_edit.setStyleSheet(f"""
+            QTextEdit {{
+                border: 1px solid {P.LINE}; border-top: none;
+                border-radius: 0px; border-bottom-left-radius: {RADIUS.SM};
+                border-bottom-right-radius: {RADIUS.SM}; padding: 6px;
+                background-color: {P.PANEL}; color: {P.INK};
+                selection-background-color: {P.ACCENT_SOFT};
+            }}
+            QTextEdit:read-only {{
+                background-color: {P.PANEL_2}; color: {P.FAINT};
+            }}
+            QTextEdit:focus {{
+                border-color: {P.ACCENT};
+                background-color: {P.PANEL};
+            }}
         """)
 
         label = None
@@ -449,16 +446,15 @@ class AdaugareMembruWidget(QWidget):
             label = QLabel(title)
             label.setAlignment(Qt.AlignCenter)
             label.setFixedHeight(32)
-            label.setStyleSheet("""
-                QLabel { 
-                    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                        stop:0 #f1f3f4, stop:1 #e8eaed);
-                    border: 2px solid #adb5bd;
-                    border-bottom: none; border-top-left-radius: 8px; 
-                    border-top-right-radius: 8px; padding: 6px; 
-                    font-weight: bold; font-size: 9pt; color: #2c3e50; 
-                    margin-bottom: 0px; 
-                }
+            label.setStyleSheet(f"""
+                QLabel {{
+                    background: {P.PANEL_2};
+                    border: 1px solid {P.LINE};
+                    border-bottom: none; border-top-left-radius: {RADIUS.SM};
+                    border-top-right-radius: {RADIUS.SM}; padding: 6px;
+                    font-weight: bold; font-size: 9pt; color: {P.MUTED};
+                    margin-bottom: 0px;
+                }}
             """)
             layout.addWidget(label)
 
@@ -467,95 +463,80 @@ class AdaugareMembruWidget(QWidget):
 
     def apply_styles(self):
         """Aplică stilurile pentru interfață cu design modern îmbunătățit."""
-        general_styles = """ 
-            AdaugareMembruWidget, QWidget { 
-                font-family: 'Segoe UI', Arial, sans-serif; 
-                font-size: 10pt; 
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #f8f9fa, stop:1 #e9ecef);
-            } 
-            QScrollArea { 
-                border: none; 
+        general_styles = f"""
+            AdaugareMembruWidget, QWidget {{
+                font-family: {FONT};
+                font-size: 10pt;
+                background: {GRAD.APP_BG};
+            }}
+            QScrollArea {{
+                border: none;
                 background-color: transparent;
-            } 
+            }}
             /* ScrollBar modern */
-            QScrollBar:vertical { 
-                border: none; background: rgba(0,0,0,0.1); width: 12px; 
-                margin: 0; border-radius: 6px; 
-            } 
-            QScrollBar::handle:vertical { 
-                background: rgba(74, 144, 226, 0.7); min-height: 20px; 
+            QScrollBar:vertical {{
+                border: none; background: {P.LINE_SOFT}; width: 12px;
+                margin: 0; border-radius: 6px;
+            }}
+            QScrollBar::handle:vertical {{
+                background: {P.ACCENT_LINE}; min-height: 20px;
                 border-radius: 6px; margin: 2px;
-            } 
-            QScrollBar::handle:vertical:hover { 
-                background: rgba(74, 144, 226, 0.9); 
-            }
-            QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical { 
-                border: none; background: none; height: 0px; 
-            } 
-            QScrollBar:horizontal { 
-                border: none; background: rgba(0,0,0,0.1); height: 12px; 
-                margin: 0; border-radius: 6px; 
-            } 
-            QScrollBar::handle:horizontal { 
-                background: rgba(74, 144, 226, 0.7); min-width: 20px; 
+            }}
+            QScrollBar::handle:vertical:hover {{
+                background: {P.ACCENT};
+            }}
+            QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {{
+                border: none; background: none; height: 0px;
+            }}
+            QScrollBar:horizontal {{
+                border: none; background: {P.LINE_SOFT}; height: 12px;
+                margin: 0; border-radius: 6px;
+            }}
+            QScrollBar::handle:horizontal {{
+                background: {P.ACCENT_LINE}; min-width: 20px;
                 border-radius: 6px; margin: 2px;
-            } 
-            QScrollBar::handle:horizontal:hover { 
-                background: rgba(74, 144, 226, 0.9); 
-            }
-            QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal { 
-                border: none; background: none; width: 0px; 
-            } 
+            }}
+            QScrollBar::handle:horizontal:hover {{
+                background: {P.ACCENT};
+            }}
+            QScrollBar::add-line:horizontal, QScrollBar::sub-line:horizontal {{
+                border: none; background: none; width: 0px;
+            }}
         """
 
-        header_styles = """ 
-            QFrame#header_frame { 
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #f8fbff, stop:1 #e7f3ff); 
-                border: 2px solid #4a90e2;
-                border-radius: 10px; 
+        header_styles = f"""
+            QFrame#header_frame {{
+                background: {P.PANEL};
+                border: 1px solid {P.LINE};
+                border-radius: {RADIUS.LG};
                 padding: 10px;
-            } 
-            QFrame#header_frame QLabel { 
-                color: #2c3e50; font-weight: bold; padding: 4px; 
-                background: transparent; border: none; 
-            } 
-            QFrame#header_frame QLineEdit { 
-                background-color: #ffffff; 
-                border: 2px solid #b3d1ff;
-                border-radius: 6px; 
+            }}
+            QFrame#header_frame QLabel {{
+                color: {P.MUTED}; font-weight: bold; padding: 4px;
+                background: transparent; border: none;
+            }}
+            QFrame#header_frame QLineEdit {{
+                background-color: {P.PANEL_2};
+                border: 1px solid {P.LINE};
+                border-radius: {RADIUS.MD};
                 padding: 6px 10px;
                 font-size: 10pt;
-            } 
-            QFrame#header_frame QLineEdit:focus {
-                border-color: #4a90e2;
-            }
-            QFrame#header_frame QLineEdit:disabled { 
-                background-color: #f8f9fa; color: #6c757d;
-                border-color: #dee2e6;
-            } 
+            }}
+            QFrame#header_frame QLineEdit:focus {{
+                border-color: {P.ACCENT};
+            }}
+            QFrame#header_frame QLineEdit:disabled {{
+                background-color: {P.PANEL_2}; color: {P.FAINT};
+                border-color: {P.LINE};
+            }}
         """
 
-        reset_button_styles = """ 
-            QPushButton#reset_button { 
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #ff6b6b, stop:1 #ee5a52);
-                border: 2px solid #e74c3c;
-                border-radius: 8px;
-                font-size: 10pt; font-weight: bold; 
-                padding: 8px 16px; color: white; 
+        reset_button_styles = btn_solid(P.DANGER, P.DANGER_DEEP, "QPushButton#reset_button") + f"""
+            QPushButton#reset_button {{
+                font-size: 10pt; font-weight: bold;
+                padding: 8px 16px;
                 min-width: 140px;
-            } 
-            QPushButton#reset_button:hover { 
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #ff7b7b, stop:1 #ff6b6b);
-                border-color: #dc3545;
-            }
-            QPushButton#reset_button:pressed {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #ee5a52, stop:1 #e74c3c);
-            }
+            }}
         """
 
         self.setStyleSheet(general_styles + header_styles + reset_button_styles)
@@ -633,27 +614,8 @@ class AdaugareMembruWidget(QWidget):
         """Adaugă butonul de salvare cu design modern."""
         self._clear_actions()
         self.save_button = QPushButton(text)
-        self.save_button.setStyleSheet("""
-            QPushButton {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #28a745, stop:1 #20c997);
-                border: 2px solid #28a745;
-                border-radius: 8px;
-                color: white; 
-                font-weight: bold; 
-                padding: 8px 16px;
-                min-width: 160px;
-                font-size: 10pt;
-            }
-            QPushButton:hover {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #34ce57, stop:1 #28a745);
-                border-color: #20c997;
-            }
-            QPushButton:pressed {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #20c997, stop:1 #28a745);
-            }
+        self.save_button.setStyleSheet(btn_primary() + """
+            QPushButton { min-width: 160px; }
         """)
         self.save_button.clicked.connect(self._save_data)
         self.actions_layout.insertWidget(1, self.save_button)
