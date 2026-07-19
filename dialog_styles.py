@@ -55,7 +55,7 @@ QMessageBox QPushButton {{
     border-radius: {RADIUS.SM};
     font-family: 'Segoe UI';
     font-size: 10pt;
-    font-weight: bold;
+    font-weight: normal;
 }}
 
 QMessageBox QPushButton:hover {{
@@ -104,7 +104,7 @@ QDialog QPushButton {{
     border-radius: {RADIUS.SM};
     font-family: 'Segoe UI';
     font-size: 10pt;
-    font-weight: bold;
+    font-weight: normal;
 }}
 
 QDialog QPushButton:hover {{
@@ -168,7 +168,7 @@ QInputDialog QPushButton {{
     border-radius: {RADIUS.SM};
     font-family: 'Segoe UI';
     font-size: 10pt;
-    font-weight: bold;
+    font-weight: normal;
 }}
 
 QInputDialog QPushButton:hover {{
@@ -189,7 +189,7 @@ QFileDialog QPushButton {{
     border-radius: {RADIUS.SM};
     font-family: 'Segoe UI';
     font-size: 10pt;
-    font-weight: bold;
+    font-weight: normal;
 }}
 
 QFileDialog QPushButton:hover {{
@@ -209,7 +209,7 @@ QDialogButtonBox QPushButton {{
     border-radius: {RADIUS.SM};
     font-family: 'Segoe UI';
     font-size: 10pt;
-    font-weight: bold;
+    font-weight: normal;
 }}
 
 QDialogButtonBox QPushButton:hover {{
