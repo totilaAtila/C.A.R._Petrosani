@@ -61,7 +61,7 @@ exe = EXE(
     upx=False,                 # UPX off -> mai putine false-positive antivirus
     console=False,             # FARA fereastra DOS
     disable_windowed_traceback=False,
-    icon='icons/bank.ico',
+    icon='icons/pol.ico',
 )
 
 coll = COLLECT(

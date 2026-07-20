@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Genereaza setul de baze de date RON GOALE (schema, 0 randuri) pentru release.
-Fara MEMBRII (aplicatia o creeaza la prima rulare), fara variante EUR."""
+Include MEMBRII.db gol (necesar la pornire — la prima rulare aplicatia il
+arhiveaza in MEMBRII.zip cu parola aleasa de user). Fara variante EUR."""
 import os, sqlite3, sys
 
 OUT = sys.argv[1] if len(sys.argv) > 1 else "release_baze_goale"
@@ -8,6 +9,11 @@ os.makedirs(OUT, exist_ok=True)
 
 # Scheme canonice (identice cu tests/genereaza_baze_test.py). RON, fara MEMBRII/EUR.
 SCHEME = {
+    "MEMBRII.db": """
+        CREATE TABLE MEMBRII (
+            NR_FISA INTEGER PRIMARY KEY, NUM_PREN TEXT NOT NULL, DOMICILIUL TEXT,
+            CALITATEA TEXT, DATA_INSCR TEXT, COTIZATIE_STANDARD REAL DEFAULT 10.00
+        )""",
     "DEPCRED.db": """
         CREATE TABLE DEPCRED (
             NR_FISA INTEGER NOT NULL, LUNA INTEGER NOT NULL, ANUL INTEGER NOT NULL,
@@ -46,4 +52,4 @@ for nume, ddl in SCHEME.items():
         conn.close()
     print(f"  creat gol: {nume}")
 
-print(f"OK - {len(SCHEME)} baze RON goale in '{OUT}' (fara MEMBRII, fara EUR)")
+print(f"OK - {len(SCHEME)} baze RON goale in '{OUT}' (incl. MEMBRII gol, fara EUR)")
