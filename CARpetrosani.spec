@@ -13,13 +13,13 @@
 datas = [
     ('icons', 'icons'),
     ('fonts', 'fonts'),
+    # Doar config-uri cu valori IMPLICITE (nu stare de runtime / masina-specifice).
+    # conversie_config/dual_currency/car_settings/theme_settings NU se bundle-uiesc
+    # (contineau path-uri de dezvoltare + stare de conversie/tema); aplicatia le
+    # creeaza singura la prima rulare, cu valori implicite.
     ('config_dobanda.json', '.'),
-    ('conversie_config.json', '.'),
-    ('dual_currency.json', '.'),
-    ('theme_settings.json', '.'),
     ('imprumuturi_noi_config.json', '.'),
     ('imprumuturi_noi_prima_rata.json', '.'),
-    ('car_settings.json', '.'),
     # fonturi din radacina (reportlab le foloseste pentru PDF)
     ('Arial.ttf', '.'),
     ('DejaVuSans.ttf', '.'),
