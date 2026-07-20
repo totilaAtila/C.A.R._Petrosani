@@ -524,7 +524,7 @@ class AdaugareMembruWidget(QWidget):
                 background: transparent; border: none;
             }}
             QFrame#header_frame QLineEdit {{
-                background-color: {P.PANEL_2};
+                background-color: {P.PANEL};
                 border: 1px solid {P.LINE};
                 border-radius: {RADIUS.MD};
                 padding: 6px 10px;
@@ -532,6 +532,10 @@ class AdaugareMembruWidget(QWidget):
             }}
             QFrame#header_frame QLineEdit:focus {{
                 border-color: {P.ACCENT};
+            }}
+            QFrame#header_frame QLineEdit:read-only {{
+                background-color: {P.PANEL_2}; color: {P.FAINT};
+                border-color: {P.LINE};
             }}
             QFrame#header_frame QLineEdit:disabled {{
                 background-color: {P.PANEL_2}; color: {P.FAINT};

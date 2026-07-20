@@ -103,7 +103,7 @@ class VerificareFiseWidget(QWidget):
                 border: none;
             }}
             QLineEdit {{
-                background-color: {P.PANEL_2};
+                background-color: {P.PANEL};
                 border: 1px solid {P.LINE};
                 border-radius: {RADIUS.MD};
                 padding: 6px 10px;
@@ -113,6 +113,11 @@ class VerificareFiseWidget(QWidget):
                 border-color: {P.ACCENT};
             }}
             QLineEdit:read-only {{
+                background-color: {P.PANEL_2};
+                color: {P.FAINT};
+                border-color: {P.LINE};
+            }}
+            QLineEdit:disabled {{
                 background-color: {P.PANEL_2};
                 color: {P.FAINT};
                 border-color: {P.LINE};
@@ -389,6 +394,10 @@ class VerificareFiseWidget(QWidget):
                 background-color: {P.PANEL};
                 color: {P.INK};
                 selection-background-color: {P.ACCENT_SOFT};
+            }}
+            QTextEdit:read-only {{
+                background-color: {P.PANEL_2};
+                color: {P.FAINT};
             }}
             QTextEdit:focus {{
                 border-color: {P.ACCENT};

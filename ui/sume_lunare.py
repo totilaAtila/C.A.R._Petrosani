@@ -1177,7 +1177,7 @@ class SumeLunareWidget(QWidget):
                 border: none; background: none; width: 0px;
             }}
             QLineEdit {{
-                background-color: {P.PANEL_2};
+                background-color: {P.PANEL};
                 border: 1px solid {P.LINE};
                 border-radius: {RADIUS.MD};
                 padding: 6px 10px;
@@ -1192,6 +1192,11 @@ class SumeLunareWidget(QWidget):
                 background-color: {P.PANEL_2};
                 color: {P.MUTED};
                 border-color: {P.LINE_SOFT};
+            }}
+            QLineEdit:disabled {{
+                background-color: {P.PANEL_2};
+                color: {P.FAINT};
+                border-color: {P.LINE};
             }}
             QLabel {{
                 color: {P.INK};
