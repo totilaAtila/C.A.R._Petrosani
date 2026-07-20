@@ -29,6 +29,31 @@ env/
 # IDEs
 .vscode/
 .idea/
+
+# Baze de date si arhive (date la runtime — nu se versioneaza)
+*.db
+*.db-journal
+*.db-wal
+*.db-shm
+MEMBRII.zip
+
+# Rapoarte / jurnale generate de aplicatie
+raport_*.txt
+rezumat_*.txt
+jurnal_*.txt
+
+# PyInstaller (output de build)
+build/
+dist/
+*.manifest
+
+# Documente interne de proces (nu apar in pagina publica)
+CLAUDE.md
+Claude.md
+BUGURI_IDENTIFICATE.md
+PR_DESCRIPTION.md
+handoff/
+.idea/
 .claude/
 *.swp
 *.swo

@@ -1,71 +1,76 @@
-# CARpetrosani.spec
+# CARpetrosani.spec — build Windows (onedir, fara consola DOS)
 # -*- mode: python ; coding: utf-8 -*-
+#
+# Model app: resursele de date (baze .db, config JSON) sunt citite din
+# os.path.dirname(sys.executable) = folderul exe-ului. De aceea folosim
+# contents_directory='.' -> PyInstaller pune TOT langa exe (nu in _internal),
+# astfel incat dirname(sys.executable), sys._MEIPASS si caile relative
+# ('icons/...') sa arate toate spre acelasi folder.
+#
+# Bazele de date RON GOALE + configurarile se copiaza langa exe DUPA build
+# (nu sunt bundle-uite ca sa nu ajunga read-only). Vezi pasul de asamblare.
 
-block_cipher = None
+datas = [
+    ('icons', 'icons'),
+    ('fonts', 'fonts'),
+    ('config_dobanda.json', '.'),
+    ('conversie_config.json', '.'),
+    ('dual_currency.json', '.'),
+    ('theme_settings.json', '.'),
+    ('imprumuturi_noi_config.json', '.'),
+    ('imprumuturi_noi_prima_rata.json', '.'),
+    ('car_settings.json', '.'),
+    # fonturi din radacina (reportlab le foloseste pentru PDF)
+    ('Arial.ttf', '.'),
+    ('DejaVuSans.ttf', '.'),
+    ('DejaVuSans-Bold.ttf', '.'),
+    ('DejaVuBoldSans.ttf', '.'),
+]
 
 a = Analysis(
     ['main.py'],
-    pathex=['.'],  # Sau calea către proiect
+    pathex=['.'],
     binaries=[],
-    datas=[
-        ('fonts', 'fonts'),
-        ('Icons', 'Icons'),
-        ('ui', 'ui'),
-        ('Arial.ttf', '.'),
-        ('DejaVuBoldSans.ttf', '.'),
-        ('DejaVuSans.ttf', '.'),
-        ('DejaVuSans-Bold.ttf', '.')
-    ],
+    datas=datas,
     hiddenimports=[
         'xlsxwriter',
-        'reportlab',
-        'reportlab.lib',
-        'reportlab.pdfgen',
-        'reportlab.pdfbase',
-        'ssl',
-        'cryptography',
-        'AppKit',
-        'Foundation',
+        'reportlab', 'reportlab.lib', 'reportlab.pdfgen', 'reportlab.pdfbase',
+        'PIL', 'PIL.Image',
         'dbf',
-        'security_manager',
-        'dialog_styles',
-        'zipfile',
         'pyzipper',
-        'Cryptodome',
-        'Cryptodome.Cipher',
-        'Cryptodome.Cipher.AES'
+        'security_manager', 'dialog_styles', 'permisiuni',
     ],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=[],
-    win_no_prefer_redirects=False,
-    win_private_assemblies=False,
-    cipher=block_cipher,
+    excludes=['AppKit', 'Foundation'],  # module macOS — irelevante pe Windows
     noarchive=False,
 )
 
-pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+pyz = PYZ(a.pure)
 
 exe = EXE(
     pyz,
     a.scripts,
-    a.binaries,
-    a.zipfiles,
-    a.datas,
     [],
+    exclude_binaries=True,
     name='CARpetrosani',
     debug=False,
     bootloader_ignore_signals=False,
     strip=False,
-    upx=True,
-    upx_exclude=[],
-    runtime_tmpdir=None,
-    console=False,
+    upx=False,                 # UPX off -> mai putine false-positive antivirus
+    console=False,             # FARA fereastra DOS
     disable_windowed_traceback=False,
-    argv_emulation=False,
-    target_arch='universal2',
-    codesign_identity=None,
-    entitlements_file=None,
-    icon='pol.icns',
+    icon='icons/bank.ico',
+)
+
+coll = COLLECT(
+    exe,
+    a.binaries,
+    a.datas,
+    strip=False,
+    upx=False,
+    upx_exclude=[],
+    name='CARpetrosani',
+    contents_directory='.',    # tot langa exe (nu in _internal)
 )
