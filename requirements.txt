@@ -20,14 +20,14 @@ PyQt5==5.15.11
 # NU este importat direct de codul aplicatiei — este dependinta lui reportlab
 # pentru imaginile din PDF. Ramane fixat aici pentru ca versiunea conteaza:
 # pinul vine dintr-o actualizare de securitate (11.3.0 -> 12.1.1).
-Pillow==12.1.1
+Pillow==12.2.0
 
 # DBF file support
 dbf==0.99.11
 
 # Criptare AES-256 pentru arhivare baze de date
 # Folosit de security_manager.py pentru protectie cu parola
-pyzipper==0.3.6
+pyzipper==0.4.0
 
 # ELIMINAT: et-xmlfile==2.0.0
 # Era dependinta lui openpyxl, scos la migrarea spre xlsxwriter.
