@@ -812,19 +812,19 @@ class ConversieWorker(QThread):
                     raise Exception(f"EROARE CLONARE: Fișierul {destinatie.name} nu a fost creat corect")
 
             # ETAPA 5: Conversie DEPCRED (conversie EU conformă)
-            self.progress_update.emit(50, "Conversie DEPCRED - conform Regulamentului CE 1103/97...")
+            self.progress_update.emit(50, "Conversie DEPCRED...")
             rezultat_depcred = self._convert_depcred_eu_compliant(db_paths_eur['depcred'], self.curs_ron_eur)
             if not rezultat_depcred['success']:
                 raise ConversionStoppedException("Conversie DEPCRED oprită din cauza erorilor")
 
             # ETAPA 6: Conversie MEMBRII (conversie EU conformă)
-            self.progress_update.emit(60, "Conversie MEMBRII - conform Regulamentului CE 1103/97...")
+            self.progress_update.emit(60, "Conversie MEMBRII...")
             rezultat_membrii = self._convert_membrii_eu_compliant(db_paths_eur['membrii'], self.curs_ron_eur)
             if not rezultat_membrii['success']:
                 raise ConversionStoppedException("Conversie MEMBRII oprită din cauza erorilor")
 
             # ETAPA 7: Conversie ACTIVI (conversie EU conformă)
-            self.progress_update.emit(70, "Conversie ACTIVI - conform Regulamentului CE 1103/97...")
+            self.progress_update.emit(70, "Conversie ACTIVI...")
             rezultat_activi = self._convert_activi_eu_compliant(db_paths_eur['activi'], self.curs_ron_eur)
             if not rezultat_activi['success']:
                 raise ConversionStoppedException("Conversie ACTIVI oprită din cauza erorilor")
@@ -1016,7 +1016,7 @@ class ConversieWidget(QWidget):
         self.check_validare.setEnabled(False)
         actions_layout.addWidget(self.check_validare)
 
-        self.check_eu_compliant = QCheckBox("Conversie conform Regulamentului CE 1103/97")
+        self.check_eu_compliant = QCheckBox("Conversie directă individuală (CE 1103/97)")
         self.check_eu_compliant.setChecked(True)
         self.check_eu_compliant.setEnabled(False)
         actions_layout.addWidget(self.check_eu_compliant)
@@ -1093,7 +1093,7 @@ class ConversieWidget(QWidget):
         self.jurnal_text.setMinimumHeight(150)  # Minimă rezonabilă
 
         # Mesajele inițiale
-        self.adauga_in_jurnal("Widget inițializat - conversie conform Regulamentului CE 1103/97")
+        self.adauga_in_jurnal("Widget inițializat - conversie directă individuală")
         self.adauga_in_jurnal("Metodă: Conversie directă individuală (fără distribuție proporțională)")
 
         jurnal_layout.addWidget(self.jurnal_text)
@@ -1170,7 +1170,8 @@ class ConversieWidget(QWidget):
 
             # Colectează statistici pentru toate bazele
             db_stats = {}
-            suma_totala_monetara = Decimal("0.00")
+            suma_totala_monetara = Decimal("0.00")   # anvergura: TOATE campurile monetare
+            sold_depuneri_ron = Decimal("0.00")      # banii REALI: doar soldurile (DEP_SOLD)
 
             for db_name, db_path in db_files.items():
                 with sqlite3.connect(db_path) as conn:
@@ -1179,13 +1180,15 @@ class ConversieWidget(QWidget):
                     if db_name == "DEPCRED":
                         cursor.execute("""
                             SELECT COUNT(DISTINCT NR_FISA), COUNT(*),
-                                   COALESCE(SUM(DOBANDA + IMPR_DEB + IMPR_CRED + IMPR_SOLD + 
-                                               DEP_DEB + DEP_CRED + DEP_SOLD), 0)
+                                   COALESCE(SUM(DOBANDA + IMPR_DEB + IMPR_CRED + IMPR_SOLD +
+                                               DEP_DEB + DEP_CRED + DEP_SOLD), 0),
+                                   COALESCE(SUM(DEP_SOLD), 0)
                             FROM DEPCRED
                         """)
-                        membri_distincti, total_inreg, suma = cursor.fetchone()
+                        membri_distincti, total_inreg, suma, sold_dep = cursor.fetchone()
                         suma_decimal = Decimal(str(suma or '0.00'))
                         suma_totala_monetara += suma_decimal
+                        sold_depuneri_ron += Decimal(str(sold_dep or '0.00'))  # soldul real
 
                         db_stats[db_name] = {
                             "membri_distincti": membri_distincti or 0,
@@ -1265,7 +1268,7 @@ class ConversieWidget(QWidget):
             }
 
             # Generează textul de preview cu explicații UE
-            preview_text = f"""PREVIEW CONVERSIE RON → EUR CONFORM REGULAMENTULUI CE 1103/97
+            preview_text = f"""PREVIEW CONVERSIE RON → EUR
 {'=' * 70}
 Curs folosit: 1 EUR = {curs_decimal:.6f} RON
 Utilizator: {self.utilizator_input.text()}
@@ -1304,24 +1307,22 @@ LICHIDATI:
   - Total membri lichidați: {db_stats['LICHIDATI']['total_lichidati']:,}
   - Operațiune: Copiere structură și date (fără conversie)
 
-ANALIZA MATEMATICĂ CONFORM UE:
+VERIFICARE MATEMATICĂ:
 {'─' * 35}
-  - Sumă totală monetară RON: {suma_totala_monetara:,.2f}
-  - Sumă teoretică EUR (direct): {suma_estimata_eur:,.2f}
-  - Sumă componentelor EUR: {suma_componente_eur:,.2f}
-  - Diferența de rotunjire estimată: {diferenta_estimata_rotunjire:+.2f} EUR
+  ► Sold real depuneri în CAR (SUM DEP_SOLD): {sold_depuneri_ron:,.2f} RON  ← banii reali
+  ► Valori monetare procesate (anvergură):    {suma_totala_monetara:,.2f} RON
+     (adună TOATE câmpurile: mișcări + solduri + cotizații-setare, deci același
+      leu apare de mai multe ori — NU este suma reală din CAR)
+  ► EUR rezultat (pe câmpuri):  {suma_componente_eur:,.2f}
+  ► EUR teoretic (pe total):    {suma_estimata_eur:,.2f}
+  ► Diferență de rotunjire:     {diferenta_estimata_rotunjire:+.2f} EUR
 
-EXPLICAȚIE DIFERENȚE DE ROTUNJIRE:
+De ce apare o diferență de rotunjire?
 {'─' * 38}
-Conform Regulamentului CE 1103/97, conversia se face prin aplicarea directă
-a cursului de schimb pentru fiecare sumă individuală, cu rotunjirea la 2 zecimale.
-Diferențele de rotunjire rezultate sunt LEGITIME și reflectă aplicarea corectă
-a legislației europene pentru tranziția monetară.
-
-Exemplu: 3 sume de 10 RON la cursul 6.00:
-- Conversie directă: 10/6 = 1.67 EUR (×3) = 5.01 EUR total
-- Conversie totală: 30/6 = 5.00 EUR total
-- Diferență legitimă: +0.01 EUR (din rotunjirea individuală)
+Fiecare sumă se convertește INDEPENDENT (împărțire la curs + rotunjire la 2
+zecimale). Suma câmpurilor rotunjite separat diferă ușor de totalul rotunjit o
+singură dată — o diferență mică și LEGITIMĂ. Soldul real al fiecărui membru
+(DEP_SOLD) se convertește corect; el este ce contează.
 
 FIȘIERE CARE VOR FI CREATE:
 {'─' * 30}
@@ -1418,7 +1419,7 @@ pentru integritatea completă a sistemului.
 
         # Pornește conversia
         self.conversie_worker.start()
-        self.adauga_in_jurnal("Conversie definitivă pornită - conform Regulamentului CE 1103/97...")
+        self.adauga_in_jurnal("Conversie definitivă pornită...")
 
     def update_progress(self, value: int, message: str):
         """Actualizează progresul"""
@@ -1440,34 +1441,48 @@ pentru integritatea completă a sistemului.
 
         rezumat = rezultat.get('rezumat_final', {})
 
-        mesaj = (f"Conversie definitivă aplicată cu succes conform UE!\n\n"
-                f"REZULTATE CONVERSIE DIRECTĂ:\n"
-                f"• DEPCRED: {depcred_conv:,} înregistrări convertite\n"
-                f"• MEMBRII: {membrii_conv:,} membri convertiți\n"
-                f"• ACTIVI: {activi_conv:,} membri activi convertiți\n\n"
-                f"REZULTATE CLONARE:\n"
-                f"• INACTIVI: {inactivi_records:,} înregistrări clonate\n"
-                f"• LICHIDATI: {lichidati_records:,} înregistrări clonate\n\n"
-                f"ANALIZA DIFERENȚELOR DE ROTUNJIRE:\n"
-                f"• Sumă originală RON: {Decimal(rezumat.get('suma_originala_ron', 0)):,.2f}\n"
-                f"• Sumă rezultat EUR: {Decimal(rezumat.get('suma_rezultat_eur', 0)):,.2f}\n"
-                f"• Sumă teoretică EUR: {Decimal(rezumat.get('suma_teoretica_eur', 0)):,.2f}\n"
-                f"• Diferența totală rotunjire: {Decimal(rezumat.get('diferenta_rotunjire_totala', 0)):+.2f} EUR\n\n"
-                f"DETALII DIFERENȚE PE BAZE:\n"
-                f"• DEPCRED: {Decimal(rezumat.get('diferenta_depcred', 0)):+.4f} EUR\n"
-                f"• MEMBRII: {Decimal(rezumat.get('diferenta_membrii', 0)):+.4f} EUR\n"
-                f"• ACTIVI: {Decimal(rezumat.get('diferenta_activi', 0)):+.4f} EUR\n\n"
-                f"Fișiere create:\n"
-                f"• DEPCREDEUR.db\n"
-                f"• MEMBRIIEUR.db\n"
-                f"• activiEUR.db\n"
-                f"• INACTIVIEUR.db\n"
-                f"• LICHIDATIEUR.db\n\n"
-                f"IMPORTANT: Diferențele de rotunjire sunt LEGITIME\n"
-                f"și rezultă din aplicarea corectă a legislației UE.\n\n"
-                f"Sistemul EURO este acum complet funcțional! Reporniți aplicația.")
+        # Sumar SCURT vizibil + detalii SCROLLABILE (setDetailedText -> caseta cu scroll)
+        rezumat_scurt = (
+            f"Conversie definitivă aplicată cu succes.\n\n"
+            f"• DEPCRED: {depcred_conv:,} înregistrări convertite\n"
+            f"• MEMBRII: {membrii_conv:,} membri convertiți\n"
+            f"• ACTIVI:  {activi_conv:,} membri activi\n"
+            f"• INACTIVI / LICHIDATI: {inactivi_records:,} / {lichidati_records:,} clonate\n\n"
+            f"Reporniți aplicația pentru a folosi sistemul EUR.\n\n"
+            f"(Apăsați „Show Details” pentru verificarea matematică.)"
+        )
+        detalii = (
+            f"VERIFICARE MATEMATICĂ\n"
+            f"{'─' * 42}\n"
+            f"• Valori monetare procesate (anvergură): "
+            f"{Decimal(rezumat.get('suma_originala_ron', 0)):,.2f} RON\n"
+            f"    Adună TOATE câmpurile monetare (mișcări + solduri + cotizații-\n"
+            f"    setare), deci același leu apare de mai multe ori. NU reprezintă\n"
+            f"    soldul real al CAR-ului.\n"
+            f"• EUR rezultat (pe câmpuri): "
+            f"{Decimal(rezumat.get('suma_rezultat_eur', 0)):,.2f}\n"
+            f"• EUR teoretic (pe total):   "
+            f"{Decimal(rezumat.get('suma_teoretica_eur', 0)):,.2f}\n"
+            f"• Diferență de rotunjire:    "
+            f"{Decimal(rezumat.get('diferenta_rotunjire_totala', 0)):+.2f} EUR\n\n"
+            f"Diferența e LEGITIMĂ: fiecare sumă se convertește independent, cu\n"
+            f"rotunjire la 2 zecimale. Soldul real al fiecărui membru (DEP_SOLD)\n"
+            f"se convertește corect — el este ce contează.\n\n"
+            f"Diferențe pe baze:\n"
+            f"• DEPCRED: {Decimal(rezumat.get('diferenta_depcred', 0)):+.4f} EUR\n"
+            f"• MEMBRII: {Decimal(rezumat.get('diferenta_membrii', 0)):+.4f} EUR\n"
+            f"• ACTIVI:  {Decimal(rezumat.get('diferenta_activi', 0)):+.4f} EUR\n\n"
+            f"Fișiere create: DEPCREDEUR.db, MEMBRIIEUR.db, activiEUR.db,\n"
+            f"INACTIVIEUR.db, LICHIDATIEUR.db.\n"
+            f"Bazele RON originale rămân intacte, în regim doar-citire (arhivă)."
+        )
 
-        QMessageBox.information(self, 'Conversie Completă', mesaj)
+        box = QMessageBox(self)
+        box.setIcon(QMessageBox.Information)
+        box.setWindowTitle('Conversie completă')
+        box.setText(rezumat_scurt)
+        box.setDetailedText(detalii)
+        box.exec_()
 
         self.btn_aplica.setEnabled(True)
         self.btn_preview.setEnabled(True)
@@ -1763,7 +1778,7 @@ pentru integritatea completă a sistemului.
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     widget = ConversieWidget()
-    widget.setWindowTitle("Conversie RON→EUR Definitivă - Conform Regulamentului CE 1103/97")
+    widget.setWindowTitle("Conversie RON→EUR Definitivă")
     widget.setMinimumSize(1000, 700)
     widget.show()
     sys.exit(app.exec_())
