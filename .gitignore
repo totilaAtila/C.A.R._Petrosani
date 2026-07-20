@@ -47,6 +47,12 @@ build/
 dist/
 *.manifest
 
+# Config-uri cu STARE de runtime / specifice masinii (app-ul le creeaza singur)
+conversie_config.json
+dual_currency.json
+car_settings.json
+theme_settings.json
+
 # Documente interne de proces (nu apar in pagina publica)
 CLAUDE.md
 Claude.md
