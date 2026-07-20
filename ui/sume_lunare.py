@@ -712,6 +712,20 @@ class SumeLunareWidget(QWidget):
         self.reset_form()
         self._incarca_lista_membri_completer()
 
+    def showEvent(self, event):
+        """La fiecare (re)deschidere a ecranului, reîncarcă lista de membri din DB.
+
+        Widget-ul e cache-uit în main_ui (loaded_widgets) și refolosit fără a fi
+        recreat. Fără reîncărcarea de aici, un membru adăugat DUPĂ prima deschidere
+        a acestui ecran nu era găsit la căutare (nici după nume, nici după fișă)
+        până la repornirea aplicației. Comportamentul așteptat, ca la celelalte
+        module: deschid meniul -> citește bazele -> le oferă la vizualizare."""
+        super().showEvent(event)
+        try:
+            self._incarca_lista_membri_completer()
+        except Exception as e:
+            logging.error(f"Reîncărcare listă membri la afișare a eșuat: {e}", exc_info=True)
+
     # --- METODE UI ---
     def _init_ui(self):
         """ Inițializează componentele UI cu design modern. """
@@ -1267,7 +1281,13 @@ class SumeLunareWidget(QWidget):
             self.header_frame.setStyleSheet(header_styles)
 
     def _update_completer_model(self, text=None):
-        """Actualizează modelul pentru QCompleter."""
+        """Actualizează modelul QCompleter interogând DB LIVE (mereu proaspăt).
+
+        Interoghează MEMBRII la fiecare tastă, exact ca modulele-surori (lichidare,
+        ștergere, verificare fișe). Astfel un membru adăugat recent apare imediat în
+        autocompletare, fără a depinde de o listă preîncărcată la deschidere. Menține
+        și maparea nume<->fișă (`lista_completa_membri`) pentru selecție și căutarea
+        după număr."""
         if not hasattr(self, '_update_completer_flag') or not self._update_completer_flag:
             return
 
@@ -1276,20 +1296,32 @@ class SumeLunareWidget(QWidget):
             self.completer.setModel(None)
             return
 
+        conn = None
         try:
-            # Utilizăm lista completă încărcată anterior
-            if hasattr(self, 'lista_completa_membri') and self.lista_completa_membri:
-                filtered_items = [item for item in self.lista_completa_membri.keys()
-                                  if isinstance(item, str) and '(F:' in item and
-                                  prefix.lower() in item.lower()]
+            conn = sqlite3.connect(f"file:{DB_MEMBRII}?mode=ro", uri=True, timeout=30.0)
+            cursor = conn.cursor()
+            cursor.execute(
+                "SELECT NR_FISA, NUM_PREN FROM membrii WHERE NUM_PREN LIKE ? COLLATE NOCASE ORDER BY NUM_PREN",
+                (prefix + "%",)
+            )
+            items = []
+            for nr_fisa, nume in cursor.fetchall():
+                if nume and nr_fisa is not None:
+                    item_text = f"{nume.strip()} (F: {nr_fisa})"
+                    items.append(item_text)
+                    self.lista_completa_membri[item_text] = nr_fisa
+                    self.lista_completa_membri[str(nr_fisa)] = item_text
 
-                model = QStringListModel(sorted(filtered_items))
-                self.completer.setModel(model)
+            model = QStringListModel(sorted(items))
+            self.completer.setModel(model)
 
-                if filtered_items and self.txt_nume.hasFocus() and not self.completer.popup().isVisible():
-                    self.completer.complete()
+            if items and self.txt_nume.hasFocus() and not self.completer.popup().isVisible():
+                self.completer.complete()
         except Exception as e_compl:
             logging.error(f"Eroare actualizare completer: {e_compl}", exc_info=True)
+        finally:
+            if conn:
+                conn.close()
 
     def _connect_signals(self):
         """ Conectează semnalele la sloturi. """
@@ -1966,12 +1998,15 @@ class SumeLunareWidget(QWidget):
             if self._loaded_nr_fisa == nr_fisa:
                 return
 
-            if str(nr_fisa) not in self.lista_completa_membri:
+            # Verificare LIVE în DB (nu în lista preîncărcată) — găsește imediat și
+            # membrii adăugați recent, exact ca modulele-surori.
+            nume_membru = self._get_name_for_nr_fisa(nr_fisa)
+            if not nume_membru:
                 afiseaza_warning(f"Fișa cu numărul {nr_fisa} nu a fost găsită.", parent=self)
                 self.reset_form()
                 return
 
-            item_text = self.lista_completa_membri.get(str(nr_fisa), f"Nume necunoscut (F: {nr_fisa})")
+            item_text = f"{nume_membru} (F: {nr_fisa})"
             self.txt_nume.blockSignals(True)
             self.txt_nume.setText(item_text)
             self.txt_nume.blockSignals(False)
