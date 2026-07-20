@@ -1181,14 +1181,15 @@ class ConversieWidget(QWidget):
                         cursor.execute("""
                             SELECT COUNT(DISTINCT NR_FISA), COUNT(*),
                                    COALESCE(SUM(DOBANDA + IMPR_DEB + IMPR_CRED + IMPR_SOLD +
-                                               DEP_DEB + DEP_CRED + DEP_SOLD), 0),
-                                   COALESCE(SUM(DEP_SOLD), 0)
+                                               DEP_DEB + DEP_CRED + DEP_SOLD), 0)
                             FROM DEPCRED
                         """)
-                        membri_distincti, total_inreg, suma, sold_dep = cursor.fetchone()
+                        membri_distincti, total_inreg, suma = cursor.fetchone()
                         suma_decimal = Decimal(str(suma or '0.00'))
                         suma_totala_monetara += suma_decimal
-                        sold_depuneri_ron += Decimal(str(sold_dep or '0.00'))  # soldul real
+                        # Sold REAL = soldul din ULTIMA lună (DEP_SOLD e cumulativ, nu se
+                        # adună pe toate lunile — ar dubla banii). Identic cu Statistici.
+                        sold_depuneri_ron += self._sold_real_depuneri_ron(db_path)
 
                         db_stats[db_name] = {
                             "membri_distincti": membri_distincti or 0,
@@ -1309,7 +1310,7 @@ LICHIDATI:
 
 VERIFICARE MATEMATICĂ:
 {'─' * 35}
-  ► Sold real depuneri în CAR (SUM DEP_SOLD): {sold_depuneri_ron:,.2f} RON  ← banii reali
+  ► Sold real depuneri în CAR (ultima lună): {sold_depuneri_ron:,.2f} RON  ← banii reali
   ► Valori monetare procesate (anvergură):    {suma_totala_monetara:,.2f} RON
      (adună TOATE câmpurile: mișcări + solduri + cotizații-setare, deci același
       leu apare de mai multe ori — NU este suma reală din CAR)
@@ -1427,6 +1428,23 @@ pentru integritatea completă a sistemului.
         self.status_label.setText(message)
         self.adauga_in_jurnal(message)
 
+    def _sold_real_depuneri_ron(self, depcred_path):
+        """Soldul REAL de depuneri = SUM(DEP_SOLD) din ULTIMA lună generată.
+
+        DEP_SOLD e cumulativ (soldul se rostogolește lună de lună), deci NU se
+        adună pe toate lunile — asta ar dubla banii. Se ia doar cea mai recentă
+        perioadă (MAX(anul*12+luna)), identic cu ecranul Statistici. Funcționează
+        și pe DEPCREDEUR.db (aceeași tabelă DEPCRED, valori în EUR)."""
+        try:
+            with sqlite3.connect(str(depcred_path), timeout=30.0) as conn:
+                row = conn.execute("""
+                    SELECT COALESCE(SUM(DEP_SOLD), 0) FROM DEPCRED
+                    WHERE (ANUL * 12 + LUNA) = (SELECT MAX(ANUL * 12 + LUNA) FROM DEPCRED)
+                """).fetchone()
+                return Decimal(str(row[0] if row and row[0] is not None else '0.00'))
+        except Exception:
+            return Decimal("0.00")
+
     def conversie_completata(self, rezultat: dict):
         """Handler pentru conversie completată"""
         self.progress_bar.setVisible(False)
@@ -1441,6 +1459,13 @@ pentru integritatea completă a sistemului.
 
         rezumat = rezultat.get('rezumat_final', {})
 
+        # Banii REALI: soldul de depuneri din ultima lună, RON (din arhivă) și EUR
+        # (din baza tocmai creată) — ancora corectă pentru user, nu „anvergura".
+        base_path = Path(__file__).resolve().parent if not getattr(sys, 'frozen', False) else Path(
+            sys.executable).parent
+        sold_real_ron = self._sold_real_depuneri_ron(base_path / "DEPCRED.db")
+        sold_real_eur = self._sold_real_depuneri_ron(base_path / "DEPCREDEUR.db")
+
         # Sumar SCURT vizibil + detalii SCROLLABILE (setDetailedText -> caseta cu scroll)
         rezumat_scurt = (
             f"Conversie definitivă aplicată cu succes.\n\n"
@@ -1454,6 +1479,9 @@ pentru integritatea completă a sistemului.
         detalii = (
             f"VERIFICARE MATEMATICĂ\n"
             f"{'─' * 42}\n"
+            f"• Banii REALI (sold depuneri, ultima lună):\n"
+            f"    {sold_real_ron:,.2f} RON  →  {sold_real_eur:,.2f} EUR\n"
+            f"    Aceștia sunt banii efectivi din CAR; s-au convertit corect.\n"
             f"• Valori monetare procesate (anvergură): "
             f"{Decimal(rezumat.get('suma_originala_ron', 0)):,.2f} RON\n"
             f"    Adună TOATE câmpurile monetare (mișcări + solduri + cotizații-\n"
