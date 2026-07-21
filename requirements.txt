@@ -20,7 +20,7 @@ PyQt5==5.15.11
 # NU este importat direct de codul aplicatiei — este dependinta lui reportlab
 # pentru imaginile din PDF. Ramane fixat aici pentru ca versiunea conteaza:
 # pinul vine dintr-o actualizare de securitate (11.3.0 -> 12.1.1).
-Pillow==12.2.0
+Pillow==12.3.0
 
 # DBF file support
 dbf==0.99.11
